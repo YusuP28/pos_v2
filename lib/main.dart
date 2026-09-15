@@ -7,6 +7,7 @@ import 'viewmodels/auth_viewmodel.dart';
 import 'viewmodels/cart_viewmodel.dart';
 import 'viewmodels/category_viewmodel.dart';
 import 'viewmodels/product_viewmodel.dart';
+import 'viewmodels/shift_viewmodel.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => CategoryViewModel()),
         ChangeNotifierProvider(create: (_) => ProductViewModel()),
         ChangeNotifierProvider(create: (_) => CartViewModel()),
+        ChangeNotifierProvider(create: (_) => ShiftViewModel()),
       ],
       child: const PosApp(),
     ),

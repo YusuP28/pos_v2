@@ -7,6 +7,7 @@ import 'category_list_view.dart';
 import 'login_view.dart';
 import 'product_list_view.dart';
 import 'retail_pos_view.dart';
+import 'shift_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -95,6 +96,14 @@ class HomeView extends StatelessWidget {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const CategoryListView()),
+                    ),
+                  ),
+                  _MenuCard(
+                    icon: Icons.account_balance_wallet,
+                    label: 'Shift Kas',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ShiftView()),
                     ),
                   ),
                 ],

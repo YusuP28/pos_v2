@@ -7,6 +7,7 @@ import '../viewmodels/auth_viewmodel.dart';
 import '../viewmodels/cart_viewmodel.dart';
 import '../viewmodels/category_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
+import '../viewmodels/shift_viewmodel.dart';
 import '../repositories/order_repository.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
@@ -424,7 +425,17 @@ class _OrderPanel extends StatelessWidget {
   Future<void> _openCheckout(BuildContext context) async {
     final cart = context.read<CartViewModel>();
     final auth = context.read<AuthViewModel>();
+    final shift = context.read<ShiftViewModel>();
     if (cart.isEmpty || auth.currentUser?.id == null) return;
+
+    if (!shift.hasOpenShift) {
+      await AppDialog.error(
+        context,
+        'Belum ada shift terbuka.\nBuka shift dulu di menu Shift Kas.',
+        title: 'Shift Belum Dibuka',
+      );
+      return;
+    }
 
     final result = await showDialog<_CheckoutResult>(
       context: context,
@@ -432,6 +443,7 @@ class _OrderPanel extends StatelessWidget {
       builder: (_) => _CheckoutDialog(
         total: cart.total,
         userId: auth.currentUser!.id!,
+        shiftId: shift.current!.id!,
         items: cart.items.toList(),
       ),
     );
@@ -456,11 +468,13 @@ class _CheckoutResult {
 class _CheckoutDialog extends StatefulWidget {
   final double total;
   final int userId;
+  final int shiftId;
   final List items;
 
   const _CheckoutDialog({
     required this.total,
     required this.userId,
+    required this.shiftId,
     required this.items,
   });
 
@@ -499,6 +513,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
     try {
       final orderId = await OrderRepository.instance.createOrder(
         userId: widget.userId,
+        shiftId: widget.shiftId,
         items: widget.items.cast(),
         paymentMethod: _method,
         paidAmount: _method == 'qris' ? widget.total : paidAmount,

@@ -9,7 +9,7 @@ class DbHelper {
   static final DbHelper instance = DbHelper._();
 
   static const _dbName = 'pos_v2.db';
-  static const _dbVersion = 3;
+  static const _dbVersion = 4;
 
   Database? _db;
 
@@ -36,6 +36,7 @@ class DbHelper {
     await _createCategoryTables(db);
     await _seedDefaultCategory(db);
     await _createOrderTables(db);
+    await _createShiftTable(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldV, int newV) async {
@@ -45,6 +46,9 @@ class DbHelper {
     }
     if (oldV < 3) {
       await _createOrderTables(db);
+    }
+    if (oldV < 4) {
+      await _createShiftTable(db);
     }
   }
 
@@ -98,8 +102,7 @@ class DbHelper {
     ''');
 
     await db.execute(
-      'CREATE INDEX idx_products_barcode ON products (barcode)',
-    );
+        'CREATE INDEX idx_products_barcode ON products (barcode)');
     await db.execute('CREATE INDEX idx_products_sku ON products (sku)');
   }
 
@@ -145,10 +148,31 @@ class DbHelper {
     ''');
 
     await db.execute(
-      'CREATE INDEX idx_orders_created_at ON orders (created_at)',
-    );
+        'CREATE INDEX idx_orders_created_at ON orders (created_at)');
     await db.execute(
-      'CREATE INDEX idx_order_items_order_id ON order_items (order_id)',
-    );
+        'CREATE INDEX idx_order_items_order_id ON order_items (order_id)');
+  }
+
+  Future<void> _createShiftTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE shifts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        opened_at TEXT NOT NULL,
+        closed_at TEXT,
+        opening_cash REAL NOT NULL DEFAULT 0,
+        closing_cash REAL,
+        expected_cash REAL,
+        difference REAL,
+        status TEXT NOT NULL DEFAULT 'open',
+        notes TEXT NOT NULL DEFAULT '',
+        FOREIGN KEY (user_id) REFERENCES users (id)
+      )
+    ''');
+
+    await db.execute(
+        'CREATE INDEX idx_shifts_status ON shifts (status)');
+    await db.execute(
+        'CREATE INDEX idx_shifts_opened_at ON shifts (opened_at)');
   }
 }

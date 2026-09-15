@@ -34,6 +34,7 @@ class OrderRepository {
     required List<CartItem> items,
     required String paymentMethod,
     required double paidAmount,
+    int? shiftId,
   }) async {
     if (items.isEmpty) {
       throw Exception('Cart kosong.');
@@ -71,7 +72,7 @@ class OrderRepository {
       final orderId = await txn.insert('orders', {
         'invoice_number': invoice,
         'user_id': userId,
-        'shift_id': null,
+        'shift_id': shiftId,
         'subtotal': subtotal,
         'discount': 0,
         'tax': 0,
