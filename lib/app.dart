@@ -16,15 +16,19 @@ class PosApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: base.copyWith(
         appBarTheme: const AppBarTheme(
-          toolbarHeight: 36,
+          toolbarHeight: 48,
           elevation: 0,
           scrolledUnderElevation: 0,
           centerTitle: false,
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          foregroundColor: Colors.black87,
           titleTextStyle: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
+            color: Colors.black87,
           ),
-          iconTheme: IconThemeData(size: 18),
+          iconTheme: IconThemeData(size: 18, color: Colors.black87),
           actionsPadding: EdgeInsets.symmetric(horizontal: 4),
           titleSpacing: 8,
         ),

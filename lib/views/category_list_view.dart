@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../models/category.dart';
 import '../viewmodels/category_viewmodel.dart';
+import '../widgets/app_appbar.dart';
 
 class CategoryListView extends StatefulWidget {
   const CategoryListView({super.key});
@@ -61,7 +62,10 @@ class _CategoryListViewState extends State<CategoryListView> {
   Widget build(BuildContext context) {
     final vm = context.watch<CategoryViewModel>();
     return Scaffold(
-      appBar: AppBar(title: const Text('Kategori')),
+      appBar: AppAppBar(
+        title: 'Kategori',
+        subtitle: 'Kelola kategori',
+      ),
       floatingActionButton: FloatingActionButton(
         mini: true,
         onPressed: () => _openForm(),
@@ -82,7 +86,8 @@ class _CategoryListViewState extends State<CategoryListView> {
                         return ListTile(
                           dense: true,
                           visualDensity: VisualDensity.compact,
-                          leading: const Icon(Icons.category_outlined, size: 18),
+                          leading:
+                              const Icon(Icons.category_outlined, size: 18),
                           title: Text(c.name,
                               style: const TextStyle(fontSize: 13)),
                           trailing: Row(

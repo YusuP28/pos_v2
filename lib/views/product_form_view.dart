@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/product.dart';
 import '../viewmodels/category_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
+import '../widgets/app_appbar.dart';
 
 class ProductFormView extends StatefulWidget {
   final Product? existing;
@@ -105,8 +106,9 @@ class _ProductFormViewState extends State<ProductFormView> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.existing == null ? 'Tambah Produk' : 'Edit Produk'),
+      appBar: AppAppBar(
+        title: widget.existing == null ? 'Tambah Produk' : 'Edit Produk',
+        subtitle: 'Isi data produk',
       ),
       body: Center(
         child: ConstrainedBox(
@@ -121,8 +123,7 @@ class _ProductFormViewState extends State<ProductFormView> {
             children: [
               TextField(
                 controller: _name,
-                decoration:
-                    denseInput.copyWith(labelText: 'Nama produk *'),
+                decoration: denseInput.copyWith(labelText: 'Nama produk *'),
               ),
               const SizedBox(height: 8),
               TextField(

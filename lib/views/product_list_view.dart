@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../core/utils/currency.dart';
 import '../viewmodels/category_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
+import '../widgets/app_appbar.dart';
 import 'product_form_view.dart';
 
 class ProductListView extends StatefulWidget {
@@ -35,7 +36,10 @@ class _ProductListViewState extends State<ProductListView> {
   Widget build(BuildContext context) {
     final vm = context.watch<ProductViewModel>();
     return Scaffold(
-      appBar: AppBar(title: const Text('Produk')),
+      appBar: AppAppBar(
+        title: 'Produk',
+        subtitle: 'Kelola produk',
+      ),
       floatingActionButton: FloatingActionButton(
         mini: true,
         onPressed: () => Navigator.push(
@@ -46,7 +50,7 @@ class _ProductListViewState extends State<ProductListView> {
       ),
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1100),
+          constraints: const BoxConstraints(maxWidth: 1400),
           child: Column(
             children: [
               Padding(
@@ -72,104 +76,117 @@ class _ProductListViewState extends State<ProductListView> {
                     ? const Center(child: CircularProgressIndicator())
                     : vm.items.isEmpty
                         ? const Center(child: Text('Belum ada produk.'))
-                        : GridView.builder(
-                            padding: const EdgeInsets.fromLTRB(8, 4, 8, 80),
-                            gridDelegate:
-                                const SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 200,
-                              childAspectRatio: 1.5,
-                              crossAxisSpacing: 6,
-                              mainAxisSpacing: 6,
-                            ),
-                            itemCount: vm.items.length,
-                            itemBuilder: (_, i) {
-                              final p = vm.items[i];
-                              return Card(
-                                margin: EdgeInsets.zero,
-                                child: InkWell(
-                                  onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          ProductFormView(existing: p),
-                                    ),
-                                  ),
-                                  onLongPress: () async {
-                                    final ok = await showDialog<bool>(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: const Text('Hapus produk?'),
-                                        content: Text(
-                                          'Produk "${p.name}" akan dinonaktifkan.',
+                        : LayoutBuilder(
+                            builder: (context, constraints) {
+                              final cols = (constraints.maxWidth / 180)
+                                  .floor()
+                                  .clamp(2, 8);
+                              return GridView.builder(
+                                padding:
+                                    const EdgeInsets.fromLTRB(8, 4, 8, 80),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: cols,
+                                  childAspectRatio: 1.6,
+                                  crossAxisSpacing: 6,
+                                  mainAxisSpacing: 6,
+                                ),
+                                itemCount: vm.items.length,
+                                itemBuilder: (_, i) {
+                                  final p = vm.items[i];
+                                  return Card(
+                                    margin: EdgeInsets.zero,
+                                    child: InkWell(
+                                      onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              ProductFormView(existing: p),
                                         ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(ctx, false),
-                                            child: const Text('Batal'),
-                                          ),
-                                          FilledButton(
-                                            onPressed: () =>
-                                                Navigator.pop(ctx, true),
-                                            child: const Text('Nonaktifkan'),
-                                          ),
-                                        ],
                                       ),
-                                    );
-                                    if (ok == true && p.id != null) {
-                                      await vm.remove(p.id!);
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.inventory_2_outlined,
-                                              size: 16,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
+                                      onLongPress: () async {
+                                        final ok = await showDialog<bool>(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            title: const Text('Hapus produk?'),
+                                            content: Text(
+                                              'Produk "${p.name}" akan dinonaktifkan.',
                                             ),
-                                            const SizedBox(width: 4),
-                                            Expanded(
-                                              child: Text(
-                                                p.name,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12,
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(ctx, false),
+                                                child: const Text('Batal'),
+                                              ),
+                                              FilledButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(ctx, true),
+                                                child: const Text(
+                                                    'Nonaktifkan'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                        if (ok == true && p.id != null) {
+                                          await vm.remove(p.id!);
+                                        }
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.inventory_2_outlined,
+                                                  size: 16,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
                                                 ),
+                                                const SizedBox(width: 4),
+                                                Expanded(
+                                                  child: Text(
+                                                    p.name,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              'SKU: ${p.sku.isEmpty ? "-" : p.sku}',
+                                              style: const TextStyle(
+                                                  fontSize: 10),
+                                            ),
+                                            Text(
+                                              'Stok: ${p.stock.toStringAsFixed(0)} ${p.unit}',
+                                              style: const TextStyle(
+                                                  fontSize: 10),
+                                            ),
+                                            const Spacer(),
+                                            Text(
+                                              Currency.format(p.price),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          'SKU: ${p.sku.isEmpty ? "-" : p.sku}',
-                                          style: const TextStyle(fontSize: 10),
-                                        ),
-                                        Text(
-                                          'Stok: ${p.stock.toStringAsFixed(0)} ${p.unit}',
-                                          style: const TextStyle(fontSize: 10),
-                                        ),
-                                        const Spacer(),
-                                        Text(
-                                          Currency.format(p.price),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                },
                               );
                             },
                           ),

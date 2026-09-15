@@ -4,6 +4,7 @@ import '../core/utils/currency.dart';
 import '../models/order.dart';
 import '../models/order_item.dart';
 import '../repositories/order_repository.dart';
+import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
 
 class ReceiptView extends StatefulWidget {
@@ -39,7 +40,7 @@ class _ReceiptViewState extends State<ReceiptView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Struk')),
+      appBar: AppAppBar(title: 'Struk', subtitle: 'Detail transaksi'),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _order == null

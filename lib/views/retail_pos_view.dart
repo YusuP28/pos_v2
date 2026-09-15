@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../core/utils/currency.dart';
 import '../viewmodels/auth_viewmodel.dart';
@@ -7,6 +8,7 @@ import '../viewmodels/cart_viewmodel.dart';
 import '../viewmodels/category_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
 import '../repositories/order_repository.dart';
+import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
 import 'receipt_view.dart';
 
@@ -48,7 +50,10 @@ class _RetailPosViewState extends State<RetailPosView> {
     }).toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Retail POS')),
+      appBar: AppAppBar(
+        title: 'Retail POS',
+        subtitle: 'Mode kasir / penjualan',
+      ),
       body: Row(
         children: [
           Expanded(
@@ -63,8 +68,7 @@ class _RetailPosViewState extends State<RetailPosView> {
                     decoration: const InputDecoration(
                       hintText: 'Cari produk...',
                       hintStyle: TextStyle(fontSize: 12),
-                      prefixIcon:
-                          Icon(Icons.search, size: 18),
+                      prefixIcon: Icon(Icons.search, size: 18),
                       prefixIconConstraints:
                           BoxConstraints(minWidth: 32, minHeight: 32),
                       border: OutlineInputBorder(),
@@ -117,87 +121,98 @@ class _RetailPosViewState extends State<RetailPosView> {
                       ? const Center(child: CircularProgressIndicator())
                       : filtered.isEmpty
                           ? const Center(child: Text('Belum ada produk.'))
-                          : GridView.builder(
-                              padding: const EdgeInsets.fromLTRB(8, 0, 4, 8),
-                              gridDelegate:
-                                  const SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 130,
-                                childAspectRatio: 0.95,
-                                crossAxisSpacing: 6,
-                                mainAxisSpacing: 6,
-                              ),
-                              itemCount: filtered.length,
-                              itemBuilder: (_, i) {
-                                final p = filtered[i];
-                                final habis = p.stock <= 0;
-                                return Opacity(
-                                  opacity: habis ? 0.5 : 1,
-                                  child: Card(
-                                    margin: EdgeInsets.zero,
-                                    child: InkWell(
-                                      onTap: habis
-                                          ? () => AppDialog.error(
-                                                context,
-                                                'Produk ${p.name} habis.',
-                                                title: 'Stok Habis',
-                                              )
-                                          : () => context
-                                              .read<CartViewModel>()
-                                              .add(p),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(6),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Center(
-                                              child: Icon(
-                                                Icons.inventory_2,
-                                                size: 22,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              p.name,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 11,
-                                                height: 1.15,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              Currency.format(p.price),
-                                              style:
-                                                  const TextStyle(fontSize: 11),
-                                            ),
-                                            Text(
-                                              'Stok ${p.stock.toStringAsFixed(0)} ${p.unit}',
-                                              style:
-                                                  const TextStyle(fontSize: 9),
-                                            ),
-                                            if (habis)
-                                              const Padding(
-                                                padding: EdgeInsets.only(top: 2),
-                                                child: Text(
-                                                  'HABIS',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 9,
-                                                    fontWeight: FontWeight.bold,
+                          : LayoutBuilder(
+                              builder: (context, constraints) {
+                                // Adaptif: min 3 kolom, max 10 kolom, target ~130dp per kartu
+                                final cols = (constraints.maxWidth / 130)
+                                    .floor()
+                                    .clamp(3, 10);
+                                return GridView.builder(
+                                  padding: const EdgeInsets.fromLTRB(8, 0, 4, 8),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: cols,
+                                    childAspectRatio: 0.85,
+                                    crossAxisSpacing: 6,
+                                    mainAxisSpacing: 6,
+                                  ),
+                                  itemCount: filtered.length,
+                                  itemBuilder: (_, i) {
+                                    final p = filtered[i];
+                                    final habis = p.stock <= 0;
+                                    return Opacity(
+                                      opacity: habis ? 0.5 : 1,
+                                      child: Card(
+                                        margin: EdgeInsets.zero,
+                                        child: InkWell(
+                                          onTap: habis
+                                              ? () => AppDialog.error(
+                                                    context,
+                                                    'Produk ${p.name} habis.',
+                                                    title: 'Stok Habis',
+                                                  )
+                                              : () => context
+                                                  .read<CartViewModel>()
+                                                  .add(p),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(6),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Center(
+                                                  child: Icon(
+                                                    Icons.inventory_2,
+                                                    size: 20,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
                                                   ),
                                                 ),
-                                              ),
-                                          ],
+                                                const SizedBox(height: 3),
+                                                Text(
+                                                  p.name,
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 10,
+                                                    height: 1.1,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 2),
+                                                Text(
+                                                  Currency.format(p.price),
+                                                  style: const TextStyle(
+                                                      fontSize: 10),
+                                                ),
+                                                Text(
+                                                  'Stok ${p.stock.toStringAsFixed(0)} ${p.unit}',
+                                                  style: const TextStyle(
+                                                      fontSize: 9),
+                                                ),
+                                                if (habis)
+                                                  const Padding(
+                                                    padding:
+                                                        EdgeInsets.only(top: 2),
+                                                    child: Text(
+                                                      'HABIS',
+                                                      style: TextStyle(
+                                                        color: Colors.red,
+                                                        fontSize: 9,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
+                                    );
+                                  },
                                 );
                               },
                             ),
@@ -245,8 +260,8 @@ class _OrderPanel extends StatelessWidget {
                       visualDensity: VisualDensity.compact,
                     ),
                     icon: const Icon(Icons.delete_sweep, size: 14),
-                    label: const Text('Kosong',
-                        style: TextStyle(fontSize: 11)),
+                    label:
+                        const Text('Kosong', style: TextStyle(fontSize: 11)),
                     onPressed: () => context.read<CartViewModel>().clear(),
                   ),
               ],
@@ -392,8 +407,8 @@ class _OrderPanel extends StatelessWidget {
                         cart.isEmpty ? null : () => _openCheckout(context),
                     child: const FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Text('CHECKOUT',
-                          style: TextStyle(fontSize: 12)),
+                      child:
+                          Text('CHECKOUT', style: TextStyle(fontSize: 12)),
                     ),
                   ),
                 ),
@@ -471,7 +486,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
 
   Future<void> _doPay({required bool printAfter}) async {
     final paidAmount = double.tryParse(_paid.text.trim()) ?? 0;
-    if (paidAmount < widget.total) {
+    if (_method != 'qris' && paidAmount < widget.total) {
       await AppDialog.error(
         context,
         'Jumlah bayar kurang dari total.',
@@ -485,7 +500,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
         userId: widget.userId,
         items: widget.items.cast(),
         paymentMethod: _method,
-        paidAmount: paidAmount,
+        paidAmount: _method == 'qris' ? widget.total : paidAmount,
       );
       if (!mounted) return;
       Navigator.pop(context, _CheckoutResult(orderId));
@@ -502,6 +517,8 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
     final paidAmount = double.tryParse(_paid.text.trim()) ?? 0;
     final change = paidAmount - widget.total;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final isQris = _method == 'qris';
+
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Padding(
@@ -535,47 +552,84 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                           segments: const [
                             ButtonSegment(
                                 value: 'cash',
-                                label:
-                                    Text('Tunai', style: TextStyle(fontSize: 11))),
+                                label: Text('Tunai',
+                                    style: TextStyle(fontSize: 11))),
                             ButtonSegment(
                                 value: 'qris',
-                                label:
-                                    Text('QRIS', style: TextStyle(fontSize: 11))),
+                                label: Text('QRIS',
+                                    style: TextStyle(fontSize: 11))),
                             ButtonSegment(
                                 value: 'card',
-                                label:
-                                    Text('Kartu', style: TextStyle(fontSize: 11))),
+                                label: Text('Kartu',
+                                    style: TextStyle(fontSize: 11))),
                           ],
                           selected: {_method},
                           onSelectionChanged: (s) =>
                               setState(() => _method = s.first),
                         ),
                         const SizedBox(height: 8),
-                        TextField(
-                          controller: _paid,
-                          keyboardType: TextInputType.number,
-                          onChanged: (_) => setState(() {}),
-                          decoration: const InputDecoration(
-                            labelText: 'Jumlah bayar',
-                            labelStyle: TextStyle(fontSize: 12),
-                            border: OutlineInputBorder(),
-                            isDense: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 8),
+                        if (isQris)
+                          Center(
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    border:
+                                        Border.all(color: Colors.grey.shade300),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: QrImageView(
+                                    data:
+                                        'QRIS-DUMMY-${widget.total.toStringAsFixed(0)}-${DateTime.now().millisecondsSinceEpoch}',
+                                    version: QrVersions.auto,
+                                    size: 160,
+                                    backgroundColor: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Scan QRIS untuk membayar ${Currency.format(widget.total)}',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 11),
+                                ),
+                                const SizedBox(height: 2),
+                                const Text(
+                                  '(QR simulasi — belum terhubung merchant)',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 9, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          )
+                        else ...[
+                          TextField(
+                            controller: _paid,
+                            keyboardType: TextInputType.number,
+                            onChanged: (_) => setState(() {}),
+                            decoration: const InputDecoration(
+                              labelText: 'Jumlah bayar',
+                              labelStyle: TextStyle(fontSize: 12),
+                              border: OutlineInputBorder(),
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 8),
+                            ),
                           ),
-                        ),
-                        if (_method == 'cash') ...[
-                          const SizedBox(height: 6),
-                          Wrap(
-                            spacing: 4,
-                            runSpacing: 4,
-                            children: [
-                              _quick('Uang Pas', widget.total),
-                              _quick('50rb', 50000),
-                              _quick('100rb', 100000),
-                              _quick('150rb', 150000),
-                            ],
-                          ),
+                          if (_method == 'cash') ...[
+                            const SizedBox(height: 6),
+                            Wrap(
+                              spacing: 4,
+                              runSpacing: 4,
+                              children: [
+                                _quick('Uang Pas', widget.total),
+                                _quick('50rb', 50000),
+                                _quick('100rb', 100000),
+                                _quick('150rb', 150000),
+                              ],
+                            ),
+                          ],
                         ],
                       ],
                     ),
@@ -588,15 +642,24 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                         _kv('Total', Currency.format(widget.total),
                             bold: true, size: 14),
                         const SizedBox(height: 4),
-                        _kv('Bayar', Currency.format(paidAmount), size: 12),
-                        const SizedBox(height: 2),
-                        _kv(
-                          'Kembalian',
-                          Currency.format(change < 0 ? 0 : change),
-                          bold: true,
-                          size: 12,
-                          color: Colors.green.shade700,
-                        ),
+                        if (!isQris) ...[
+                          _kv('Bayar', Currency.format(paidAmount), size: 12),
+                          const SizedBox(height: 2),
+                          _kv(
+                            'Kembalian',
+                            Currency.format(change < 0 ? 0 : change),
+                            bold: true,
+                            size: 12,
+                            color: Colors.green.shade700,
+                          ),
+                        ] else
+                          _kv(
+                            'Status',
+                            'Menunggu scan',
+                            bold: true,
+                            size: 12,
+                            color: Colors.orange.shade700,
+                          ),
                       ],
                     ),
                   ),
@@ -637,10 +700,10 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                                 child: CircularProgressIndicator(
                                     strokeWidth: 2),
                               )
-                            : const FittedBox(
+                            : FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child: Text('BAYAR',
-                                    style: TextStyle(fontSize: 11)),
+                                child: Text(isQris ? 'KONFIRMASI' : 'BAYAR',
+                                    style: const TextStyle(fontSize: 11)),
                               ),
                       ),
                     ),

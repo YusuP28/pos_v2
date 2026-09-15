@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../viewmodels/auth_viewmodel.dart';
+import '../widgets/app_appbar.dart';
 import 'category_list_view.dart';
 import 'login_view.dart';
 import 'product_list_view.dart';
@@ -16,8 +17,9 @@ class HomeView extends StatelessWidget {
     final user = auth.currentUser;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('POS v2'),
+      appBar: AppAppBar(
+        title: 'POS v2',
+        subtitle: 'Selamat datang',
         actions: [
           IconButton(
             tooltip: 'Logout',
@@ -42,8 +44,8 @@ class HomeView extends StatelessWidget {
                 child: ListTile(
                   dense: true,
                   visualDensity: VisualDensity.compact,
-                  leading:
-                      const CircleAvatar(radius: 14, child: Icon(Icons.person, size: 14)),
+                  leading: const CircleAvatar(
+                      radius: 14, child: Icon(Icons.person, size: 14)),
                   title: Text(
                     'Halo, ${user?.fullName ?? "-"}',
                     style: const TextStyle(fontSize: 13),
