@@ -95,113 +95,131 @@ class _ProductFormViewState extends State<ProductFormView> {
   @override
   Widget build(BuildContext context) {
     final cats = context.watch<CategoryViewModel>().items;
-    // ignore: unused_local_variable
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.existing == null ? 'Tambah Produk' : 'Edit Produk'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          TextField(
-            controller: _name,
-            decoration: const InputDecoration(
-              labelText: 'Nama produk *',
-              border: OutlineInputBorder(),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 560),
+          child: ListView(
+            padding: EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 16,
+              bottom: bottomInset + 24,
             ),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _sku,
-            decoration: const InputDecoration(
-              labelText: 'SKU (opsional)',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _barcode,
-            decoration: const InputDecoration(
-              labelText: 'Barcode (opsional)',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 12),
-          DropdownButtonFormField<int?>(
-            initialValue: _categoryId,
-            decoration: const InputDecoration(
-              labelText: 'Kategori',
-              border: OutlineInputBorder(),
-            ),
-            items: [
-              const DropdownMenuItem(value: null, child: Text('- Tanpa -')),
-              ...cats.map(
-                (c) => DropdownMenuItem(value: c.id, child: Text(c.name)),
-              ),
-            ],
-            onChanged: (v) => setState(() => _categoryId = v),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _price,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'Harga jual',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _cost,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'Harga modal',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
             children: [
-              Expanded(
-                child: TextField(
-                  controller: _stock,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Stok',
-                    border: OutlineInputBorder(),
-                  ),
+              TextField(
+                controller: _name,
+                decoration: const InputDecoration(
+                  labelText: 'Nama produk *',
+                  border: OutlineInputBorder(),
+                  isDense: true,
                 ),
               ),
-              const SizedBox(width: 12),
-              SizedBox(
-                width: 120,
-                child: TextField(
-                  controller: _unit,
-                  decoration: const InputDecoration(
-                    labelText: 'Satuan',
-                    border: OutlineInputBorder(),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _sku,
+                decoration: const InputDecoration(
+                  labelText: 'SKU (opsional)',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _barcode,
+                decoration: const InputDecoration(
+                  labelText: 'Barcode (opsional)',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<int?>(
+                initialValue: _categoryId,
+                decoration: const InputDecoration(
+                  labelText: 'Kategori',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+                items: [
+                  const DropdownMenuItem(value: null, child: Text('- Tanpa -')),
+                  ...cats.map(
+                    (c) => DropdownMenuItem(value: c.id, child: Text(c.name)),
                   ),
+                ],
+                onChanged: (v) => setState(() => _categoryId = v),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _price,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Harga jual',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _cost,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Harga modal',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _stock,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Stok',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  SizedBox(
+                    width: 120,
+                    child: TextField(
+                      controller: _unit,
+                      decoration: const InputDecoration(
+                        labelText: 'Satuan',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              SwitchListTile(
+                value: _active,
+                onChanged: (v) => setState(() => _active = v),
+                title: const Text('Produk aktif'),
+                contentPadding: EdgeInsets.zero,
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 46,
+                child: FilledButton.icon(
+                  onPressed: _save,
+                  icon: const Icon(Icons.save, size: 20),
+                  label: const Text('SIMPAN'),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          SwitchListTile(
-            value: _active,
-            onChanged: (v) => setState(() => _active = v),
-            title: const Text('Produk aktif'),
-            contentPadding: EdgeInsets.zero,
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 50,
-            child: FilledButton.icon(
-              onPressed: _save,
-              icon: const Icon(Icons.save),
-              label: const Text('SIMPAN'),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

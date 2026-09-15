@@ -47,94 +47,108 @@ class _ReceiptViewState extends State<ReceiptView> {
               : Row(
                   children: [
                     Expanded(
-                      child: ListView(
-                        padding: const EdgeInsets.all(16),
-                        children: [
-                          Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Center(
-                                    child: Text(
-                                      'POS v2',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Center(
-                                    child: Text(
-                                      _order!.invoiceNumber,
-                                      style: const TextStyle(fontSize: 12),
-                                    ),
-                                  ),
-                                  const Divider(height: 24),
-                                  ..._items.map(
-                                    (it) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              '${it.productName} × ${it.quantity.toStringAsFixed(0)}',
-                                            ),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 420),
+                          child: ListView(
+                            padding: const EdgeInsets.all(12),
+                            children: [
+                              Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(14),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Center(
+                                        child: Text(
+                                          'POS v2',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                          Text(Currency.format(it.subtotal)),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  const Divider(height: 24),
-                                  _row('Subtotal', _order!.subtotal),
-                                  _row('Diskon', _order!.discount),
-                                  _row('Pajak', _order!.tax),
-                                  _row('TOTAL', _order!.total, bold: true),
-                                  const SizedBox(height: 8),
-                                  _row(
-                                      'Bayar (${_order!.paymentMethod})',
-                                      _order!.paidAmount),
-                                  _row('Kembali', _order!.changeAmount),
-                                  const Divider(height: 24),
-                                  Center(
-                                    child: Text(
-                                      'Terima kasih',
-                                      style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        color: Colors.grey.shade700,
+                                      const SizedBox(height: 4),
+                                      Center(
+                                        child: Text(
+                                          _order!.invoiceNumber,
+                                          style:
+                                              const TextStyle(fontSize: 11),
+                                        ),
                                       ),
-                                    ),
+                                      const Divider(height: 20),
+                                      ..._items.map(
+                                        (it) => Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 3),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  '${it.productName} × ${it.quantity.toStringAsFixed(0)}',
+                                                  style: const TextStyle(
+                                                      fontSize: 13),
+                                                ),
+                                              ),
+                                              Text(
+                                                Currency.format(it.subtotal),
+                                                style: const TextStyle(
+                                                    fontSize: 13),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const Divider(height: 20),
+                                      _row('Subtotal', _order!.subtotal),
+                                      _row('Diskon', _order!.discount),
+                                      _row('Pajak', _order!.tax),
+                                      _row('TOTAL', _order!.total, bold: true),
+                                      const SizedBox(height: 6),
+                                      _row('Bayar (${_order!.paymentMethod})',
+                                          _order!.paidAmount),
+                                      _row('Kembali', _order!.changeAmount),
+                                      const Divider(height: 20),
+                                      Center(
+                                        child: Text(
+                                          'Terima kasih',
+                                          style: TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.grey.shade700,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                     const VerticalDivider(width: 1),
                     SizedBox(
-                      width: 280,
+                      width: 240,
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             const Text(
                               'Aksi',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             FilledButton.icon(
                               onPressed: () => Navigator.pop(context),
-                              icon: const Icon(Icons.add_shopping_cart),
+                              icon: const Icon(Icons.add_shopping_cart,
+                                  size: 18),
                               label: const Text('TRANSAKSI BARU'),
                             ),
                             const SizedBox(height: 8),
@@ -144,7 +158,7 @@ class _ReceiptViewState extends State<ReceiptView> {
                                 'Fitur cetak struk akan aktif setelah printer Bluetooth terhubung.',
                                 title: 'Cetak Ulang',
                               ),
-                              icon: const Icon(Icons.print),
+                              icon: const Icon(Icons.print, size: 18),
                               label: const Text('CETAK ULANG STRUK'),
                             ),
                           ],
@@ -158,13 +172,14 @@ class _ReceiptViewState extends State<ReceiptView> {
 
   Widget _row(String label, double value, {bool bold = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(vertical: 1),
       child: Row(
         children: [
           Text(
             label,
             style: TextStyle(
               fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+              fontSize: 13,
             ),
           ),
           const Spacer(),
@@ -172,6 +187,7 @@ class _ReceiptViewState extends State<ReceiptView> {
             Currency.format(value),
             style: TextStyle(
               fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+              fontSize: 13,
             ),
           ),
         ],
