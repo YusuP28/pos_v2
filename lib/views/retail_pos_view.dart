@@ -11,6 +11,7 @@ import '../viewmodels/shift_viewmodel.dart';
 import '../repositories/order_repository.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
+import 'scanner/barcode_scanner_view.dart';
 import 'receipt_view.dart';
 
 class RetailPosView extends StatefulWidget {
@@ -54,6 +55,13 @@ class _RetailPosViewState extends State<RetailPosView> {
       appBar: AppAppBar(
         title: 'Retail POS',
         subtitle: 'Mode kasir / penjualan',
+        actions: [
+          IconButton(
+            tooltip: 'Scan barcode',
+            icon: const Icon(Icons.qr_code_scanner),
+            onPressed: () => _scanBarcode(context),
+          ),
+        ],
       ),
       body: Row(
         children: [
@@ -420,6 +428,40 @@ class _OrderPanel extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _scanBarcode(BuildContext context) async {
+    final code = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const BarcodeScannerView()),
+    );
+    if (code == null || code.isEmpty || !context.mounted) return;
+
+    final product =
+        await context.read<ProductViewModel>().findByBarcode(code);
+
+    if (product == null) {
+      if (!context.mounted) return;
+      await AppDialog.error(
+        context,
+        'Barcode "$code" tidak ditemukan di database produk.',
+        title: 'Produk Tidak Ditemukan',
+      );
+      return;
+    }
+
+    if (product.stock <= 0) {
+      if (!context.mounted) return;
+      await AppDialog.error(
+        context,
+        'Produk ${product.name} habis.',
+        title: 'Stok Habis',
+      );
+      return;
+    }
+
+    if (!context.mounted) return;
+    context.read<CartViewModel>().add(product);
   }
 
   Future<void> _openCheckout(BuildContext context) async {

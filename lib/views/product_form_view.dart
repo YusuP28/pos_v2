@@ -5,6 +5,7 @@ import '../models/product.dart';
 import '../viewmodels/category_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
 import '../widgets/app_appbar.dart';
+import 'scanner/barcode_scanner_view.dart';
 
 class ProductFormView extends StatefulWidget {
   final Product? existing;
@@ -133,8 +134,23 @@ class _ProductFormViewState extends State<ProductFormView> {
               const SizedBox(height: 8),
               TextField(
                 controller: _barcode,
-                decoration:
-                    denseInput.copyWith(labelText: 'Barcode (opsional)'),
+                decoration: denseInput.copyWith(
+                  labelText: 'Barcode (opsional)',
+                  suffixIcon: IconButton(
+                    tooltip: 'Scan barcode',
+                    icon: const Icon(Icons.qr_code_scanner, size: 18),
+                    onPressed: () async {
+                      final code = await Navigator.push<String>(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const BarcodeScannerView()),
+                      );
+                      if (code != null && code.isNotEmpty) {
+                        _barcode.text = code;
+                      }
+                    },
+                  ),
+                ),
               ),
               const SizedBox(height: 8),
               DropdownButtonFormField<int?>(

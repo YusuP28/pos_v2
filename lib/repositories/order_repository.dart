@@ -136,4 +136,19 @@ class OrderRepository {
     );
     return rows.map(Order.fromMap).toList();
   }
+
+  Future<List<Order>> getOrdersBetween(DateTime start, DateTime end) async {
+    final db = await _db;
+    final rows = await db.query(
+      'orders',
+      where: 'created_at >= ? AND created_at < ? AND status = ?',
+      whereArgs: [
+        start.toIso8601String(),
+        end.toIso8601String(),
+        'paid',
+      ],
+      orderBy: 'created_at DESC',
+    );
+    return rows.map(Order.fromMap).toList();
+  }
 }

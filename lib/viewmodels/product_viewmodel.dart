@@ -26,6 +26,10 @@ class ProductViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<Product?> findByBarcode(String code) async {
+    return ProductRepository.instance.findByBarcode(code);
+  }
+
   Future<void> add(Product p) async {
     await ProductRepository.instance.insert(p);
     await load();
