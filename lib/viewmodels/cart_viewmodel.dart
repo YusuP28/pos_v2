@@ -14,7 +14,18 @@ class CartViewModel extends ChangeNotifier {
       _items.fold<double>(0, (sum, it) => sum + it.subtotal);
   double get total => subtotal;
 
+  double quantityOf(Product product) {
+    final idx = _items.indexWhere((it) => it.product.id == product.id);
+    if (idx < 0) return 0;
+    return _items[idx].quantity;
+  }
+
+  bool canIncrease(Product product) {
+    return quantityOf(product) < product.stock;
+  }
+
   void add(Product product) {
+    if (!canIncrease(product)) return;
     final idx = _items.indexWhere((it) => it.product.id == product.id);
     if (idx >= 0) {
       _items[idx].quantity += 1;
@@ -37,17 +48,6 @@ class CartViewModel extends ChangeNotifier {
 
   void remove(Product product) {
     _items.removeWhere((it) => it.product.id == product.id);
-    notifyListeners();
-  }
-
-  void setQuantity(Product product, double qty) {
-    final idx = _items.indexWhere((it) => it.product.id == product.id);
-    if (idx < 0) return;
-    if (qty <= 0) {
-      _items.removeAt(idx);
-    } else {
-      _items[idx].quantity = qty;
-    }
     notifyListeners();
   }
 

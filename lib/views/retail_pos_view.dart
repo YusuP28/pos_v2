@@ -6,6 +6,7 @@ import '../viewmodels/auth_viewmodel.dart';
 import '../viewmodels/cart_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
 import '../repositories/order_repository.dart';
+import '../widgets/app_dialog.dart';
 import 'receipt_view.dart';
 
 class RetailPosView extends StatefulWidget {
@@ -30,15 +31,6 @@ class _RetailPosViewState extends State<RetailPosView> {
     super.dispose();
   }
 
-  Future<void> _openCart() async {
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (_) => const _CartSheet(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final pvm = context.watch<ProductViewModel>();
@@ -47,247 +39,144 @@ class _RetailPosViewState extends State<RetailPosView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Retail POS'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_sweep),
-            tooltip: 'Kosongkan cart',
-            onPressed: cart.isEmpty
-                ? null
-                : () => context.read<CartViewModel>().clear(),
-          ),
-        ],
       ),
-      body: Column(
+      body: Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: TextField(
-              controller: _search,
-              onChanged: pvm.search,
-              decoration: const InputDecoration(
-                hintText: 'Cari produk...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
+          // ---- Panel kiri: grid produk ----
           Expanded(
-            child: pvm.loading
-                ? const Center(child: CircularProgressIndicator())
-                : pvm.items.isEmpty
-                    ? const Center(child: Text('Belum ada produk.'))
-                    : GridView.builder(
-                        padding: const EdgeInsets.fromLTRB(12, 0, 12, 100),
-                        gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 200,
-                          childAspectRatio: 1.1,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                        ),
-                        itemCount: pvm.items.length,
-                        itemBuilder: (_, i) {
-                          final p = pvm.items[i];
-                          return Card(
-                            child: InkWell(
-                              onTap: () =>
-                                  context.read<CartViewModel>().add(p),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Center(
-                                        child: Icon(
-                                          Icons.inventory_2,
-                                          size: 42,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      p.name,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(Currency.format(p.price)),
-                                    Text(
-                                      'Stok: ${p.stock.toStringAsFixed(0)} ${p.unit}',
-                                      style: const TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-          ),
-        ],
-      ),
-      bottomSheet: cart.isEmpty
-          ? null
-          : SafeArea(
-              child: Material(
-                elevation: 12,
-                child: InkWell(
-                  onTap: _openCart,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.shopping_cart),
-                        const SizedBox(width: 8),
-                        Text('${cart.itemCount} item'),
-                        const Spacer(),
-                        Text(
-                          Currency.format(cart.total),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.chevron_right),
-                      ],
+            flex: 62,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: TextField(
+                    controller: _search,
+                    onChanged: pvm.search,
+                    decoration: const InputDecoration(
+                      hintText: 'Cari produk...',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                      isDense: true,
                     ),
                   ),
                 ),
-              ),
-            ),
-    );
-  }
-}
-
-class _CartSheet extends StatelessWidget {
-  const _CartSheet();
-
-  Future<void> _checkout(BuildContext context) async {
-    final cart = context.read<CartViewModel>();
-    final auth = context.read<AuthViewModel>();
-    if (cart.isEmpty) return;
-    if (auth.currentUser?.id == null) return;
-
-    final result = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (_) => _CheckoutSheet(total: cart.total),
-    );
-    if (result != true || !context.mounted) return;
-
-    final paid = result == true
-        ? context.read<CartViewModel>().total
-        : 0.0;
-    // Placeholder — tidak dipakai, checkout dilakukan di dalam sheet.
-    // Lihat _CheckoutSheet._pay
-    // ignore: unused_local_variable
-    final _ = paid;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final cart = context.watch<CartViewModel>();
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text(
-            'Keranjang',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          if (cart.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 32),
-              child: Text('Keranjang kosong.'),
-            )
-          else
-            Flexible(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: cart.items.length,
-                itemBuilder: (_, i) {
-                  final it = cart.items[i];
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(it.product.name),
-                    subtitle: Text(
-                      '${Currency.format(it.product.price)} × ${it.quantity.toStringAsFixed(0)}',
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.remove_circle_outline),
-                          onPressed: () => cart.decrease(it.product),
-                        ),
-                        Text(
-                          it.quantity.toStringAsFixed(0),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.add_circle_outline),
-                          onPressed: () => cart.add(it.product),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-          const Divider(),
-          Row(
-            children: [
-              const Text('Total', style: TextStyle(fontSize: 16)),
-              const Spacer(),
-              Text(
-                Currency.format(cart.total),
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                Expanded(
+                  child: pvm.loading
+                      ? const Center(child: CircularProgressIndicator())
+                      : pvm.items.isEmpty
+                          ? const Center(child: Text('Belum ada produk.'))
+                          : GridView.builder(
+                              padding: const EdgeInsets.fromLTRB(12, 0, 6, 12),
+                              gridDelegate:
+                                  const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 180,
+                                childAspectRatio: 1.1,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                              ),
+                              itemCount: pvm.items.length,
+                              itemBuilder: (_, i) {
+                                final p = pvm.items[i];
+                                final habis = p.stock <= 0;
+                                return Opacity(
+                                  opacity: habis ? 0.5 : 1,
+                                  child: Card(
+                                    child: InkWell(
+                                      onTap: habis
+                                          ? () => AppDialog.error(
+                                                context,
+                                                'Produk ${p.name} habis.',
+                                                title: 'Stok Habis',
+                                              )
+                                          : () => context
+                                              .read<CartViewModel>()
+                                              .add(p),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Stack(
+                                                children: [
+                                                  Center(
+                                                    child: Icon(
+                                                      Icons.inventory_2,
+                                                      size: 36,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary,
+                                                    ),
+                                                  ),
+                                                  if (habis)
+                                                    Positioned(
+                                                      top: 0,
+                                                      right: 0,
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 6,
+                                                          vertical: 2,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.red,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(4),
+                                                        ),
+                                                        child: const Text(
+                                                          'HABIS',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                            Text(
+                                              p.name,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              Currency.format(p.price),
+                                              style: const TextStyle(
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Stok: ${p.stock.toStringAsFixed(0)} ${p.unit}',
+                                              style:
+                                                  const TextStyle(fontSize: 11),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 52,
-            child: FilledButton.icon(
-              onPressed: cart.isEmpty
-                  ? null
-                  : () async {
-                      final total = cart.total;
-                      final done = await showModalBottomSheet<bool>(
-                        context: context,
-                        isScrollControlled: true,
-                        showDragHandle: true,
-                        builder: (_) => _CheckoutSheet(total: total),
-                      );
-                      if (done == true && context.mounted) {
-                        Navigator.of(context).pop();
-                      }
-                    },
-              icon: const Icon(Icons.point_of_sale),
-              label: const Text('CHECKOUT'),
+              ],
             ),
+          ),
+          const VerticalDivider(width: 1),
+          // ---- Panel kanan: pesanan ----
+          Expanded(
+            flex: 38,
+            child: _OrderPanel(),
           ),
         ],
       ),
@@ -295,15 +184,220 @@ class _CartSheet extends StatelessWidget {
   }
 }
 
-class _CheckoutSheet extends StatefulWidget {
-  final double total;
-  const _CheckoutSheet({required this.total});
-
+class _OrderPanel extends StatelessWidget {
   @override
-  State<_CheckoutSheet> createState() => _CheckoutSheetState();
+  Widget build(BuildContext context) {
+    final cart = context.watch<CartViewModel>();
+
+    return Container(
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 8, 4),
+            child: Row(
+              children: [
+                const Icon(Icons.receipt_long),
+                const SizedBox(width: 8),
+                const Text(
+                  'Pesanan',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const Spacer(),
+                if (!cart.isEmpty)
+                  TextButton.icon(
+                    icon: const Icon(Icons.delete_sweep, size: 18),
+                    label: const Text('Kosongkan'),
+                    onPressed: () => context.read<CartViewModel>().clear(),
+                  ),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          Expanded(
+            child: cart.isEmpty
+                ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        'Belum ada item.\nTap produk untuk menambahkan.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    itemCount: cart.items.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (_, i) {
+                      final it = cart.items[i];
+                      final canPlus = cart.canIncrease(it.product);
+                      final maxReached = !canPlus &&
+                          cart.quantityOf(it.product) >= it.product.stock;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              it.product.name,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '${Currency.format(it.product.price)} × ${it.quantity.toStringAsFixed(0)}',
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                IconButton(
+                                  visualDensity: VisualDensity.compact,
+                                  icon: const Icon(
+                                    Icons.remove_circle_outline,
+                                    size: 22,
+                                  ),
+                                  onPressed: () =>
+                                      context.read<CartViewModel>().decrease(
+                                            it.product,
+                                          ),
+                                ),
+                                Text(
+                                  it.quantity.toStringAsFixed(0),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                IconButton(
+                                  visualDensity: VisualDensity.compact,
+                                  icon: Icon(
+                                    Icons.add_circle_outline,
+                                    size: 22,
+                                    color: canPlus ? null : Colors.grey,
+                                  ),
+                                  onPressed: canPlus
+                                      ? () => context
+                                          .read<CartViewModel>()
+                                          .add(it.product)
+                                      : null,
+                                ),
+                                const Spacer(),
+                                Text(
+                                  Currency.format(it.subtotal),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (maxReached)
+                              const Padding(
+                                padding: EdgeInsets.only(left: 4, top: 2),
+                                child: Text(
+                                  'Stok maksimal',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+          ),
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    const Text('Subtotal', style: TextStyle(fontSize: 15)),
+                    const Spacer(),
+                    Text(
+                      Currency.format(cart.subtotal),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: FilledButton.icon(
+                    onPressed: cart.isEmpty
+                        ? null
+                        : () => _openCheckout(context),
+                    icon: const Icon(Icons.point_of_sale),
+                    label: const Text('CHECKOUT'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openCheckout(BuildContext context) async {
+    final cart = context.read<CartViewModel>();
+    final auth = context.read<AuthViewModel>();
+    if (cart.isEmpty || auth.currentUser?.id == null) return;
+
+    final result = await showDialog<_CheckoutResult>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => _CheckoutDialog(
+        total: cart.total,
+        userId: auth.currentUser!.id!,
+        items: cart.items.toList(),
+      ),
+    );
+
+    if (result == null) return;
+    cart.clear();
+    if (!context.mounted) return;
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ReceiptView(orderId: result.orderId),
+      ),
+    );
+  }
 }
 
-class _CheckoutSheetState extends State<_CheckoutSheet> {
+class _CheckoutResult {
+  final int orderId;
+  _CheckoutResult(this.orderId);
+}
+
+class _CheckoutDialog extends StatefulWidget {
+  final double total;
+  final int userId;
+  final List items;
+
+  const _CheckoutDialog({
+    required this.total,
+    required this.userId,
+    required this.items,
+  });
+
+  @override
+  State<_CheckoutDialog> createState() => _CheckoutDialogState();
+}
+
+class _CheckoutDialogState extends State<_CheckoutDialog> {
   String _method = 'cash';
   final _paid = TextEditingController();
   bool _busy = false;
@@ -320,42 +414,30 @@ class _CheckoutSheetState extends State<_CheckoutSheet> {
     super.dispose();
   }
 
-  Future<void> _pay() async {
+  Future<void> _doPay({required bool printAfter}) async {
     final paidAmount = double.tryParse(_paid.text.trim()) ?? 0;
     if (paidAmount < widget.total) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Jumlah bayar kurang.')),
+      await AppDialog.error(
+        context,
+        'Jumlah bayar kurang dari total.',
+        title: 'Pembayaran Kurang',
       );
       return;
     }
-
-    final cart = context.read<CartViewModel>();
-    final auth = context.read<AuthViewModel>();
-    final userId = auth.currentUser?.id;
-    if (userId == null) return;
-
     setState(() => _busy = true);
     try {
       final orderId = await OrderRepository.instance.createOrder(
-        userId: userId,
-        items: cart.items.toList(),
+        userId: widget.userId,
+        items: widget.items.cast(),
         paymentMethod: _method,
         paidAmount: paidAmount,
       );
-      cart.clear();
       if (!mounted) return;
-      Navigator.pop(context, true);
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => ReceiptView(orderId: orderId)),
-      );
+      Navigator.pop(context, _CheckoutResult(orderId));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal: $e')),
-      );
-    } finally {
-      if (mounted) setState(() => _busy = false);
+      setState(() => _busy = false);
+      await AppDialog.error(context, e.toString(), title: 'Gagal Membuat Order');
     }
   }
 
@@ -363,87 +445,143 @@ class _CheckoutSheetState extends State<_CheckoutSheet> {
   Widget build(BuildContext context) {
     final paidAmount = double.tryParse(_paid.text.trim()) ?? 0;
     final change = paidAmount - widget.total;
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-        top: 8,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text(
-            'Pembayaran',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          SegmentedButton<String>(
-            segments: const [
-              ButtonSegment(value: 'cash', label: Text('Tunai')),
-              ButtonSegment(value: 'qris', label: Text('QRIS')),
-              ButtonSegment(value: 'card', label: Text('Kartu')),
-            ],
-            selected: {_method},
-            onSelectionChanged: (s) => setState(() => _method = s.first),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _paid,
-            keyboardType: TextInputType.number,
-            onChanged: (_) => setState(() {}),
-            decoration: const InputDecoration(
-              labelText: 'Jumlah bayar',
-              border: OutlineInputBorder(),
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Pembayaran',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-          ),
-          const SizedBox(height: 8),
-          if (_method == 'cash')
-            Wrap(
-              spacing: 8,
+            const SizedBox(height: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _quick(context, 'Uang Pas', widget.total),
-                _quick(context, '50.000', 50000),
-                _quick(context, '100.000', 100000),
-                _quick(context, '150.000', 150000),
+                // Kiri: metode + jumlah bayar
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SegmentedButton<String>(
+                        segments: const [
+                          ButtonSegment(value: 'cash', label: Text('Tunai')),
+                          ButtonSegment(value: 'qris', label: Text('QRIS')),
+                          ButtonSegment(value: 'card', label: Text('Kartu')),
+                        ],
+                        selected: {_method},
+                        onSelectionChanged: (s) =>
+                            setState(() => _method = s.first),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _paid,
+                        keyboardType: TextInputType.number,
+                        onChanged: (_) => setState(() {}),
+                        decoration: const InputDecoration(
+                          labelText: 'Jumlah bayar',
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                        ),
+                      ),
+                      if (_method == 'cash') ...[
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
+                            _quick('Uang Pas', widget.total),
+                            _quick('50rb', 50000),
+                            _quick('100rb', 100000),
+                            _quick('150rb', 150000),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                // Kanan: ringkasan + kembalian
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _kv('Total', Currency.format(widget.total),
+                          bold: true, size: 18),
+                      const SizedBox(height: 8),
+                      _kv('Bayar', Currency.format(paidAmount)),
+                      const SizedBox(height: 4),
+                      _kv(
+                        'Kembalian',
+                        Currency.format(change < 0 ? 0 : change),
+                        bold: true,
+                        color: Colors.green.shade700,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              const Text('Kembalian'),
-              const Spacer(),
-              Text(
-                Currency.format(change < 0 ? 0 : change),
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _busy ? null : () => Navigator.pop(context),
+                    child: const Text('BATAL'),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 52,
-            child: FilledButton.icon(
-              onPressed: _busy ? null : _pay,
-              icon: _busy
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.check),
-              label: Text(_busy ? 'MEMPROSES...' : 'BAYAR'),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: _busy ? null : () => _doPay(printAfter: false),
+                    icon: _busy
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.check),
+                    label: const Text('BAYAR'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: null, // placeholder 5b
+                    icon: const Icon(Icons.print),
+                    label: const Text('BAYAR + CETAK'),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _quick(BuildContext context, String label, double value) {
+  Widget _kv(String label, String value,
+      {bool bold = false, double size = 14, Color? color}) {
+    return Row(
+      children: [
+        Text(label, style: TextStyle(fontSize: size)),
+        const Spacer(),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: size,
+            fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _quick(String label, double value) {
     return ActionChip(
       label: Text(label),
       onPressed: () => setState(() => _paid.text = value.toStringAsFixed(0)),
