@@ -96,6 +96,14 @@ class _ProductFormViewState extends State<ProductFormView> {
   Widget build(BuildContext context) {
     final cats = context.watch<CategoryViewModel>().items;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    const denseInput = InputDecoration(
+      border: OutlineInputBorder(),
+      isDense: true,
+      contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      labelStyle: TextStyle(fontSize: 12),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.existing == null ? 'Tambah Produk' : 'Edit Produk'),
@@ -105,46 +113,33 @@ class _ProductFormViewState extends State<ProductFormView> {
           constraints: const BoxConstraints(maxWidth: 560),
           child: ListView(
             padding: EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 16,
-              bottom: bottomInset + 24,
+              left: 12,
+              right: 12,
+              top: 8,
+              bottom: bottomInset + 16,
             ),
             children: [
               TextField(
                 controller: _name,
-                decoration: const InputDecoration(
-                  labelText: 'Nama produk *',
-                  border: OutlineInputBorder(),
-                  isDense: true,
-                ),
+                decoration:
+                    denseInput.copyWith(labelText: 'Nama produk *'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               TextField(
                 controller: _sku,
-                decoration: const InputDecoration(
-                  labelText: 'SKU (opsional)',
-                  border: OutlineInputBorder(),
-                  isDense: true,
-                ),
+                decoration: denseInput.copyWith(labelText: 'SKU (opsional)'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               TextField(
                 controller: _barcode,
-                decoration: const InputDecoration(
-                  labelText: 'Barcode (opsional)',
-                  border: OutlineInputBorder(),
-                  isDense: true,
-                ),
+                decoration:
+                    denseInput.copyWith(labelText: 'Barcode (opsional)'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               DropdownButtonFormField<int?>(
                 initialValue: _categoryId,
-                decoration: const InputDecoration(
-                  labelText: 'Kategori',
-                  border: OutlineInputBorder(),
-                  isDense: true,
-                ),
+                decoration: denseInput.copyWith(labelText: 'Kategori'),
+                style: const TextStyle(fontSize: 13, color: Colors.black87),
                 items: [
                   const DropdownMenuItem(value: null, child: Text('- Tanpa -')),
                   ...cats.map(
@@ -153,68 +148,56 @@ class _ProductFormViewState extends State<ProductFormView> {
                 ],
                 onChanged: (v) => setState(() => _categoryId = v),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               TextField(
                 controller: _price,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Harga jual',
-                  border: OutlineInputBorder(),
-                  isDense: true,
-                ),
+                decoration: denseInput.copyWith(labelText: 'Harga jual'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               TextField(
                 controller: _cost,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Harga modal',
-                  border: OutlineInputBorder(),
-                  isDense: true,
-                ),
+                decoration: denseInput.copyWith(labelText: 'Harga modal'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: _stock,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Stok',
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                      ),
+                      decoration: denseInput.copyWith(labelText: 'Stok'),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 8),
                   SizedBox(
-                    width: 120,
+                    width: 100,
                     child: TextField(
                       controller: _unit,
-                      decoration: const InputDecoration(
-                        labelText: 'Satuan',
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                      ),
+                      decoration: denseInput.copyWith(labelText: 'Satuan'),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 4),
               SwitchListTile(
+                dense: true,
+                visualDensity: VisualDensity.compact,
                 value: _active,
                 onChanged: (v) => setState(() => _active = v),
-                title: const Text('Produk aktif'),
+                title:
+                    const Text('Produk aktif', style: TextStyle(fontSize: 12)),
                 contentPadding: EdgeInsets.zero,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               SizedBox(
-                height: 46,
+                height: 38,
                 child: FilledButton.icon(
                   onPressed: _save,
-                  icon: const Icon(Icons.save, size: 20),
-                  label: const Text('SIMPAN'),
+                  icon: const Icon(Icons.save, size: 16),
+                  label: const Text('SIMPAN',
+                      style: TextStyle(fontSize: 12)),
                 ),
               ),
             ],

@@ -56,28 +56,38 @@ class _RetailPosViewState extends State<RetailPosView> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
                   child: TextField(
                     controller: _search,
                     onChanged: pvm.search,
                     decoration: const InputDecoration(
                       hintText: 'Cari produk...',
-                      prefixIcon: Icon(Icons.search),
+                      hintStyle: TextStyle(fontSize: 12),
+                      prefixIcon:
+                          Icon(Icons.search, size: 18),
+                      prefixIconConstraints:
+                          BoxConstraints(minWidth: 32, minHeight: 32),
                       border: OutlineInputBorder(),
                       isDense: true,
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     ),
                   ),
                 ),
                 SizedBox(
-                  height: 40,
+                  height: 32,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(right: 6),
+                        padding: const EdgeInsets.only(right: 4),
                         child: FilterChip(
-                          label: const Text('Semua'),
+                          visualDensity: VisualDensity.compact,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          label: const Text('Semua',
+                              style: TextStyle(fontSize: 11)),
                           selected: _selectedCategoryId == null,
                           onSelected: (_) =>
                               setState(() => _selectedCategoryId = null),
@@ -85,33 +95,36 @@ class _RetailPosViewState extends State<RetailPosView> {
                       ),
                       ...cvm.items.map(
                         (c) => Padding(
-                          padding: const EdgeInsets.only(right: 6),
+                          padding: const EdgeInsets.only(right: 4),
                           child: FilterChip(
-                            label: Text(c.name),
+                            visualDensity: VisualDensity.compact,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            label: Text(c.name,
+                                style: const TextStyle(fontSize: 11)),
                             selected: _selectedCategoryId == c.id,
-                            onSelected: (_) => setState(
-                              () => _selectedCategoryId = c.id,
-                            ),
+                            onSelected: (_) =>
+                                setState(() => _selectedCategoryId = c.id),
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Expanded(
                   child: pvm.loading
                       ? const Center(child: CircularProgressIndicator())
                       : filtered.isEmpty
                           ? const Center(child: Text('Belum ada produk.'))
                           : GridView.builder(
-                              padding: const EdgeInsets.fromLTRB(12, 0, 6, 12),
+                              padding: const EdgeInsets.fromLTRB(8, 0, 4, 8),
                               gridDelegate:
                                   const SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 160,
-                                childAspectRatio: 1.0,
-                                crossAxisSpacing: 8,
-                                mainAxisSpacing: 8,
+                                maxCrossAxisExtent: 130,
+                                childAspectRatio: 0.95,
+                                crossAxisSpacing: 6,
+                                mainAxisSpacing: 6,
                               ),
                               itemCount: filtered.length,
                               itemBuilder: (_, i) {
@@ -132,75 +145,54 @@ class _RetailPosViewState extends State<RetailPosView> {
                                               .read<CartViewModel>()
                                               .add(p),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(8),
+                                        padding: const EdgeInsets.all(6),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Expanded(
-                                              child: Stack(
-                                                children: [
-                                                  Center(
-                                                    child: Icon(
-                                                      Icons.inventory_2,
-                                                      size: 30,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary,
-                                                    ),
-                                                  ),
-                                                  if (habis)
-                                                    Positioned(
-                                                      top: 0,
-                                                      right: 0,
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                          horizontal: 5,
-                                                          vertical: 1,
-                                                        ),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.red,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(4),
-                                                        ),
-                                                        child: const Text(
-                                                          'HABIS',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 9,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                ],
+                                            Center(
+                                              child: Icon(
+                                                Icons.inventory_2,
+                                                size: 22,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
                                               ),
                                             ),
+                                            const SizedBox(height: 4),
                                             Text(
                                               p.name,
-                                              maxLines: 1,
+                                              maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 13,
+                                                fontSize: 11,
+                                                height: 1.15,
                                               ),
                                             ),
+                                            const SizedBox(height: 2),
                                             Text(
                                               Currency.format(p.price),
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                              ),
+                                              style:
+                                                  const TextStyle(fontSize: 11),
                                             ),
                                             Text(
-                                              'Stok: ${p.stock.toStringAsFixed(0)} ${p.unit}',
+                                              'Stok ${p.stock.toStringAsFixed(0)} ${p.unit}',
                                               style:
-                                                  const TextStyle(fontSize: 10),
+                                                  const TextStyle(fontSize: 9),
                                             ),
+                                            if (habis)
+                                              const Padding(
+                                                padding: EdgeInsets.only(top: 2),
+                                                child: Text(
+                                                  'HABIS',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 9,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
                                           ],
                                         ),
                                       ),
@@ -234,20 +226,27 @@ class _OrderPanel extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(10, 8, 6, 4),
+            padding: const EdgeInsets.fromLTRB(8, 4, 4, 4),
             child: Row(
               children: [
-                const Icon(Icons.receipt_long, size: 20),
-                const SizedBox(width: 6),
+                const Icon(Icons.receipt_long, size: 16),
+                const SizedBox(width: 4),
                 const Text(
                   'Pesanan',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
                 if (!cart.isEmpty)
                   TextButton.icon(
-                    icon: const Icon(Icons.delete_sweep, size: 16),
-                    label: const Text('Kosongkan', style: TextStyle(fontSize: 12)),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      minimumSize: const Size(0, 28),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    icon: const Icon(Icons.delete_sweep, size: 14),
+                    label: const Text('Kosong',
+                        style: TextStyle(fontSize: 11)),
                     onPressed: () => context.read<CartViewModel>().clear(),
                   ),
               ],
@@ -258,18 +257,18 @@ class _OrderPanel extends StatelessWidget {
             child: cart.isEmpty
                 ? const Center(
                     child: Padding(
-                      padding: EdgeInsets.all(12),
+                      padding: EdgeInsets.all(8),
                       child: Text(
                         'Belum ada item.\nTap produk untuk menambahkan.',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                        style: TextStyle(color: Colors.grey, fontSize: 11),
                       ),
                     ),
                   )
                 : ListView.separated(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 6,
-                      vertical: 4,
+                      vertical: 2,
                     ),
                     itemCount: cart.items.length,
                     separatorBuilder: (_, __) => const Divider(height: 1),
@@ -279,7 +278,7 @@ class _OrderPanel extends StatelessWidget {
                       final maxReached = !canPlus &&
                           cart.quantityOf(it.product) >= it.product.stock;
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.symmetric(vertical: 2),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -287,23 +286,24 @@ class _OrderPanel extends StatelessWidget {
                               it.product.name,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 13,
+                                fontSize: 12,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             Text(
                               '${Currency.format(it.product.price)} × ${it.quantity.toStringAsFixed(0)}',
-                              style: const TextStyle(fontSize: 11),
+                              style: const TextStyle(fontSize: 10),
                             ),
-                            const SizedBox(height: 2),
                             Row(
                               children: [
                                 IconButton(
                                   visualDensity: VisualDensity.compact,
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(
-                                      minWidth: 32, minHeight: 32),
+                                      minWidth: 26, minHeight: 26),
                                   icon: const Icon(
-                                      Icons.remove_circle_outline, size: 20),
+                                      Icons.remove_circle_outline, size: 18),
                                   onPressed: () =>
                                       context.read<CartViewModel>().decrease(
                                             it.product,
@@ -313,17 +313,17 @@ class _OrderPanel extends StatelessWidget {
                                   it.quantity.toStringAsFixed(0),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 14,
+                                    fontSize: 12,
                                   ),
                                 ),
                                 IconButton(
                                   visualDensity: VisualDensity.compact,
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(
-                                      minWidth: 32, minHeight: 32),
+                                      minWidth: 26, minHeight: 26),
                                   icon: Icon(
                                     Icons.add_circle_outline,
-                                    size: 20,
+                                    size: 18,
                                     color: canPlus ? null : Colors.grey,
                                   ),
                                   onPressed: canPlus
@@ -333,23 +333,26 @@ class _OrderPanel extends StatelessWidget {
                                       : null,
                                 ),
                                 const Spacer(),
-                                Text(
-                                  Currency.format(it.subtotal),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
+                                Flexible(
+                                  child: Text(
+                                    Currency.format(it.subtotal),
+                                    textAlign: TextAlign.right,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 11,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                             if (maxReached)
                               const Padding(
-                                padding: EdgeInsets.only(left: 4, top: 0),
+                                padding: EdgeInsets.only(left: 2),
                                 child: Text(
                                   'Stok maksimal',
                                   style: TextStyle(
                                     color: Colors.red,
-                                    fontSize: 10,
+                                    fontSize: 9,
                                   ),
                                 ),
                               ),
@@ -361,31 +364,37 @@ class _OrderPanel extends StatelessWidget {
           ),
           const Divider(height: 1),
           Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(8),
             child: Column(
               children: [
                 Row(
                   children: [
-                    const Text('Subtotal', style: TextStyle(fontSize: 14)),
+                    const Text('Subtotal', style: TextStyle(fontSize: 12)),
                     const Spacer(),
                     Text(
                       Currency.format(cart.subtotal),
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 SizedBox(
                   width: double.infinity,
-                  height: 44,
-                  child: FilledButton.icon(
+                  height: 36,
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                    ),
                     onPressed:
                         cart.isEmpty ? null : () => _openCheckout(context),
-                    icon: const Icon(Icons.point_of_sale, size: 20),
-                    label: const Text('CHECKOUT'),
+                    child: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('CHECKOUT',
+                          style: TextStyle(fontSize: 12)),
+                    ),
                   ),
                 ),
               ],
@@ -494,13 +503,13 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
     final change = paidAmount - widget.total;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     return Dialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Padding(
         padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 16,
-          bottom: bottomInset + 16,
+          left: 12,
+          right: 12,
+          top: 12,
+          bottom: bottomInset + 12,
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -508,9 +517,9 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
             children: [
               const Text(
                 'Pembayaran',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -519,32 +528,47 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SegmentedButton<String>(
+                          style: const ButtonStyle(
+                            visualDensity: VisualDensity.compact,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
                           segments: const [
                             ButtonSegment(
-                                value: 'cash', label: Text('Tunai')),
-                            ButtonSegment(value: 'qris', label: Text('QRIS')),
-                            ButtonSegment(value: 'card', label: Text('Kartu')),
+                                value: 'cash',
+                                label:
+                                    Text('Tunai', style: TextStyle(fontSize: 11))),
+                            ButtonSegment(
+                                value: 'qris',
+                                label:
+                                    Text('QRIS', style: TextStyle(fontSize: 11))),
+                            ButtonSegment(
+                                value: 'card',
+                                label:
+                                    Text('Kartu', style: TextStyle(fontSize: 11))),
                           ],
                           selected: {_method},
                           onSelectionChanged: (s) =>
                               setState(() => _method = s.first),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 8),
                         TextField(
                           controller: _paid,
                           keyboardType: TextInputType.number,
                           onChanged: (_) => setState(() {}),
                           decoration: const InputDecoration(
                             labelText: 'Jumlah bayar',
+                            labelStyle: TextStyle(fontSize: 12),
                             border: OutlineInputBorder(),
                             isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 8),
                           ),
                         ),
                         if (_method == 'cash') ...[
                           const SizedBox(height: 6),
                           Wrap(
-                            spacing: 6,
-                            runSpacing: 6,
+                            spacing: 4,
+                            runSpacing: 4,
                             children: [
                               _quick('Uang Pas', widget.total),
                               _quick('50rb', 50000),
@@ -556,20 +580,21 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         _kv('Total', Currency.format(widget.total),
-                            bold: true, size: 16),
-                        const SizedBox(height: 6),
-                        _kv('Bayar', Currency.format(paidAmount)),
+                            bold: true, size: 14),
                         const SizedBox(height: 4),
+                        _kv('Bayar', Currency.format(paidAmount), size: 12),
+                        const SizedBox(height: 2),
                         _kv(
                           'Kembalian',
                           Currency.format(change < 0 ? 0 : change),
                           bold: true,
+                          size: 12,
                           color: Colors.green.shade700,
                         ),
                       ],
@@ -577,37 +602,64 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                   ),
                 ],
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: _busy ? null : () => Navigator.pop(context),
-                      child: const Text('BATAL'),
+                    child: SizedBox(
+                      height: 34,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                        ),
+                        onPressed: _busy ? null : () => Navigator.pop(context),
+                        child: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text('BATAL', style: TextStyle(fontSize: 11)),
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   Expanded(
-                    child: FilledButton.icon(
-                      onPressed:
-                          _busy ? null : () => _doPay(printAfter: false),
-                      icon: _busy
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child:
-                                  CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.check, size: 18),
-                      label: const Text('BAYAR'),
+                    child: SizedBox(
+                      height: 34,
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                        ),
+                        onPressed:
+                            _busy ? null : () => _doPay(printAfter: false),
+                        child: _busy
+                            ? const SizedBox(
+                                width: 14,
+                                height: 14,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2),
+                              )
+                            : const FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text('BAYAR',
+                                    style: TextStyle(fontSize: 11)),
+                              ),
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   Expanded(
-                    child: FilledButton.icon(
-                      onPressed: null,
-                      icon: const Icon(Icons.print, size: 18),
-                      label: const Text('BAYAR + CETAK'),
+                    child: SizedBox(
+                      height: 34,
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                        ),
+                        onPressed: null,
+                        child: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text('BAYAR + CETAK',
+                              style: TextStyle(fontSize: 11)),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -620,7 +672,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
   }
 
   Widget _kv(String label, String value,
-      {bool bold = false, double size = 13, Color? color}) {
+      {bool bold = false, double size = 12, Color? color}) {
     return Row(
       children: [
         Text(label, style: TextStyle(fontSize: size)),
@@ -639,7 +691,9 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
 
   Widget _quick(String label, double value) {
     return ActionChip(
-      label: Text(label, style: const TextStyle(fontSize: 12)),
+      visualDensity: VisualDensity.compact,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      label: Text(label, style: const TextStyle(fontSize: 10)),
       onPressed: () => setState(() => _paid.text = value.toStringAsFixed(0)),
     );
   }

@@ -35,29 +35,41 @@ class HomeView extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1100),
           child: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(8),
             children: [
               Card(
+                margin: EdgeInsets.zero,
                 child: ListTile(
                   dense: true,
-                  leading: const CircleAvatar(child: Icon(Icons.person, size: 18)),
-                  title: Text('Halo, ${user?.fullName ?? "-"}'),
-                  subtitle: Text('Role: ${user?.role ?? "-"}'),
+                  visualDensity: VisualDensity.compact,
+                  leading:
+                      const CircleAvatar(radius: 14, child: Icon(Icons.person, size: 14)),
+                  title: Text(
+                    'Halo, ${user?.fullName ?? "-"}',
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                  subtitle: Text(
+                    'Role: ${user?.role ?? "-"}',
+                    style: const TextStyle(fontSize: 11),
+                  ),
                 ),
               ),
-              const SizedBox(height: 12),
-              const Text(
-                'Menu',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
               const SizedBox(height: 8),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  'Menu',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 6),
               GridView.count(
                 crossAxisCount: 4,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                childAspectRatio: 1.3,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: 2.0,
                 children: [
                   _MenuCard(
                     icon: Icons.point_of_sale,
@@ -107,23 +119,27 @@ class _MenuCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: EdgeInsets.zero,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
+          padding: const EdgeInsets.all(6),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 32, color: Theme.of(context).colorScheme.primary),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
+              Icon(icon, size: 22, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                textAlign: TextAlign.center,
               ),
             ],
           ),

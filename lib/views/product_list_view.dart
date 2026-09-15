@@ -37,11 +37,12 @@ class _ProductListViewState extends State<ProductListView> {
     return Scaffold(
       appBar: AppBar(title: const Text('Produk')),
       floatingActionButton: FloatingActionButton(
+        mini: true,
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const ProductFormView()),
         ),
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, size: 18),
       ),
       body: Center(
         child: ConstrainedBox(
@@ -49,15 +50,20 @@ class _ProductListViewState extends State<ProductListView> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
                 child: TextField(
                   controller: _search,
                   onChanged: vm.search,
                   decoration: const InputDecoration(
                     hintText: 'Cari nama / SKU / barcode...',
-                    prefixIcon: Icon(Icons.search),
+                    hintStyle: TextStyle(fontSize: 12),
+                    prefixIcon: Icon(Icons.search, size: 18),
+                    prefixIconConstraints:
+                        BoxConstraints(minWidth: 32, minHeight: 32),
                     border: OutlineInputBorder(),
                     isDense: true,
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   ),
                 ),
               ),
@@ -67,13 +73,13 @@ class _ProductListViewState extends State<ProductListView> {
                     : vm.items.isEmpty
                         ? const Center(child: Text('Belum ada produk.'))
                         : GridView.builder(
-                            padding: const EdgeInsets.fromLTRB(12, 6, 12, 100),
+                            padding: const EdgeInsets.fromLTRB(8, 4, 8, 80),
                             gridDelegate:
                                 const SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 260,
-                              childAspectRatio: 1.6,
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 8,
+                              maxCrossAxisExtent: 200,
+                              childAspectRatio: 1.5,
+                              crossAxisSpacing: 6,
+                              mainAxisSpacing: 6,
                             ),
                             itemCount: vm.items.length,
                             itemBuilder: (_, i) {
@@ -115,7 +121,7 @@ class _ProductListViewState extends State<ProductListView> {
                                     }
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.all(10),
+                                    padding: const EdgeInsets.all(8),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -124,12 +130,12 @@ class _ProductListViewState extends State<ProductListView> {
                                           children: [
                                             Icon(
                                               Icons.inventory_2_outlined,
-                                              size: 20,
+                                              size: 16,
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .primary,
                                             ),
-                                            const SizedBox(width: 6),
+                                            const SizedBox(width: 4),
                                             Expanded(
                                               child: Text(
                                                 p.name,
@@ -137,27 +143,27 @@ class _ProductListViewState extends State<ProductListView> {
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
+                                                  fontSize: 12,
                                                 ),
                                               ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 4),
+                                        const SizedBox(height: 2),
                                         Text(
                                           'SKU: ${p.sku.isEmpty ? "-" : p.sku}',
-                                          style: const TextStyle(fontSize: 11),
+                                          style: const TextStyle(fontSize: 10),
                                         ),
                                         Text(
                                           'Stok: ${p.stock.toStringAsFixed(0)} ${p.unit}',
-                                          style: const TextStyle(fontSize: 11),
+                                          style: const TextStyle(fontSize: 10),
                                         ),
                                         const Spacer(),
                                         Text(
                                           Currency.format(p.price),
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 14,
+                                            fontSize: 12,
                                           ),
                                         ),
                                       ],

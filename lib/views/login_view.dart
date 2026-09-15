@@ -45,34 +45,35 @@ class _LoginViewState extends State<LoginView> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 16,
-            bottom: bottomInset + 24,
+            left: 16,
+            right: 16,
+            top: 8,
+            bottom: bottomInset + 16,
           ),
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
+              constraints: const BoxConstraints(maxWidth: 360),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.point_of_sale, size: 56, color: Colors.deepPurple),
-                  const SizedBox(height: 8),
+                  const Icon(Icons.point_of_sale,
+                      size: 40, color: Colors.deepPurple),
+                  const SizedBox(height: 6),
                   const Text(
                     'POS v2',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 14),
                   TextField(
                     controller: _username,
                     decoration: const InputDecoration(
                       labelText: 'Username',
                       border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.person, size: 20),
+                      prefixIcon: Icon(Icons.person, size: 18),
                       isDense: true,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   TextField(
                     controller: _password,
                     obscureText: _obscure,
@@ -80,32 +81,39 @@ class _LoginViewState extends State<LoginView> {
                     decoration: InputDecoration(
                       labelText: 'Password',
                       border: const OutlineInputBorder(),
-                      prefixIcon: const Icon(Icons.lock, size: 20),
+                      prefixIcon: const Icon(Icons.lock, size: 18),
                       isDense: true,
                       suffixIcon: IconButton(
-                        icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off, size: 20),
+                        icon: Icon(
+                          _obscure ? Icons.visibility : Icons.visibility_off,
+                          size: 18,
+                        ),
                         onPressed: () => setState(() => _obscure = !_obscure),
                       ),
                     ),
                   ),
                   if (_error != null) ...[
-                    const SizedBox(height: 10),
-                    Text(_error!, style: const TextStyle(color: Colors.red)),
+                    const SizedBox(height: 8),
+                    Text(_error!,
+                        style:
+                            const TextStyle(color: Colors.red, fontSize: 12)),
                   ],
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   Consumer<AuthViewModel>(
                     builder: (_, auth, __) => SizedBox(
                       width: double.infinity,
-                      height: 44,
+                      height: 40,
                       child: FilledButton(
                         onPressed: auth.loading ? null : _submit,
                         child: auth.loading
                             ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2),
                               )
-                            : const Text('MASUK'),
+                            : const Text('MASUK',
+                                style: TextStyle(fontSize: 13)),
                       ),
                     ),
                   ),
