@@ -124,15 +124,15 @@ class _RetailPosViewState extends State<RetailPosView> {
                           : LayoutBuilder(
                               builder: (context, constraints) {
                                 // Adaptif: min 3 kolom, max 10 kolom, target ~130dp per kartu
-                                final cols = (constraints.maxWidth / 130)
+                                final cols = (constraints.maxWidth / 105)
                                     .floor()
-                                    .clamp(3, 10);
+                                    .clamp(3, 12);
                                 return GridView.builder(
                                   padding: const EdgeInsets.fromLTRB(8, 0, 4, 8),
                                   gridDelegate:
                                       SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: cols,
-                                    childAspectRatio: 0.85,
+                                    childAspectRatio: 1.05,
                                     crossAxisSpacing: 6,
                                     mainAxisSpacing: 6,
                                   ),
@@ -163,7 +163,7 @@ class _RetailPosViewState extends State<RetailPosView> {
                                                 Center(
                                                   child: Icon(
                                                     Icons.inventory_2,
-                                                    size: 20,
+                                                    size: 22,
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .primary,
@@ -177,7 +177,7 @@ class _RetailPosViewState extends State<RetailPosView> {
                                                       TextOverflow.ellipsis,
                                                   style: const TextStyle(
                                                     fontWeight: FontWeight.bold,
-                                                    fontSize: 10,
+                                                    fontSize: 12,
                                                     height: 1.1,
                                                   ),
                                                 ),
@@ -185,12 +185,13 @@ class _RetailPosViewState extends State<RetailPosView> {
                                                 Text(
                                                   Currency.format(p.price),
                                                   style: const TextStyle(
-                                                      fontSize: 10),
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w600),
                                                 ),
                                                 Text(
                                                   'Stok ${p.stock.toStringAsFixed(0)} ${p.unit}',
                                                   style: const TextStyle(
-                                                      fontSize: 9),
+                                                      fontSize: 10),
                                                 ),
                                                 if (habis)
                                                   const Padding(
@@ -200,7 +201,7 @@ class _RetailPosViewState extends State<RetailPosView> {
                                                       'HABIS',
                                                       style: TextStyle(
                                                         color: Colors.red,
-                                                        fontSize: 9,
+                                                        fontSize: 10,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),

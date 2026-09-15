@@ -78,16 +78,16 @@ class _ProductListViewState extends State<ProductListView> {
                         ? const Center(child: Text('Belum ada produk.'))
                         : LayoutBuilder(
                             builder: (context, constraints) {
-                              final cols = (constraints.maxWidth / 180)
+                              final cols = (constraints.maxWidth / 155)
                                   .floor()
-                                  .clamp(2, 8);
+                                  .clamp(2, 10);
                               return GridView.builder(
                                 padding:
                                     const EdgeInsets.fromLTRB(8, 4, 8, 80),
                                 gridDelegate:
                                     SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: cols,
-                                  childAspectRatio: 1.6,
+                                  childAspectRatio: 1.4,
                                   crossAxisSpacing: 6,
                                   mainAxisSpacing: 6,
                                 ),
@@ -156,7 +156,7 @@ class _ProductListViewState extends State<ProductListView> {
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      fontSize: 12,
+                                                      fontSize: 13,
                                                     ),
                                                   ),
                                                 ),
@@ -166,19 +166,19 @@ class _ProductListViewState extends State<ProductListView> {
                                             Text(
                                               'SKU: ${p.sku.isEmpty ? "-" : p.sku}',
                                               style: const TextStyle(
-                                                  fontSize: 10),
+                                                  fontSize: 11),
                                             ),
                                             Text(
                                               'Stok: ${p.stock.toStringAsFixed(0)} ${p.unit}',
                                               style: const TextStyle(
-                                                  fontSize: 10),
+                                                  fontSize: 11),
                                             ),
                                             const Spacer(),
                                             Text(
                                               Currency.format(p.price),
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 12,
+                                                fontSize: 13,
                                               ),
                                             ),
                                           ],
