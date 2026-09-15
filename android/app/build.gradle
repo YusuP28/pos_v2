@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "com.yusup.posv2"
-    compileSdk = 35
+    ndkVersion = "28.2.13676358"
+    compileSdk = 36
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -20,7 +21,7 @@ android {
     defaultConfig {
         applicationId = "com.yusup.posv2"
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "0.1.0"
     }
