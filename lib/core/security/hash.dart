@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
+
+import 'package:crypto/crypto.dart' as crypto;
 
 class Hash {
   Hash._();
@@ -8,6 +9,6 @@ class Hash {
 
   static String sha256(String input) {
     final bytes = utf8.encode('$_salt|$input');
-    return sha256.convert(bytes).toString();
+    return crypto.sha256.convert(bytes).toString();
   }
 }
