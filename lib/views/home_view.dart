@@ -5,6 +5,7 @@ import '../viewmodels/auth_viewmodel.dart';
 import 'category_list_view.dart';
 import 'login_view.dart';
 import 'product_list_view.dart';
+import 'retail_pos_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -53,6 +54,14 @@ class HomeView extends StatelessWidget {
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
             children: [
+              _MenuCard(
+                icon: Icons.point_of_sale,
+                label: 'Retail POS',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RetailPosView()),
+                ),
+              ),
               _MenuCard(
                 icon: Icons.inventory_2,
                 label: 'Produk',
