@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/category.dart';
 import '../models/product.dart';
 import '../viewmodels/category_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
@@ -96,6 +95,7 @@ class _ProductFormViewState extends State<ProductFormView> {
   @override
   Widget build(BuildContext context) {
     final cats = context.watch<CategoryViewModel>().items;
+    // ignore: unused_local_variable
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.existing == null ? 'Tambah Produk' : 'Edit Produk'),
