@@ -239,6 +239,41 @@ class _RetailPosViewState extends State<RetailPosView> {
       ),
     );
   }
+
+  Future<void> _scanBarcode(BuildContext context) async {
+    final code = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(builder: (_) => const BarcodeScannerView()),
+    );
+    if (code == null || code.isEmpty || !context.mounted) return;
+
+    final product =
+        await context.read<ProductViewModel>().findByBarcode(code);
+
+    if (product == null) {
+      if (!context.mounted) return;
+      await AppDialog.error(
+        context,
+        'Barcode "$code" tidak ditemukan di database produk.',
+        title: 'Produk Tidak Ditemukan',
+      );
+      return;
+    }
+
+    if (product.stock <= 0) {
+      if (!context.mounted) return;
+      await AppDialog.error(
+        context,
+        'Produk ${product.name} habis.',
+        title: 'Stok Habis',
+      );
+      return;
+    }
+
+    if (!context.mounted) return;
+    context.read<CartViewModel>().add(product);
+  }
+
 }
 
 class _OrderPanel extends StatelessWidget {
@@ -428,40 +463,6 @@ class _OrderPanel extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<void> _scanBarcode(BuildContext context) async {
-    final code = await Navigator.push<String>(
-      context,
-      MaterialPageRoute(builder: (_) => const BarcodeScannerView()),
-    );
-    if (code == null || code.isEmpty || !context.mounted) return;
-
-    final product =
-        await context.read<ProductViewModel>().findByBarcode(code);
-
-    if (product == null) {
-      if (!context.mounted) return;
-      await AppDialog.error(
-        context,
-        'Barcode "$code" tidak ditemukan di database produk.',
-        title: 'Produk Tidak Ditemukan',
-      );
-      return;
-    }
-
-    if (product.stock <= 0) {
-      if (!context.mounted) return;
-      await AppDialog.error(
-        context,
-        'Produk ${product.name} habis.',
-        title: 'Stok Habis',
-      );
-      return;
-    }
-
-    if (!context.mounted) return;
-    context.read<CartViewModel>().add(product);
   }
 
   Future<void> _openCheckout(BuildContext context) async {
