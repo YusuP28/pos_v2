@@ -2,6 +2,8 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../security/hash.dart';
+
 class DbHelper {
   DbHelper._();
   static final DbHelper instance = DbHelper._();
@@ -24,7 +26,24 @@ class DbHelper {
       path,
       version: _dbVersion,
       onCreate: (db, version) async {
-        // Tabel akan ditambah di iterasi berikutnya.
+        await db.execute('''
+          CREATE TABLE users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL,
+            full_name TEXT NOT NULL,
+            role TEXT NOT NULL DEFAULT 'kasir',
+            created_at TEXT NOT NULL
+          )
+        ''');
+
+        await db.insert('users', {
+          'username': 'admin',
+          'password_hash': Hash.sha256('admin'),
+          'full_name': 'Administrator',
+          'role': 'admin',
+          'created_at': DateTime.now().toIso8601String(),
+        });
       },
     );
   }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../viewmodels/auth_viewmodel.dart';
 import 'home_view.dart';
+import 'login_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -13,10 +16,13 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(milliseconds: 800), () {
       if (!mounted) return;
+      final auth = context.read<AuthViewModel>();
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const HomeView()),
+        MaterialPageRoute(
+          builder: (_) => auth.isLoggedIn ? const HomeView() : const LoginView(),
+        ),
       );
     });
   }
