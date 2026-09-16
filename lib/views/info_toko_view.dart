@@ -20,6 +20,7 @@ class _InfoTokoViewState extends State<InfoTokoView> {
   final _address = TextEditingController();
   final _phone = TextEditingController();
   final _footer = TextEditingController();
+  final _qrisMerchant = TextEditingController();
   String _mode = 'text';
   bool _busy = false;
   bool _initialized = false;
@@ -35,6 +36,7 @@ class _InfoTokoViewState extends State<InfoTokoView> {
       _address.text = vm.storeAddress;
       _phone.text = vm.storePhone;
       _footer.text = vm.receiptFooter;
+      _qrisMerchant.text = vm.qrisMerchantName;
       setState(() {
         _mode = vm.logoMode;
         _initialized = true;
@@ -48,6 +50,7 @@ class _InfoTokoViewState extends State<InfoTokoView> {
     _address.dispose();
     _phone.dispose();
     _footer.dispose();
+    _qrisMerchant.dispose();
     super.dispose();
   }
 
@@ -66,6 +69,31 @@ class _InfoTokoViewState extends State<InfoTokoView> {
       await AppDialog.error(context, 'Gagal memilih gambar: $e',
           title: 'Gagal Upload Logo');
     }
+  }
+
+  Future<void> _pickQris({required ImageSource source}) async {
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: source, imageQuality: 95);
+      if (picked == null) return;
+      await context.read<SettingsViewModel>().setQrisFromFile(File(picked.path));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('QRIS tersimpan.')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      await AppDialog.error(context, 'Gagal memilih gambar: $e',
+          title: 'Gagal Upload QRIS');
+    }
+  }
+
+  Future<void> _saveQrisMerchant() async {
+    await context.read<SettingsViewModel>().saveQrisMerchant(_qrisMerchant.text.trim());
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Nama merchant tersimpan.')),
+    );
   }
 
   Future<void> _save() async {
@@ -251,6 +279,108 @@ class _InfoTokoViewState extends State<InfoTokoView> {
                           ],
                         ),
                       ],
+                    ],
+                  ),
+                ),
+              ),
+
+
+              // === QRIS Toko ===
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                child: Text('QRIS Toko',
+                    style: TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.bold)),
+              ),
+              Card(
+                margin: EdgeInsets.zero,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (vm.qrisBytes != null)
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Image.memory(
+                            vm.qrisBytes!,
+                            height: 180,
+                            fit: BoxFit.contain,
+                          ),
+                        )
+                      else
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Text(
+                            'Belum ada QRIS. Upload gambar QRIS toko.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                        ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _qrisMerchant,
+                        decoration: denseInput.copyWith(
+                          labelText: 'Nama merchant (opsional)',
+                          hintText: 'Contoh: Toko Maju Jaya',
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.save, size: 18),
+                            onPressed: _saveQrisMerchant,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 36,
+                              child: OutlinedButton.icon(
+                                onPressed: () =>
+                                    _pickQris(source: ImageSource.gallery),
+                                icon: const Icon(Icons.image, size: 16),
+                                label: const Text('Dari Galeri',
+                                    style: TextStyle(fontSize: 12)),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: SizedBox(
+                              height: 36,
+                              child: OutlinedButton.icon(
+                                onPressed: () =>
+                                    _pickQris(source: ImageSource.camera),
+                                icon: const Icon(Icons.photo_camera, size: 16),
+                                label: const Text('Dari Kamera',
+                                    style: TextStyle(fontSize: 12)),
+                              ),
+                            ),
+                          ),
+                          if (vm.qrisBytes != null) ...[
+                            const SizedBox(width: 8),
+                            SizedBox(
+                              height: 36,
+                              child: OutlinedButton.icon(
+                                onPressed: () async {
+                                  await context
+                                      .read<SettingsViewModel>()
+                                      .clearQris();
+                                },
+                                icon: const Icon(Icons.delete_outline,
+                                    size: 16),
+                                label: const Text('Hapus',
+                                    style: TextStyle(fontSize: 12)),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ],
                   ),
                 ),

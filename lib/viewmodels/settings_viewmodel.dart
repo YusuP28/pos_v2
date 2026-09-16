@@ -12,6 +12,8 @@ class SettingsViewModel extends ChangeNotifier {
   String receiptFooter = SettingsService.defaultFooter;
   String logoMode = 'text'; // 'text' | 'image'
   Uint8List? logoBytes;
+  Uint8List? qrisBytes;
+  String qrisMerchantName = '';
   bool loading = false;
 
   Future<void> load() async {
@@ -24,6 +26,8 @@ class SettingsViewModel extends ChangeNotifier {
     receiptFooter = await s.getReceiptFooter();
     logoMode = await s.getLogoMode();
     logoBytes = await s.readLogoBytes();
+    qrisBytes = await s.readQrisBytes();
+    qrisMerchantName = await s.getQrisMerchant();
     loading = false;
     notifyListeners();
   }
@@ -53,6 +57,23 @@ class SettingsViewModel extends ChangeNotifier {
   Future<void> clearLogo() async {
     await SettingsService.instance.setLogoPath(null);
     logoBytes = null;
+    notifyListeners();
+  }
+  Future<void> setQrisFromFile(File file) async {
+    await SettingsService.instance.saveQrisFrom(file);
+    qrisBytes = await SettingsService.instance.readQrisBytes();
+    notifyListeners();
+  }
+
+  Future<void> clearQris() async {
+    await SettingsService.instance.setQrisPath(null);
+    qrisBytes = null;
+    notifyListeners();
+  }
+
+  Future<void> saveQrisMerchant(String name) async {
+    await SettingsService.instance.setQrisMerchant(name);
+    qrisMerchantName = name;
     notifyListeners();
   }
 }

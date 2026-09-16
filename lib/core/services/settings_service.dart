@@ -17,6 +17,8 @@ class SettingsService {
   static const _kReceiptFooter = 'receipt_footer';
   static const _kLogoMode = 'logo_mode'; // 'text' | 'image'
   static const _kLogoPath = 'logo_path';
+  static const _kQrisPath = 'qris_path';
+  static const _kQrisMerchant = 'qris_merchant';
   static const _kLastPrinterId = 'last_printer_id';
   static const _kLastPrinterName = 'last_printer_name';
   static const _kPaper80mm = 'paper_80mm';
@@ -85,6 +87,43 @@ class SettingsService {
         p.join(logoDir.path, 'logo_${DateTime.now().millisecondsSinceEpoch}.png');
     await source.copy(dest);
     await setLogoPath(dest);
+    return dest;
+  }
+
+  // ---- QRIS ----
+  Future<String?> getQrisPath() async =>
+      (await _prefs).getString(_kQrisPath);
+  Future<void> setQrisPath(String? v) async {
+    if (v == null) {
+      await (await _prefs).remove(_kQrisPath);
+    } else {
+      await (await _prefs).setString(_kQrisPath, v);
+    }
+  }
+
+  Future<String> getQrisMerchant() async =>
+      (await _prefs).getString(_kQrisMerchant) ?? '';
+  Future<void> setQrisMerchant(String v) async =>
+      (await _prefs).setString(_kQrisMerchant, v);
+
+  Future<Uint8List?> readQrisBytes() async {
+    final path = await getQrisPath();
+    if (path == null || path.isEmpty) return null;
+    final f = File(path);
+    if (!await f.exists()) return null;
+    return f.readAsBytes();
+  }
+
+  Future<String> saveQrisFrom(File source) async {
+    final dir = await getApplicationDocumentsDirectory();
+    final qrisDir = Directory(p.join(dir.path, 'pos_v2_qris'));
+    if (!await qrisDir.exists()) {
+      await qrisDir.create(recursive: true);
+    }
+    final dest =
+        p.join(qrisDir.path, 'qris_${DateTime.now().millisecondsSinceEpoch}.png');
+    await source.copy(dest);
+    await setQrisPath(dest);
     return dest;
   }
 
