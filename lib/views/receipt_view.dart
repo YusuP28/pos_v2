@@ -17,6 +17,50 @@ class ReceiptView extends StatefulWidget {
 }
 
 class _ReceiptViewState extends State<ReceiptView> {
+
+  Future<void> _printAgain(BuildContext context) async {
+    final order = _order;
+    if (order == null) return;
+    final printer = context.read<PrinterViewModel>();
+    if (!printer.isConnected) {
+      await AppDialog.error(
+        context,
+        'Printer belum terhubung. Hubungkan printer dulu di Pengaturan Printer.',
+        title: 'Printer Belum Terhubung',
+      );
+      return;
+    }
+    final ok = await printer.printReceipt(
+      invoiceNumber: order.invoiceNumber,
+      cashierName: '-',
+      dateTime: order.createdAt.replaceFirst('T', ' ').substring(0, 19),
+      items: _items
+          .map((it) => {
+                'name': it.productName,
+                'qty': it.quantity,
+                'price': it.price,
+              })
+          .toList(),
+      subtotal: order.subtotal,
+      total: order.total,
+      paymentMethod: order.paymentMethod,
+      paidAmount: order.paidAmount,
+      changeAmount: order.changeAmount,
+    );
+    if (!context.mounted) return;
+    if (ok) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Perintah cetak dikirim.')),
+      );
+    } else {
+      await AppDialog.error(
+        context,
+        'Gagal cetak. Pastikan printer menyala dan terhubung.',
+        title: 'Gagal Cetak',
+      );
+    }
+  }
+
   Order? _order;
   List<OrderItem> _items = [];
   bool _loading = true;
