@@ -9,7 +9,7 @@ class DbHelper {
   static final DbHelper instance = DbHelper._();
 
   static const _dbName = 'pos_v2.db';
-  static const _dbVersion = 4;
+  static const _dbVersion = 5;
 
   Database? _db;
 
@@ -22,12 +22,21 @@ class DbHelper {
   Future<Database> _open() async {
     final dir = await getApplicationDocumentsDirectory();
     final path = p.join(dir.path, _dbName);
-    return openDatabase(
+    final db = await openDatabase(
       path,
       version: _dbVersion,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
+    try {
+      final r = await db.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='expenses'",
+      );
+      if (r.isEmpty) {
+        await _createExpenseTable(db);
+      }
+    } catch (_) {}
+    return db;
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -49,6 +58,9 @@ class DbHelper {
     }
     if (oldV < 4) {
       await _createShiftTable(db);
+    }
+    if (oldV < 5) {
+      await _createExpenseTable(db);
     }
   }
 
