@@ -15,45 +15,19 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
-
-// Patch: AGP 8+ requires namespace. Legacy plugins like blue_thermal_printer
-// don't define it, so we inject one from their AndroidManifest package.
+// Patch: legacy plugin seperti blue_thermal_printer tidak define namespace.
+// Dipasang saat plugin library diterapkan, bukan afterEvaluate.
 subprojects { subproject ->
-    afterEvaluate {
-        if (subproject.hasProperty('android')) {
-            try {
-                def androidExt = subproject.android
-                if (androidExt.namespace == null) {
-                    def manifest = file("${subproject.projectDir}/src/main/AndroidManifest.xml")
-                    if (manifest.exists()) {
-                        def pkg = new XmlSlurper().parse(manifest).@package.text()
-                        if (pkg) {
-                            androidExt.namespace = pkg
-                        }
-                    }
+    subproject.plugins.withId('com.android.library') {
+        def androidExt = subproject.extensions.findByName('android')
+        if (androidExt != null && androidExt.namespace == null) {
+            def manifestFile = subproject.file('src/main/AndroidManifest.xml')
+            if (manifestFile.exists()) {
+                def pkg = new groovy.util.XmlSlurper()
+                    .parse(manifestFile).@package.text()
+                if (pkg != null && pkg.toString().trim().isNotEmpty()) {
+                    androidExt.namespace = pkg.toString().trim()
                 }
-            } catch (Exception ignored) {
-                // Plugin tanpa android extension, abaikan
-            }
-        }
-    }
-}
-
-
-// Patch: AGP 8+ requires namespace. Legacy plugins like blue_thermal_printer
-// don't define it. Gunakan plugins.withId agar tidak trigger setelah evaluate.
-subprojects { subproject ->
-    plugins.withId('com.android.library') {
-        if (subproject.android.namespace == null) {
-            try {
-                def manifest = file("${subproject.projectDir}/src/main/AndroidManifest.xml")
-                if (manifest.exists()) {
-                    def pkg = new XmlSlurper().parse(manifest).@package.text()
-                    if (pkg) {
-                        subproject.android.namespace = pkg
-                    }
-                }
-            } catch (Exception ignored) {
             }
         }
     }
