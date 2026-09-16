@@ -4,6 +4,7 @@ import '../core/utils/currency.dart';
 import '../models/order.dart';
 import '../models/order_item.dart';
 import '../repositories/order_repository.dart';
+import '../viewmodels/printer_viewmodel.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
 
@@ -172,11 +173,7 @@ class _ReceiptViewState extends State<ReceiptView> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 6),
                                 ),
-                                onPressed: () => AppDialog.info(
-                                  context,
-                                  'Fitur cetak struk akan aktif setelah printer Bluetooth terhubung.',
-                                  title: 'Cetak Ulang',
-                                ),
+                                onPressed: () => _printAgain(context),
                                 icon: const Icon(Icons.print, size: 14),
                                 label: const FittedBox(
                                   fit: BoxFit.scaleDown,

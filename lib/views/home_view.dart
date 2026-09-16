@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../viewmodels/auth_viewmodel.dart';
+import '../viewmodels/printer_viewmodel.dart';
+import '../viewmodels/shift_viewmodel.dart';
 import '../widgets/app_appbar.dart';
 import 'category_list_view.dart';
 import 'login_view.dart';
@@ -11,8 +13,25 @@ import 'report/report_view.dart';
 import 'printer_settings_view.dart';
 import 'shift_view.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      final auth = context.read<AuthViewModel>();
+      context.read<ShiftViewModel>()
+        ..pendingUserId = auth.currentUser?.id
+        ..load();
+      context.read<PrinterViewModel>().load(silent: true);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
