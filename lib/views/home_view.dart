@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../viewmodels/auth_viewmodel.dart';
 import '../viewmodels/printer_viewmodel.dart';
+import '../viewmodels/settings_viewmodel.dart';
 import '../viewmodels/shift_viewmodel.dart';
 import '../widgets/app_appbar.dart';
 import 'category_list_view.dart';
@@ -22,6 +24,20 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  Future<void> _checkBluetooth() async {
+    try {
+      final state = await FlutterBluePlus.adapterState.first;
+      if (state != BluetoothAdapterState.on) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Bluetooth belum aktif. Nyalakan untuk printer.'),
+          ),
+        );
+      }
+    } catch (_) {}
+  }
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +49,8 @@ class _HomeViewState extends State<HomeView> {
       context.read<PrinterViewModel>()
         ..load(silent: true)
         ..autoConnect();
+      context.read<SettingsViewModel>().load();
+      _checkBluetooth();
     });
   }
 

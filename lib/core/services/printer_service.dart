@@ -34,14 +34,31 @@ class PrinterService {
 
   Future<bool> connect(BluetoothDevice device) async {
     try {
+      // 1) Bersihkan socket lama
+      try {
+        await _printer.disconnect();
+      } catch (_) {}
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      // 2) Connect baru
       await _printer.connect(device);
       await Future.delayed(const Duration(milliseconds: 800));
-      final ok = await _printer.isConnected ?? false;
+
+      // 3) Verifikasi
+      var ok = await _printer.isConnected ?? false;
+      if (!ok) {
+        // Coba sekali lagi — kadang perlu waktu
+        await Future.delayed(const Duration(milliseconds: 600));
+        ok = await _printer.isConnected ?? false;
+      }
       if (ok) {
         _connected = device;
+      } else {
+        _connected = null;
       }
       return ok;
     } catch (_) {
+      _connected = null;
       return false;
     }
   }

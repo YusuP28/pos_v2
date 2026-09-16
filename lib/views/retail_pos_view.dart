@@ -33,6 +33,7 @@ class _RetailPosViewState extends State<RetailPosView> {
     Future.microtask(() {
       context.read<ProductViewModel>().load();
       context.read<CategoryViewModel>().load();
+      context.read<SettingsViewModel>().load();
     });
   }
 

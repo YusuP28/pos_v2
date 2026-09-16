@@ -24,12 +24,54 @@ class _PrinterSettingsViewState extends State<PrinterSettingsView> {
     final vm = context.read<PrinterViewModel>();
     final ok = await vm.connect(device);
     if (!mounted) return;
-    if (!ok) {
-      await AppDialog.error(
-        context,
-        'Gagal terhubung ke printer. Pastikan printer menyala dan sudah dipairing.',
-        title: 'Gagal Koneksi',
+    if (ok) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Printer terhubung.')),
       );
+      return;
+    }
+
+    // Gagal — tampilkan dialog dengan opsi
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Gagal Koneksi', style: TextStyle(fontSize: 16)),
+        content: const Text(
+          'Gagal terhubung ke printer.\n\n'
+          'Saran:\n'
+          '1. Pastikan printer menyala (lampu hijau/biru).\n'
+          '2. Matikan printer, nyalakan lagi.\n'
+          '3. Jauhkan dari perangkat Bluetooth lain.',
+          style: TextStyle(fontSize: 12),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, 'cancel'),
+            child: const Text('Batal', style: TextStyle(fontSize: 12)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, 'disconnect'),
+            child: const Text('Putuskan Paksa', style: TextStyle(fontSize: 12)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, 'retry'),
+            child: const Text('Coba Lagi', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+
+    if (!mounted) return;
+    if (choice == 'retry') {
+      // Coba sekali lagi
+      await _connect(device);
+    } else if (choice == 'disconnect') {
+      await vm.disconnect();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Koneksi diputus. Coba hubungkan lagi.')),
+        );
+      }
     }
   }
 
