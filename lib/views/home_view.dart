@@ -15,6 +15,7 @@ import 'retail_pos_view.dart';
 import 'report/report_view.dart';
 import 'info_toko_view.dart';
 import 'printer_settings_view.dart';
+import 'settings_view.dart';
 import 'shift_view.dart';
 
 class HomeView extends StatefulWidget {
