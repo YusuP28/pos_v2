@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../core/services/bt_scanner_service.dart';
 import '../viewmodels/printer_viewmodel.dart';
+import '../widgets/app_toast.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
 
@@ -25,9 +26,7 @@ class _PrinterSettingsViewState extends State<PrinterSettingsView> {
     final ok = await vm.connect(device);
     if (!mounted) return;
     if (ok) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Printer terhubung.')),
-      );
+      AppToast.show(context, 'Printer terhubung.');
       return;
     }
 
@@ -68,9 +67,7 @@ class _PrinterSettingsViewState extends State<PrinterSettingsView> {
     } else if (choice == 'disconnect') {
       await vm.disconnect();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Koneksi diputus. Coba hubungkan lagi.')),
-        );
+        AppToast.show(context, 'Koneksi diputus. Coba hubungkan lagi.');
       }
     }
   }
@@ -79,9 +76,7 @@ class _PrinterSettingsViewState extends State<PrinterSettingsView> {
     final ok = await context.read<PrinterViewModel>().testPrint();
     if (!mounted) return;
     if (ok) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Perintah cetak dikirim.')),
-      );
+      AppToast.show(context, 'Perintah cetak dikirim.');
     } else {
       await AppDialog.error(
         context,
@@ -114,9 +109,7 @@ class _PrinterSettingsViewState extends State<PrinterSettingsView> {
     try {
       await vm.pairAndConnect(item.device);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pairing selesai.')),
-      );
+      AppToast.show(context, 'Pairing selesai.');
     } catch (e) {
       if (!mounted) return;
       await AppDialog.error(

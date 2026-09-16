@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../core/utils/currency.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../viewmodels/shift_viewmodel.dart';
+import '../widgets/app_toast.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
 import 'shift_close_view.dart';
@@ -45,9 +46,7 @@ class _ShiftViewState extends State<ShiftView> {
             notes: _notes.text.trim(),
           );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Shift dibuka.')),
-      );
+      AppToast.show(context, 'Shift dibuka.');
     } catch (e) {
       if (!mounted) return;
       await AppDialog.error(context, e.toString(), title: 'Gagal Buka Shift');

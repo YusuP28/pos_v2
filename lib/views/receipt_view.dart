@@ -6,6 +6,7 @@ import '../models/order.dart';
 import '../models/order_item.dart';
 import '../repositories/order_repository.dart';
 import '../viewmodels/printer_viewmodel.dart';
+import '../widgets/app_toast.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
 
@@ -50,9 +51,7 @@ class _ReceiptViewState extends State<ReceiptView> {
     );
     if (!context.mounted) return;
     if (ok) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Perintah cetak dikirim.')),
-      );
+      AppToast.show(context, 'Perintah cetak dikirim.');
     } else {
       await AppDialog.error(
         context,

@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../viewmodels/settings_viewmodel.dart';
+import '../widgets/app_toast.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
 
@@ -61,9 +62,7 @@ class _InfoTokoViewState extends State<InfoTokoView> {
       if (picked == null) return;
       await context.read<SettingsViewModel>().setLogoFromFile(File(picked.path));
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Logo tersimpan.')),
-      );
+      AppToast.show(context, 'Logo tersimpan.');
     } catch (e) {
       if (!mounted) return;
       await AppDialog.error(context, 'Gagal memilih gambar: $e',
@@ -78,9 +77,7 @@ class _InfoTokoViewState extends State<InfoTokoView> {
       if (picked == null) return;
       await context.read<SettingsViewModel>().setQrisFromFile(File(picked.path));
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('QRIS tersimpan.')),
-      );
+      AppToast.show(context, 'QRIS tersimpan.');
     } catch (e) {
       if (!mounted) return;
       await AppDialog.error(context, 'Gagal memilih gambar: $e',
@@ -91,9 +88,7 @@ class _InfoTokoViewState extends State<InfoTokoView> {
   Future<void> _saveQrisMerchant() async {
     await context.read<SettingsViewModel>().saveQrisMerchant(_qrisMerchant.text.trim());
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Nama merchant tersimpan.')),
-    );
+    AppToast.show(context, 'Nama merchant tersimpan.');
   }
 
   Future<void> _save() async {
@@ -112,9 +107,7 @@ class _InfoTokoViewState extends State<InfoTokoView> {
             mode: _mode,
           );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Info toko tersimpan.')),
-      );
+      AppToast.show(context, 'Info toko tersimpan.');
     } catch (e) {
       if (!mounted) return;
       await AppDialog.error(context, 'Gagal simpan: $e', title: 'Gagal');
