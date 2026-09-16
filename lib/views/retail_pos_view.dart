@@ -247,8 +247,9 @@ class _RetailPosViewState extends State<RetailPosView> {
     );
     if (code == null || code.isEmpty || !context.mounted) return;
 
+    final clean = code.trim();
     final product =
-        await context.read<ProductViewModel>().findByBarcode(code);
+        await context.read<ProductViewModel>().findByBarcode(clean);
 
     if (product == null) {
       if (!context.mounted) return;
