@@ -8,6 +8,7 @@ import '../viewmodels/cart_viewmodel.dart';
 import '../viewmodels/category_viewmodel.dart';
 import '../viewmodels/printer_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
+import '../viewmodels/settings_viewmodel.dart';
 import '../viewmodels/shift_viewmodel.dart';
 import '../repositories/order_repository.dart';
 import '../widgets/app_appbar.dart';
@@ -546,7 +547,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
 
   Future<void> _doPay({required bool printAfter}) async {
     final paidAmount = double.tryParse(_paid.text.trim()) ?? 0;
-    if (_method != 'qris' && paidAmount < widget.total) {
+    if (_method == 'cash' && paidAmount < widget.total) {
       await AppDialog.error(
         context,
         'Jumlah bayar kurang dari total.',
@@ -673,40 +674,9 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                         ),
                         const SizedBox(height: 8),
                         if (isQris)
-                          Center(
-                            child: Column(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    border:
-                                        Border.all(color: Colors.grey.shade300),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: QrImageView(
-                                    data:
-                                        'QRIS-DUMMY-${widget.total.toStringAsFixed(0)}-${DateTime.now().millisecondsSinceEpoch}',
-                                    version: QrVersions.auto,
-                                    size: 160,
-                                    backgroundColor: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  'Scan QRIS untuk membayar ${Currency.format(widget.total)}',
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(fontSize: 11),
-                                ),
-                                const SizedBox(height: 2),
-                                const Text(
-                                  '(QR simulasi — belum terhubung merchant)',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 9, color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          )
+                          _buildQrisContent(context)
+                        else if (_method == 'card')
+                          _buildCardContent()
                         else ...[
                           TextField(
                             controller: _paid,
@@ -806,7 +776,9 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                               )
                             : FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child: Text(isQris ? 'KONFIRMASI' : 'BAYAR',
+                                child: Text((isQris || _method == 'card')
+                                    ? 'SUDAH DIBAYAR'
+                                    : 'BAYAR',
                                     style: const TextStyle(fontSize: 11)),
                               ),
                       ),
@@ -820,7 +792,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(horizontal: 6),
                         ),
-                        onPressed: _busy
+                        onPressed: (_busy || isQris || _method == 'card')
                             ? null
                             : () => _doPay(printAfter: true),
                         child: const FittedBox(
