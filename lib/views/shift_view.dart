@@ -71,7 +71,7 @@ class _ShiftViewState extends State<ShiftView> {
               ? const Center(child: CircularProgressIndicator())
               : shift == null
                   ? _buildOpenForm()
-                  : _buildActiveShift(shift, stats),
+                  : _buildActiveShift(vm, shift, stats),
         ),
       ),
     );
@@ -136,7 +136,7 @@ class _ShiftViewState extends State<ShiftView> {
     );
   }
 
-  Widget _buildActiveShift(shift, stats) {
+  Widget _buildActiveShift(ShiftViewModel vm, shift, stats) {
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
