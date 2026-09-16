@@ -15,6 +15,30 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+
+// Patch: AGP 8+ requires namespace. Legacy plugins like blue_thermal_printer
+// don't define it, so we inject one from their AndroidManifest package.
+subprojects { subproject ->
+    afterEvaluate {
+        if (subproject.hasProperty('android')) {
+            try {
+                def androidExt = subproject.android
+                if (androidExt.namespace == null) {
+                    def manifest = file("${subproject.projectDir}/src/main/AndroidManifest.xml")
+                    if (manifest.exists()) {
+                        def pkg = new XmlSlurper().parse(manifest).@package.text()
+                        if (pkg) {
+                            androidExt.namespace = pkg
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+                // Plugin tanpa android extension, abaikan
+            }
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
