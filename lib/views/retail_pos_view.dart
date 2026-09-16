@@ -6,6 +6,7 @@ import '../core/utils/currency.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../viewmodels/cart_viewmodel.dart';
 import '../viewmodels/category_viewmodel.dart';
+import '../viewmodels/printer_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
 import '../viewmodels/shift_viewmodel.dart';
 import '../repositories/order_repository.dart';
@@ -562,6 +563,49 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
         paymentMethod: _method,
         paidAmount: _method == 'qris' ? widget.total : paidAmount,
       );
+
+      if (printAfter) {
+        final printer = context.read<PrinterViewModel>();
+        if (printer.isConnected) {
+          try {
+            final order =
+                await OrderRepository.instance.getById(orderId);
+            final orderItems =
+                await OrderRepository.instance.getItems(orderId);
+            if (order != null) {
+              await printer.printReceipt(
+                invoiceNumber: order.invoiceNumber,
+                cashierName: '-',
+                dateTime: order.createdAt
+                    .replaceFirst('T', ' ')
+                    .substring(0, 19),
+                items: orderItems
+                    .map((it) => {
+                          'name': it.productName,
+                          'qty': it.quantity,
+                          'price': it.price,
+                        })
+                    .toList(),
+                subtotal: order.subtotal,
+                total: order.total,
+                paymentMethod: order.paymentMethod,
+                paidAmount: order.paidAmount,
+                changeAmount: order.changeAmount,
+              );
+            }
+          } catch (_) {}
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                    'Printer belum terhubung. Transaksi tetap tersimpan.'),
+              ),
+            );
+          }
+        }
+      }
+
       if (!mounted) return;
       Navigator.pop(context, _CheckoutResult(orderId));
     } catch (e) {
@@ -776,7 +820,9 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(horizontal: 6),
                         ),
-                        onPressed: null,
+                        onPressed: _busy
+                            ? null
+                            : () => _doPay(printAfter: true),
                         child: const FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text('BAYAR + CETAK',

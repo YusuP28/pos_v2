@@ -8,6 +8,7 @@ import 'login_view.dart';
 import 'product_list_view.dart';
 import 'retail_pos_view.dart';
 import 'report/report_view.dart';
+import 'printer_settings_view.dart';
 import 'shift_view.dart';
 
 class HomeView extends StatelessWidget {
@@ -68,7 +69,7 @@ class HomeView extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               GridView.count(
-                crossAxisCount: 5,
+                crossAxisCount: 6,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 mainAxisSpacing: 8,
@@ -113,6 +114,15 @@ class HomeView extends StatelessWidget {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const ReportView()),
+                    ),
+                  ),
+                  _MenuCard(
+                    icon: Icons.settings,
+                    label: 'Pengaturan',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const PrinterSettingsView()),
                     ),
                   ),
                 ],
