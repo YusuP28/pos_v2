@@ -16,7 +16,7 @@ class PrinterViewModel extends ChangeNotifier {
   List<BluetoothDevice> get devices => _devices;
   BluetoothDevice? get connected => _connected;
   bool get loading => _loading;
-  bool get isConnected => _connected != null;
+  bool get isConnected => PrinterService.instance.isConnected || _connected != null;
   bool get paper80mm => _paper80mm;
   bool get scanning => _scanning;
   List<BtDevice> get found => _found;

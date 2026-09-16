@@ -19,6 +19,17 @@ class PrinterService {
     return devices;
   }
 
+  Future<bool> checkConnection() async {
+    try {
+      final connected = await _printer.isConnected ?? false;
+      if (!connected) _connected = null;
+      return connected;
+    } catch (_) {
+      _connected = null;
+      return false;
+    }
+  }
+
   Future<bool> connect(BluetoothDevice device) async {
     try {
       await _printer.connect(device);
@@ -208,12 +219,8 @@ class PrinterService {
     String footer = 'Terima kasih',
     bool paper80mm = false,
   }) async {
-    if (_connected == null) return false;
-    final ok = await _printer.isConnected ?? false;
-    if (!ok) {
-      _connected = null;
-      return false;
-    }
+    final realtime = await checkConnection();
+    if (!realtime) return false;
 
     final data = await _buildReceipt(
       storeName: storeName,
