@@ -175,4 +175,19 @@ class DbHelper {
     await db.execute(
         'CREATE INDEX idx_shifts_opened_at ON shifts (opened_at)');
   }
+
+  /// Tutup database (untuk backup/restore).
+  Future<void> close() async {
+    if (_db != null) {
+      await _db!.close();
+      _db = null;
+    }
+  }
+
+  /// Buka ulang database setelah close.
+  Future<void> reopen() async {
+    if (_db == null) {
+      _db = await _open();
+    }
+  }
 }

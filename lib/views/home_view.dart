@@ -176,6 +176,15 @@ class _HomeViewState extends State<HomeView> {
                           builder: (_) => const InfoTokoView()),
                     ),
                   ),
+                  _MenuCard(
+                    icon: Icons.settings,
+                    label: 'Pengaturan',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const SettingsView()),
+                    ),
+                  ),
                 ],
               ),
             ],
