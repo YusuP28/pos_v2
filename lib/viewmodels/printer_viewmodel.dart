@@ -1,6 +1,7 @@
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/material.dart';
 
+import '../core/services/bt_scanner_service.dart';
 import '../core/services/printer_service.dart';
 
 class PrinterViewModel extends ChangeNotifier {
@@ -9,11 +10,16 @@ class PrinterViewModel extends ChangeNotifier {
   bool _loading = false;
   bool _paper80mm = false;
 
+  bool _scanning = false;
+  List<BtDevice> _found = [];
+
   List<BluetoothDevice> get devices => _devices;
   BluetoothDevice? get connected => _connected;
   bool get loading => _loading;
   bool get isConnected => _connected != null;
   bool get paper80mm => _paper80mm;
+  bool get scanning => _scanning;
+  List<BtDevice> get found => _found;
 
   Future<void> load({bool silent = false}) async {
     if (!silent) {
@@ -86,8 +92,58 @@ class PrinterViewModel extends ChangeNotifier {
       paymentMethod: paymentMethod,
       paidAmount: paidAmount,
       changeAmount: changeAmount,
-      footer: 'Terima kasih\nBarang yang sudah dibeli\ntidak dapat dikembalikan',
+      footer:
+          'Terima kasih\nBarang yang sudah dibeli\ntidak dapat dikembalikan',
       paper80mm: _paper80mm,
     );
+  }
+
+  // ---- Scan & Pair ----
+
+  Future<void> startScan() async {
+    _scanning = true;
+    _found = [];
+    notifyListeners();
+    try {
+      final svc = BtScannerService.instance;
+      // stream update setiap 500ms agar UI live
+      final timer = Stream.periodic(const Duration(milliseconds: 500));
+      final sub = timer.listen((_) {
+        _found = svc.found;
+        notifyListeners();
+      });
+      await svc.startScan(timeout: const Duration(seconds: 12));
+      await sub.cancel();
+      _found = svc.found;
+    } catch (e) {
+      _found = [];
+      rethrow;
+    } finally {
+      _scanning = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> stopScan() async {
+    await BtScannerService.instance.stopScan();
+    _scanning = false;
+    _found = BtScannerService.instance.found;
+    notifyListeners();
+  }
+
+  Future<void> pairAndConnect(BtDevice device) async {
+    // 1) Pair (munculkan dialog Android)
+    await BtScannerService.instance.pair(device.id);
+    // 2) Reload daftar paired dari blue_thermal_printer
+    await load(silent: true);
+    // 3) Connect ke device yang baru dipairing
+    try {
+      final target = _devices.firstWhere(
+        (d) => d.address == device.id,
+      );
+      await connect(target);
+    } catch (_) {
+      // device mungkin tidak ketemu di daftar bonded; abaikan
+    }
   }
 }
