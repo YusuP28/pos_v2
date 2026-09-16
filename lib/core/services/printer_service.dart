@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:image/image.dart' as img;
+
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 
@@ -68,6 +70,7 @@ class PrinterService {
     required double changeAmount,
     String footer = 'Terima kasih',
     bool paper80mm = false,
+    Uint8List? logoBytes,
   }) async {
     final profile = await CapabilityProfile.load();
     final generator = Generator(
@@ -76,16 +79,52 @@ class PrinterService {
     );
     final bytes = <int>[];
 
-    // Header toko
-    bytes.addAll(generator.text(
-      storeName,
-      styles: const PosStyles(
-        align: PosAlign.center,
-        bold: true,
-        height: PosTextSize.size2,
-        width: PosTextSize.size2,
-      ),
-    ));
+    // Header toko — logo gambar atau nama toko
+    if (logoBytes != null && logoBytes.isNotEmpty) {
+      try {
+        final decoded = img.decodeImage(logoBytes);
+        if (decoded != null) {
+          final maxWidth = paper80mm ? 576 : 384;
+          final resized = img.copyResize(
+            decoded,
+            width: maxWidth,
+            maintainAspect: true,
+          );
+          bytes.addAll(generator.image(resized));
+          bytes.addAll(generator.feed(1));
+        } else {
+          bytes.addAll(generator.text(
+            storeName,
+            styles: const PosStyles(
+              align: PosAlign.center,
+              bold: true,
+              height: PosTextSize.size2,
+              width: PosTextSize.size2,
+            ),
+          ));
+        }
+      } catch (_) {
+        bytes.addAll(generator.text(
+          storeName,
+          styles: const PosStyles(
+            align: PosAlign.center,
+            bold: true,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2,
+          ),
+        ));
+      }
+    } else {
+      bytes.addAll(generator.text(
+        storeName,
+        styles: const PosStyles(
+          align: PosAlign.center,
+          bold: true,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+      ));
+    }
     if (storeAddress.isNotEmpty) {
       bytes.addAll(generator.text(
         storeAddress,
@@ -218,6 +257,7 @@ class PrinterService {
     required double changeAmount,
     String footer = 'Terima kasih',
     bool paper80mm = false,
+    Uint8List? logoBytes,
   }) async {
     final realtime = await checkConnection();
     if (!realtime) return false;
@@ -239,6 +279,7 @@ class PrinterService {
       changeAmount: changeAmount,
       footer: footer,
       paper80mm: paper80mm,
+      logoBytes: logoBytes,
     );
 
     await _printer.writeBytes(data);
@@ -246,11 +287,18 @@ class PrinterService {
     return true;
   }
 
-  Future<bool> printTestPage({bool paper80mm = false}) async {
+  Future<bool> printTestPage({
+    bool paper80mm = false,
+    String storeName = 'POS v2',
+    String storeAddress = 'Jl. Contoh No. 123',
+    String storePhone = '0812-3456-7890',
+    String footer = 'TES CETAK BERHASIL\nPOS v2',
+    Uint8List? logoBytes,
+  }) async {
     return printReceipt(
-      storeName: 'POS v2',
-      storeAddress: 'Jl. Contoh No. 123',
-      storePhone: '0812-3456-7890',
+      storeName: storeName,
+      storeAddress: storeAddress,
+      storePhone: storePhone,
       invoiceNumber: 'TEST-${DateTime.now().millisecondsSinceEpoch}',
       cashierName: 'Administrator',
       dateTime: DateTime.now().toString().substring(0, 19),
@@ -263,8 +311,9 @@ class PrinterService {
       paymentMethod: 'cash',
       paidAmount: 20000,
       changeAmount: 8000,
-      footer: 'TES CETAK BERHASIL\nPOS v2',
+      footer: footer,
       paper80mm: paper80mm,
+      logoBytes: logoBytes,
     );
   }
 }

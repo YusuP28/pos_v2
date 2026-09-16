@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../core/services/bt_scanner_service.dart';
 import '../core/services/printer_service.dart';
+import '../core/services/settings_service.dart';
 
 class PrinterViewModel extends ChangeNotifier {
   List<BluetoothDevice> _devices = [];
@@ -16,7 +17,8 @@ class PrinterViewModel extends ChangeNotifier {
   List<BluetoothDevice> get devices => _devices;
   BluetoothDevice? get connected => _connected;
   bool get loading => _loading;
-  bool get isConnected => PrinterService.instance.isConnected || _connected != null;
+  bool get isConnected =>
+      PrinterService.instance.isConnected || _connected != null;
   bool get paper80mm => _paper80mm;
   bool get scanning => _scanning;
   List<BtDevice> get found => _found;
@@ -31,6 +33,7 @@ class PrinterViewModel extends ChangeNotifier {
       if (PrinterService.instance.isConnected) {
         _connected = PrinterService.instance.connectedDevice;
       }
+      _paper80mm = await SettingsService.instance.getPaper80mm();
     } catch (_) {
       _devices = [];
     }
@@ -38,11 +41,46 @@ class PrinterViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Auto-connect ke printer terakhir yang tersimpan.
+  Future<void> autoConnect() async {
+    try {
+      final lastId = await SettingsService.instance.getLastPrinterId();
+      if (lastId == null) return;
+
+      // Jika sudah connect, skip.
+      if (PrinterService.instance.isConnected) return;
+
+      _devices = await PrinterService.instance.getPairedDevices();
+      final target = _devices.firstWhere(
+        (d) => d.address == lastId,
+        orElse: () => _devices.firstWhere(
+          (d) => d.name?.contains('RPP') ?? false,
+          orElse: () => _devices.isEmpty
+              ? BluetoothDevice(name: '', address: '')
+              : _devices.first,
+        ),
+      );
+      if ((target.address ?? '').isEmpty) return;
+
+      final ok = await PrinterService.instance.connect(target);
+      if (ok) {
+        _connected = target;
+      }
+      notifyListeners();
+    } catch (_) {}
+  }
+
   Future<bool> connect(BluetoothDevice device) async {
     _loading = true;
     notifyListeners();
     final ok = await PrinterService.instance.connect(device);
-    if (ok) _connected = device;
+    if (ok) {
+      _connected = device;
+      await SettingsService.instance.setLastPrinter(
+        device.address,
+        device.name,
+      );
+    }
     _loading = false;
     notifyListeners();
     return ok;
@@ -57,14 +95,22 @@ class PrinterViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setPaper80mm(bool v) {
+  Future<void> setPaper80mm(bool v) async {
     _paper80mm = v;
+    await SettingsService.instance.setPaper80mm(v);
     notifyListeners();
   }
 
   Future<bool> testPrint() async {
     if (!isConnected) return false;
-    return PrinterService.instance.printTestPage(paper80mm: _paper80mm);
+    final s = SettingsService.instance;
+    return PrinterService.instance.printTestPage(
+      paper80mm: _paper80mm,
+      storeName: await s.getStoreName(),
+      storeAddress: await s.getStoreAddress(),
+      storePhone: await s.getStorePhone(),
+      footer: await s.getReceiptFooter(),
+    );
   }
 
   Future<bool> printReceipt({
@@ -79,10 +125,15 @@ class PrinterViewModel extends ChangeNotifier {
     required double changeAmount,
   }) async {
     if (!isConnected) return false;
+    final s = SettingsService.instance;
+    final logoMode = await s.getLogoMode();
+    final logoBytes =
+        logoMode == 'image' ? await s.readLogoBytes() : null;
+
     return PrinterService.instance.printReceipt(
-      storeName: 'POS v2',
-      storeAddress: 'Jl. Contoh No. 123',
-      storePhone: '0812-3456-7890',
+      storeName: await s.getStoreName(),
+      storeAddress: await s.getStoreAddress(),
+      storePhone: await s.getStorePhone(),
       invoiceNumber: invoiceNumber,
       cashierName: cashierName,
       dateTime: dateTime,
@@ -92,9 +143,9 @@ class PrinterViewModel extends ChangeNotifier {
       paymentMethod: paymentMethod,
       paidAmount: paidAmount,
       changeAmount: changeAmount,
-      footer:
-          'Terima kasih\nBarang yang sudah dibeli\ntidak dapat dikembalikan',
+      footer: await s.getReceiptFooter(),
       paper80mm: _paper80mm,
+      logoBytes: logoBytes,
     );
   }
 
@@ -106,7 +157,6 @@ class PrinterViewModel extends ChangeNotifier {
     notifyListeners();
     try {
       final svc = BtScannerService.instance;
-      // stream update setiap 500ms agar UI live
       final timer = Stream.periodic(const Duration(milliseconds: 500));
       final sub = timer.listen((_) {
         _found = svc.found;
@@ -132,18 +182,11 @@ class PrinterViewModel extends ChangeNotifier {
   }
 
   Future<void> pairAndConnect(BtDevice device) async {
-    // 1) Pair (munculkan dialog Android)
     await BtScannerService.instance.pair(device.id);
-    // 2) Reload daftar paired dari blue_thermal_printer
     await load(silent: true);
-    // 3) Connect ke device yang baru dipairing
     try {
-      final target = _devices.firstWhere(
-        (d) => d.address == device.id,
-      );
+      final target = _devices.firstWhere((d) => d.address == device.id);
       await connect(target);
-    } catch (_) {
-      // device mungkin tidak ketemu di daftar bonded; abaikan
-    }
+    } catch (_) {}
   }
 }
