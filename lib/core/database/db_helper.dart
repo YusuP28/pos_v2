@@ -186,8 +186,6 @@ class DbHelper {
 
   /// Buka ulang database setelah close.
   Future<void> reopen() async {
-    if (_db == null) {
-      _db = await _open();
-    }
+    _db ??= await _open();
   }
 }
