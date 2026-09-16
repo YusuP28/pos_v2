@@ -562,7 +562,9 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
         shiftId: widget.shiftId,
         items: widget.items.cast(),
         paymentMethod: _method,
-        paidAmount: _method == 'qris' ? widget.total : paidAmount,
+        paidAmount: (_method == 'qris' || _method == 'card')
+            ? widget.total
+            : paidAmount,
       );
 
       if (printAfter) {
@@ -777,7 +779,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                             : FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text((isQris || _method == 'card')
-                                    ? 'SUDAH DIBAYAR'
+                                    ? 'BAYAR + CETAK'
                                     : 'BAYAR',
                                     style: const TextStyle(fontSize: 11)),
                               ),

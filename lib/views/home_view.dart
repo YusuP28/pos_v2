@@ -91,7 +91,7 @@ class _HomeViewState extends State<HomeView> {
               ),
               const SizedBox(height: 6),
               GridView.count(
-                crossAxisCount: 6,
+                crossAxisCount: 5,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 mainAxisSpacing: 8,
