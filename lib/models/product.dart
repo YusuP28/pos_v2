@@ -37,7 +37,6 @@ class Product {
       );
 
   Map<String, Object?> toMap() => {
-        if (id != null) 'id': id,
         'category_id': categoryId,
         'sku': sku,
         'barcode': barcode,
@@ -47,5 +46,10 @@ class Product {
         'stock': stock,
         'unit': unit,
         'is_active': isActive ? 1 : 0,
+      };
+
+  Map<String, Object?> toInsertMap() => {
+        if (id != null) 'id': id,
+        ...toMap(),
       };
 }

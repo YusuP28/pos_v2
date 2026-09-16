@@ -43,7 +43,7 @@ class ProductRepository {
 
   Future<int> insert(Product p) async {
     final db = await _db;
-    final map = p.toMap();
+    final map = p.toInsertMap();
     map['created_at'] = DateTime.now().toIso8601String();
     return db.insert('products', map);
   }
