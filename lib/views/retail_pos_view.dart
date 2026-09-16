@@ -812,6 +812,100 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
     );
   }
 
+  Widget _buildQrisContent(BuildContext context) {
+    final settings = context.watch<SettingsViewModel>();
+    final qris = settings.qrisBytes;
+    if (qris == null) {
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.orange),
+          borderRadius: BorderRadius.circular(6),
+          color: Colors.orange.withValues(alpha: 0.08),
+        ),
+        child: Column(
+          children: [
+            const Icon(Icons.warning_amber, color: Colors.orange, size: 32),
+            const SizedBox(height: 8),
+            const Text(
+              'QRIS belum diupload',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Silakan scan QRIS fisik di toko, atau upload gambar QRIS di Info Toko.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 11),
+            ),
+          ],
+        ),
+      );
+    }
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(6),
+            color: Colors.white,
+          ),
+          child: Image.memory(
+            qris,
+            height: 200,
+            fit: BoxFit.contain,
+          ),
+        ),
+        if (settings.qrisMerchantName.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Text(
+            settings.qrisMerchantName,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+          ),
+        ],
+        const SizedBox(height: 4),
+        Text(
+          'Total: ${Currency.format(widget.total)}',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+        ),
+        const SizedBox(height: 2),
+        const Text(
+          'Pastikan notifikasi pembayaran sudah masuk sebelum konfirmasi.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 10, color: Colors.grey),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCardContent() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blue.shade200),
+        borderRadius: BorderRadius.circular(6),
+        color: Colors.blue.withValues(alpha: 0.08),
+      ),
+      child: Column(
+        children: [
+          const Icon(Icons.credit_card, color: Colors.blue, size: 32),
+          const SizedBox(height: 8),
+          const Text(
+            'Gesek / tap kartu di EDC',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Konfirmasi setelah EDC menampilkan transaksi berhasil.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 11),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _kv(String label, String value,
       {bool bold = false, double size = 12, Color? color}) {
     return Row(
