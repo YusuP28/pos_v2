@@ -10,6 +10,7 @@ import 'login_view.dart';
 import 'product_list_view.dart';
 import 'retail_pos_view.dart';
 import 'report/report_view.dart';
+import 'info_toko_view.dart';
 import 'printer_settings_view.dart';
 import 'shift_view.dart';
 
@@ -29,7 +30,9 @@ class _HomeViewState extends State<HomeView> {
       context.read<ShiftViewModel>()
         ..pendingUserId = auth.currentUser?.id
         ..load();
-      context.read<PrinterViewModel>().load(silent: true);
+      context.read<PrinterViewModel>()
+        ..load(silent: true)
+        ..autoConnect();
     });
   }
 
@@ -136,12 +139,21 @@ class _HomeViewState extends State<HomeView> {
                     ),
                   ),
                   _MenuCard(
-                    icon: Icons.settings,
-                    label: 'Pengaturan',
+                    icon: Icons.print,
+                    label: 'Pengaturan Printer',
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (_) => const PrinterSettingsView()),
+                    ),
+                  ),
+                  _MenuCard(
+                    icon: Icons.store,
+                    label: 'Info Toko',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const InfoTokoView()),
                     ),
                   ),
                 ],
