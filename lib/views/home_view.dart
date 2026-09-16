@@ -7,6 +7,7 @@ import '../viewmodels/printer_viewmodel.dart';
 import '../viewmodels/settings_viewmodel.dart';
 import '../viewmodels/shift_viewmodel.dart';
 import '../widgets/app_appbar.dart';
+import '../widgets/app_toast.dart';
 import 'category_list_view.dart';
 import 'login_view.dart';
 import 'product_list_view.dart';
@@ -29,10 +30,11 @@ class _HomeViewState extends State<HomeView> {
       final state = await FlutterBluePlus.adapterState.first;
       if (state != BluetoothAdapterState.on) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Bluetooth belum aktif. Nyalakan untuk printer.'),
-          ),
+        AppToast.show(
+          context,
+          'Bluetooth belum aktif. Nyalakan untuk printer.',
+          success: false,
+          duration: const Duration(seconds: 3),
         );
       }
     } catch (_) {}

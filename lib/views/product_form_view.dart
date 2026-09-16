@@ -5,6 +5,7 @@ import '../models/product.dart';
 import '../viewmodels/category_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
 import '../widgets/app_appbar.dart';
+import '../widgets/app_toast.dart';
 import 'scanner/barcode_scanner_view.dart';
 
 class ProductFormView extends StatefulWidget {
@@ -62,9 +63,7 @@ class _ProductFormViewState extends State<ProductFormView> {
 
   Future<void> _save() async {
     if (_name.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nama produk wajib diisi.')),
-      );
+      AppToast.show(context, 'Nama produk wajib diisi.', success: false);
       return;
     }
     final price = double.tryParse(_price.text.trim()) ?? 0;

@@ -13,6 +13,7 @@ import '../viewmodels/shift_viewmodel.dart';
 import '../repositories/order_repository.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
+import '../widgets/app_toast.dart';
 import 'scanner/barcode_scanner_view.dart';
 import 'receipt_view.dart';
 
@@ -600,11 +601,10 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
           } catch (_) {}
         } else {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                    'Printer belum terhubung. Transaksi tetap tersimpan.'),
-              ),
+            AppToast.show(
+              context,
+              'Printer belum terhubung. Transaksi tetap tersimpan.',
+              success: false,
             );
           }
         }
