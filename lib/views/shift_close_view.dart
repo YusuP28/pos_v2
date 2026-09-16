@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../core/utils/currency.dart';
+import '../core/database/db_helper.dart';
 import '../models/shift.dart';
 import '../repositories/shift_repository.dart';
 import '../viewmodels/shift_viewmodel.dart';
@@ -21,6 +22,7 @@ class _ShiftCloseViewState extends State<ShiftCloseView> {
   final _notes = TextEditingController();
   Shift? _shift;
   ShiftStats? _stats;
+  double _expenseTotal = 0;
   bool _loading = true;
   bool _busy = false;
 
@@ -37,13 +39,28 @@ class _ShiftCloseViewState extends State<ShiftCloseView> {
     super.dispose();
   }
 
+  Future<double> _getExpenseTotal(int shiftId) async {
+    try {
+      final db = await DbHelper.instance.database;
+      final result = await db.rawQuery(
+        'SELECT COALESCE(SUM(amount), 0) AS total FROM expenses WHERE shift_id = ?',
+        [shiftId],
+      );
+      return (result.first['total'] as num?)?.toDouble() ?? 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+
   Future<void> _load() async {
     final s = await ShiftRepository.instance.getById(widget.shiftId);
     final stats = await ShiftRepository.instance.getStats(widget.shiftId);
+    final expenseTotal = await _getExpenseTotal(widget.shiftId);
     if (!mounted) return;
     setState(() {
       _shift = s;
       _stats = stats;
+      _expenseTotal = expenseTotal;
       _loading = false;
     });
   }
@@ -84,6 +101,7 @@ class _ShiftCloseViewState extends State<ShiftCloseView> {
           children: [
             _row('Uang awal', closed.openingCash),
             _row('Penjualan tunai', _stats?.cashSales ?? 0),
+            _row('Pengeluaran', -_expenseTotal),
             const Divider(height: 12),
             _row('Uang seharusnya', expected, bold: true),
             _row('Uang fisik', closed.closingCash ?? 0, bold: true),
@@ -162,7 +180,7 @@ class _ShiftCloseViewState extends State<ShiftCloseView> {
       );
     }
     final stats = _stats!;
-    final expected = shift.openingCash + stats.cashSales;
+    final expected = shift.openingCash + stats.cashSales - _expenseTotal;
     final cash = double.tryParse(_closingCash.text.trim()) ?? 0;
     final diff = cash - expected;
 
@@ -186,6 +204,7 @@ class _ShiftCloseViewState extends State<ShiftCloseView> {
                       _row('Penjualan tunai', stats.cashSales),
                       _row('Penjualan QRIS', stats.qrisSales),
                       _row('Penjualan kartu', stats.cardSales),
+                      _row('Pengeluaran', -_expenseTotal),
                       const Divider(height: 12),
                       _row('Uang seharusnya', expected, bold: true),
                     ],

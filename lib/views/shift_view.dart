@@ -195,9 +195,15 @@ class _ShiftViewState extends State<ShiftView> {
                 _kv('Kartu', Currency.format(stats?.cardSales ?? 0)),
                 const Divider(height: 12),
                 _kv(
+                  'Pengeluaran',
+                  '- ${Currency.format(vm.expenseTotal)}',
+                  color: Colors.red,
+                ),
+                const Divider(height: 12),
+                _kv(
                   'Uang seharusnya',
                   Currency.format(
-                      shift.openingCash + (stats?.cashSales ?? 0)),
+                      shift.openingCash + (stats?.cashSales ?? 0) - vm.expenseTotal),
                   bold: true,
                   color: Colors.green.shade700,
                 ),

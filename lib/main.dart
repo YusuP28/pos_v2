@@ -6,6 +6,7 @@ import 'app.dart';
 import 'viewmodels/auth_viewmodel.dart';
 import 'viewmodels/cart_viewmodel.dart';
 import 'viewmodels/category_viewmodel.dart';
+import 'viewmodels/expense_viewmodel.dart';
 import 'viewmodels/printer_viewmodel.dart';
 import 'viewmodels/settings_viewmodel.dart';
 import 'viewmodels/product_viewmodel.dart';
@@ -27,6 +28,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ShiftViewModel()),
         ChangeNotifierProvider(create: (_) => PrinterViewModel()),
         ChangeNotifierProvider(create: (_) => SettingsViewModel()),
+        ChangeNotifierProvider(create: (_) => ExpenseViewModel()),
       ],
       child: const PosApp(),
     ),

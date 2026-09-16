@@ -95,7 +95,13 @@ class ShiftRepository {
     if (!shift.isOpen) throw Exception('Shift sudah ditutup.');
 
     final stats = await getStats(shiftId);
-    final expected = shift.openingCash + stats.cashSales;
+    final db2 = await _db;
+    final expResult = await db2.rawQuery(
+      'SELECT COALESCE(SUM(amount), 0) AS total FROM expenses WHERE shift_id = ?',
+      [shiftId],
+    );
+    final expenseTotal = (expResult.first['total'] as num?)?.toDouble() ?? 0;
+    final expected = shift.openingCash + stats.cashSales - expenseTotal;
     final difference = closingCash - expected;
 
     await db.update(

@@ -13,6 +13,7 @@ import 'login_view.dart';
 import 'product_list_view.dart';
 import 'retail_pos_view.dart';
 import 'report/report_view.dart';
+import 'expense_view.dart';
 import 'info_toko_view.dart';
 import 'printer_settings_view.dart';
 import 'settings_view.dart';
@@ -184,6 +185,15 @@ class _HomeViewState extends State<HomeView> {
                       context,
                       MaterialPageRoute(
                           builder: (_) => const SettingsView()),
+                    ),
+                  ),
+                  _MenuCard(
+                    icon: Icons.trending_down,
+                    label: 'Pengeluaran',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const ExpenseView()),
                     ),
                   ),
                 ],
