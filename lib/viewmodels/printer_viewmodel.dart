@@ -56,7 +56,7 @@ class PrinterViewModel extends ChangeNotifier {
         orElse: () => _devices.firstWhere(
           (d) => d.name?.contains('RPP') ?? false,
           orElse: () => _devices.isEmpty
-              ? BluetoothDevice(name: '', address: '')
+              ? BluetoothDevice('', '')
               : _devices.first,
         ),
       );

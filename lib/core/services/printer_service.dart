@@ -88,7 +88,6 @@ class PrinterService {
           final resized = img.copyResize(
             decoded,
             width: maxWidth,
-            maintainAspect: true,
           );
           bytes.addAll(generator.image(resized));
           bytes.addAll(generator.feed(1));
