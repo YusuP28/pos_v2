@@ -96,9 +96,12 @@ class _ShiftCloseViewState extends State<ShiftCloseView> {
       context: context,
       builder: (ctx) => Dialog(
         insetPadding: const EdgeInsets.symmetric(
-            horizontal: 20, vertical: 16),
+            horizontal: 24, vertical: 24),
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 400),
+          constraints: BoxConstraints(
+            maxWidth: 400,
+            maxHeight: MediaQuery.of(ctx).size.height - 80,
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -111,38 +114,53 @@ class _ShiftCloseViewState extends State<ShiftCloseView> {
                       fontSize: 16, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 16),
-                _row('Uang awal', closed.openingCash),
-                _row('Penjualan tunai', _stats?.cashSales ?? 0),
-                _row('Pengeluaran', -_expenseTotal, color: Colors.red),
-                const Divider(height: 20),
-                _row('Uang seharusnya', expected, bold: true),
-                _row('Uang fisik', closed.closingCash ?? 0, bold: true),
-                const Divider(height: 20),
-                _row('Selisih', diff, bold: true, color: diffColor),
                 const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: diffColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    diff == 0
-                        ? '✓ Kas cocok'
-                        : diff > 0
-                            ? '↑ Kas lebih'
-                            : '↓ Kas kurang',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: diffColor,
+                // Konten scrollable agar tidak overflow
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _row('Uang awal', closed.openingCash),
+                        _row('Penjualan tunai', _stats?.cashSales ?? 0),
+                        _row('Pengeluaran', -_expenseTotal,
+                            color: Colors.red),
+                        const Divider(height: 16),
+                        _row('Uang seharusnya', expected, bold: true),
+                        _row('Uang fisik', closed.closingCash ?? 0,
+                            bold: true),
+                        const Divider(height: 16),
+                        _row('Selisih', diff,
+                            bold: true, color: diffColor),
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: diffColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            diff == 0
+                                ? '✓ Kas cocok'
+                                : diff > 0
+                                    ? '↑ Kas lebih'
+                                    : '↓ Kas kurang',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: diffColor,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
+                // Tombol OK sebagai bagian dari Column (bukan actions)
                 SizedBox(
                   height: 42,
                   child: FilledButton(
