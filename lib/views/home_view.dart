@@ -17,6 +17,7 @@ import 'expense_view.dart';
 import 'info_toko_view.dart';
 import 'printer_settings_view.dart';
 import 'settings_view.dart';
+import 'shift/shift_history_view.dart';
 import 'shift_view.dart';
 
 class HomeView extends StatefulWidget {
@@ -194,6 +195,15 @@ class _HomeViewState extends State<HomeView> {
                       context,
                       MaterialPageRoute(
                           builder: (_) => const ExpenseView()),
+                    ),
+                  ),
+                  _MenuCard(
+                    icon: Icons.history,
+                    label: 'Riwayat Shift',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const ShiftHistoryView()),
                     ),
                   ),
                 ],

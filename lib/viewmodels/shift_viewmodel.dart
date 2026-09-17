@@ -10,11 +10,17 @@ class ShiftViewModel extends ChangeNotifier {
   double _expenseTotal = 0;
   bool _loading = false;
 
+  List<Shift> _history = [];
+  bool _historyLoading = false;
+
   Shift? get current => _current;
   ShiftStats? get stats => _stats;
   double get expenseTotal => _expenseTotal;
   bool get loading => _loading;
   bool get hasOpenShift => _current != null;
+
+  List<Shift> get history => _history;
+  bool get historyLoading => _historyLoading;
 
   Future<void> load() async {
     _loading = true;
@@ -67,5 +73,65 @@ class ShiftViewModel extends ChangeNotifier {
     );
     await load();
     return closed;
+  }
+
+  // ---- History ----
+
+  Future<void> loadHistory({
+    DateTime? start,
+    DateTime? end,
+    int limit = 100,
+  }) async {
+    _historyLoading = true;
+    notifyListeners();
+    try {
+      final db = await DbHelper.instance.database;
+      List<Map<String, Object?>> rows;
+      if (start != null && end != null) {
+        rows = await db.query(
+          'shifts',
+          where: 'opened_at >= ? AND opened_at < ?',
+          whereArgs: [start.toIso8601String(), end.toIso8601String()],
+          orderBy: 'opened_at DESC',
+          limit: limit,
+        );
+      } else {
+        rows = await db.query(
+          'shifts',
+          orderBy: 'opened_at DESC',
+          limit: limit,
+        );
+      }
+      _history = rows.map(Shift.fromMap).toList();
+    } catch (_) {
+      _history = [];
+    }
+    _historyLoading = false;
+    notifyListeners();
+  }
+
+  Future<Map<String, dynamic>> getShiftDetail(int shiftId) async {
+    final db = await DbHelper.instance.database;
+
+    final stats = await ShiftRepository.instance.getStats(shiftId);
+
+    final expResult = await db.rawQuery(
+      'SELECT COALESCE(SUM(amount), 0) AS total FROM expenses WHERE shift_id = ?',
+      [shiftId],
+    );
+    final expenseTotal = (expResult.first['total'] as num?)?.toDouble() ?? 0;
+
+    final expList = await db.query(
+      'expenses',
+      where: 'shift_id = ?',
+      whereArgs: [shiftId],
+      orderBy: 'created_at ASC',
+    );
+
+    return {
+      'stats': stats,
+      'expenseTotal': expenseTotal,
+      'expenses': expList,
+    };
   }
 }
