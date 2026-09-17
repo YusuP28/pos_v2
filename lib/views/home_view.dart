@@ -19,6 +19,7 @@ import 'printer_settings_view.dart';
 import 'settings_view.dart';
 import 'shift/shift_history_view.dart';
 import 'shift_view.dart';
+import 'user/user_management_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -204,6 +205,15 @@ class _HomeViewState extends State<HomeView> {
                       context,
                       MaterialPageRoute(
                           builder: (_) => const ShiftHistoryView()),
+                    ),
+                  ),
+                  _MenuCard(
+                    icon: Icons.people,
+                    label: 'Manajemen User',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const UserManagementView()),
                     ),
                   ),
                 ],
