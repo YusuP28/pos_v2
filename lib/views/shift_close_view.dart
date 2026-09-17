@@ -91,58 +91,69 @@ class _ShiftCloseViewState extends State<ShiftCloseView> {
     final diffColor = diff == 0
         ? Colors.green.shade700
         : (diff > 0 ? Colors.blue.shade700 : Colors.red.shade700);
+
     await showDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Rekap Shift', style: TextStyle(fontSize: 16)),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _row('Uang awal', closed.openingCash),
-              _row('Penjualan tunai', _stats?.cashSales ?? 0),
-              _row('Pengeluaran', -_expenseTotal),
-              const Divider(height: 12),
-              _row('Uang seharusnya', expected, bold: true),
-              _row('Uang fisik', closed.closingCash ?? 0, bold: true),
-              const Divider(height: 12),
-              _row('Selisih', diff, bold: true, color: diffColor),
-              const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 8, vertical: 6),
-                decoration: BoxDecoration(
-                  color: diffColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  diff == 0
-                      ? '✓ Kas cocok'
-                      : diff > 0
-                          ? '↑ Kas lebih'
-                          : '↓ Kas kurang',
-                  textAlign: TextAlign.center,
+      builder: (ctx) => Dialog(
+        insetPadding: const EdgeInsets.symmetric(
+            horizontal: 20, vertical: 16),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Rekap Shift',
                   style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: diffColor,
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                _row('Uang awal', closed.openingCash),
+                _row('Penjualan tunai', _stats?.cashSales ?? 0),
+                _row('Pengeluaran', -_expenseTotal, color: Colors.red),
+                const Divider(height: 20),
+                _row('Uang seharusnya', expected, bold: true),
+                _row('Uang fisik', closed.closingCash ?? 0, bold: true),
+                const Divider(height: 20),
+                _row('Selisih', diff, bold: true, color: diffColor),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: diffColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    diff == 0
+                        ? '✓ Kas cocok'
+                        : diff > 0
+                            ? '↑ Kas lebih'
+                            : '↓ Kas kurang',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: diffColor,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('OK'),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 42,
+                  child: FilledButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text('OK'),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
