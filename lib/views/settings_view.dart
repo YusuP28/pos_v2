@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../core/services/auth_service.dart';
 import '../core/services/backup_service.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
@@ -133,6 +134,116 @@ class _SettingsViewState extends State<SettingsView> {
     if (mounted) AppToast.show(context, 'Backup dihapus.');
   }
 
+  Future<void> _openPinDialog() async {
+    final hasPin = await AuthService.instance.hasPin();
+    final pin = TextEditingController();
+    final confirm = TextEditingController();
+
+    if (!mounted) return;
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(hasPin ? 'Ganti PIN' : 'Atur PIN',
+            style: const TextStyle(fontSize: 16)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('PIN 4-digit untuk buka aplikasi.',
+                style: TextStyle(fontSize: 11, color: Colors.grey)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: pin,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              maxLength: 4,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'PIN',
+                border: OutlineInputBorder(),
+                isDense: true,
+                counterText: '',
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: confirm,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              maxLength: 4,
+              decoration: const InputDecoration(
+                labelText: 'Konfirmasi PIN',
+                border: OutlineInputBorder(),
+                isDense: true,
+                counterText: '',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal', style: TextStyle(fontSize: 12)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, {
+              'pin': pin.text,
+              'confirm': confirm.text,
+            }),
+            child: const Text('Simpan', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+    if (result == null) return;
+
+    final p = result['pin'] ?? '';
+    final c = result['confirm'] ?? '';
+    if (p.length != 4 || !RegExp(r'^\d{4}$').hasMatch(p)) {
+      if (!mounted) return;
+      await AppDialog.error(context, 'PIN harus 4 digit angka.',
+          title: 'PIN Tidak Valid');
+      return;
+    }
+    if (p != c) {
+      if (!mounted) return;
+      await AppDialog.error(context, 'PIN dan konfirmasi tidak sama.',
+          title: 'Tidak Cocok');
+      return;
+    }
+    await AuthService.instance.setPin(p);
+    if (!mounted) return;
+    AppToast.show(context, hasPin ? 'PIN diganti.' : 'PIN diatur.');
+    setState(() {});
+  }
+
+  Future<void> _removePin() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Hapus PIN?', style: TextStyle(fontSize: 16)),
+        content: const Text(
+          'Setelah hapus, aplikasi langsung masuk tanpa PIN.',
+          style: TextStyle(fontSize: 12),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Batal', style: TextStyle(fontSize: 12)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Hapus', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    await AuthService.instance.removePin();
+    if (!mounted) return;
+    AppToast.show(context, 'PIN dihapus.');
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,6 +266,75 @@ class _SettingsViewState extends State<SettingsView> {
               : ListView(
                   padding: const EdgeInsets.all(12),
                   children: [
+                    // Keamanan — PIN
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                      child: Text('Keamanan',
+                          style: TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.bold)),
+                    ),
+                    Card(
+                      margin: EdgeInsets.zero,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: FutureBuilder<bool>(
+                          future: AuthService.instance.hasPin(),
+                          builder: (ctx, snap) {
+                            final hasPin = snap.data ?? false;
+                            return Row(
+                              children: [
+                                Icon(
+                                  hasPin ? Icons.lock : Icons.lock_open,
+                                  size: 20,
+                                  color: hasPin
+                                      ? Colors.green
+                                      : Colors.grey,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        hasPin
+                                            ? 'PIN aktif'
+                                            : 'PIN belum diatur',
+                                        style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        hasPin
+                                            ? 'Aplikasi minta PIN saat dibuka'
+                                            : 'Aplikasi langsung masuk tanpa PIN',
+                                        style: const TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: _openPinDialog,
+                                  child: Text(
+                                    hasPin ? 'Ganti' : 'Atur',
+                                    style: const TextStyle(fontSize: 11),
+                                  ),
+                                ),
+                                if (hasPin)
+                                  IconButton(
+                                    icon: const Icon(Icons.delete_outline,
+                                        size: 16),
+                                    onPressed: _removePin,
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+
                     // Info aplikasi
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),

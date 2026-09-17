@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import 'home_view.dart';
 import 'login_view.dart';
+import 'pin_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -16,13 +17,22 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 800), () {
-      if (!mounted) return;
+    Future.microtask(() async {
       final auth = context.read<AuthViewModel>();
+      final hasSession = await auth.initSession();
+      if (!mounted) return;
+
+      Widget target;
+      if (!hasSession) {
+        target = const LoginView();
+      } else if (auth.state == AuthState.needPin) {
+        target = const PinView();
+      } else {
+        target = const HomeView();
+      }
+
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => auth.isLoggedIn ? const HomeView() : const LoginView(),
-        ),
+        MaterialPageRoute(builder: (_) => target),
       );
     });
   }
@@ -36,9 +46,10 @@ class _SplashViewState extends State<SplashView> {
           children: [
             Icon(Icons.point_of_sale, size: 80),
             SizedBox(height: 16),
-            Text('POS v2', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('Offline POS'),
+            Text('POS v2',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+            SizedBox(height: 24),
+            CircularProgressIndicator(),
           ],
         ),
       ),

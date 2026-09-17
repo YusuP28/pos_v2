@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../viewmodels/auth_viewmodel.dart';
 import 'home_view.dart';
+import 'pin_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -33,9 +34,16 @@ class _LoginViewState extends State<LoginView> {
       setState(() => _error = 'Username atau password salah.');
       return;
     }
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const HomeView()),
-    );
+    // Cek apakah perlu PIN
+    if (auth.state == AuthState.needPin) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const PinView()),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const HomeView()),
+      );
+    }
   }
 
   @override
