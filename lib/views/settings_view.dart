@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
 import '../core/services/auth_service.dart';
+import '../core/services/export_service.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../core/services/backup_service.dart';
 import '../widgets/app_appbar.dart';
@@ -356,6 +357,37 @@ class _SettingsViewState extends State<SettingsView> {
     setState(() {});
   }
 
+  Future<void> _exportCSV(String jenis) async {
+    setState(() => _busy = true);
+    try {
+      String path;
+      switch (jenis) {
+        case 'transaksi':
+          path = await ExportService.instance.exportOrders();
+          break;
+        case 'produk':
+          path = await ExportService.instance.exportProducts();
+          break;
+        case 'detail':
+          path = await ExportService.instance.exportOrderItems();
+          break;
+        default:
+          throw Exception('Jenis export tidak dikenal.');
+      }
+      if (!mounted) return;
+      AppToast.show(
+        context,
+        'Export berhasil: ${path.split("/").last}',
+        duration: const Duration(seconds: 4),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      await AppDialog.error(context, 'Gagal export: $e', title: 'Gagal');
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -602,6 +634,90 @@ class _SettingsViewState extends State<SettingsView> {
                               'Bisa diakses via file manager di folder '
                               'Android/data/com.yusup.posv2/files/pos_v2_backup/',
                               style: TextStyle(fontSize: 10, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // Export CSV
+                    const SizedBox(height: 16),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                      child: Text('Export Data (CSV)',
+                          style: TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.bold)),
+                    ),
+                    Card(
+                      margin: EdgeInsets.zero,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'File CSV bisa dibuka di Excel / Google Sheets.',
+                              style: TextStyle(fontSize: 10, color: Colors.grey),
+                            ),
+                            const SizedBox(height: 2),
+                            FutureBuilder<Directory>(
+                              future: ExportService.instance.getExportDir(),
+                              builder: (ctx, snap) {
+                                return Text(
+                                  snap.data?.path ?? '...',
+                                  style: const TextStyle(
+                                      fontSize: 10, fontFamily: 'monospace'),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 36,
+                                    child: FilledButton.icon(
+                                      onPressed: _busy
+                                          ? null
+                                          : () => _exportCSV('transaksi'),
+                                      icon: const Icon(Icons.receipt_long,
+                                          size: 16),
+                                      label: const Text('TRANSAKSI',
+                                          style: TextStyle(fontSize: 11)),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 36,
+                                    child: FilledButton.icon(
+                                      onPressed: _busy
+                                          ? null
+                                          : () => _exportCSV('detail'),
+                                      icon: const Icon(Icons.list_alt,
+                                          size: 16),
+                                      label: const Text('DETAIL ITEM',
+                                          style: TextStyle(fontSize: 11)),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 36,
+                                    child: FilledButton.icon(
+                                      onPressed: _busy
+                                          ? null
+                                          : () => _exportCSV('produk'),
+                                      icon: const Icon(Icons.inventory_2,
+                                          size: 16),
+                                      label: const Text('PRODUK',
+                                          style: TextStyle(fontSize: 11)),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

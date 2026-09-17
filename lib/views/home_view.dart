@@ -92,6 +92,33 @@ class _HomeViewState extends State<HomeView> {
             tooltip: 'Logout',
             icon: const Icon(Icons.logout),
             onPressed: () async {
+              final ok = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Logout?',
+                      style: TextStyle(fontSize: 16)),
+                  content: Text(
+                    'Anda akan keluar dari akun "${user?.fullName ?? user?.username ?? '-'}".'
+                    '\n\nSetelah logout, Anda harus login ulang dengan '
+                    'username & password.',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text('Batal',
+                          style: TextStyle(fontSize: 12)),
+                    ),
+                    FilledButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text('Logout',
+                          style: TextStyle(fontSize: 12)),
+                    ),
+                  ],
+                ),
+              );
+              if (ok != true) return;
+              if (!context.mounted) return;
               await auth.logout();
               if (!context.mounted) return;
               Navigator.of(context).pushReplacement(
