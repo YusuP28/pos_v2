@@ -147,7 +147,8 @@ class _ShiftCloseViewState extends State<ShiftCloseView> {
     );
   }
 
-  Widget _row(String label, double value, {bool bold = false}) {
+  Widget _row(String label, double value,
+      {bool bold = false, Color? color}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
@@ -159,6 +160,7 @@ class _ShiftCloseViewState extends State<ShiftCloseView> {
             style: TextStyle(
               fontSize: 12,
               fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+              color: color,
             ),
           ),
         ],
