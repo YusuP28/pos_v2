@@ -215,6 +215,23 @@ class DbHelper {
         'CREATE INDEX IF NOT EXISTS idx_expenses_created ON expenses (created_at)');
   }
 
+  Future<void> _createStockMovementTable(Database db) async {
+    await db.execute(
+      'CREATE TABLE IF NOT EXISTS stock_movements ('
+      'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+      'product_id INTEGER NOT NULL, '
+      'user_id INTEGER NOT NULL, '
+      'quantity REAL NOT NULL DEFAULT 0, '
+      'type TEXT NOT NULL DEFAULT "in", '
+      'notes TEXT NOT NULL DEFAULT "", '
+      'created_at TEXT NOT NULL)',
+    );
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_stock_mov_prod ON stock_movements (product_id)');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_stock_mov_created ON stock_movements (created_at)');
+  }
+
   /// Tutup database (untuk backup/restore).
   Future<void> close() async {
     if (_db != null) {
