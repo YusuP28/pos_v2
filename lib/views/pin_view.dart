@@ -51,10 +51,11 @@ class _PinViewState extends State<PinView> {
       builder: (ctx) => AlertDialog(
         title: const Text('Lupa PIN?', style: TextStyle(fontSize: 16)),
         content: const Text(
-          'Anda akan logout dan harus login ulang dengan '
-          'username & password.\n\nPIN tetap tersimpan — setelah login, '
-          'Anda akan diminta PIN lagi. Untuk ganti/hapus PIN, buka '
-          'Pengaturan setelah login.',
+          'PIN akan DIHAPUS dan Anda akan logout.\n\n'
+          'Setelah login ulang dengan username & password, '
+          'Anda langsung masuk tanpa PIN.\n\n'
+          'Untuk mengaktifkan PIN lagi, buka Pengaturan → Keamanan '
+          'setelah login.',
           style: TextStyle(fontSize: 12),
         ),
         actions: [
@@ -64,7 +65,8 @@ class _PinViewState extends State<PinView> {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Logout', style: TextStyle(fontSize: 12)),
+            child: const Text('Hapus PIN & Logout',
+                style: TextStyle(fontSize: 12)),
           ),
         ],
       ),

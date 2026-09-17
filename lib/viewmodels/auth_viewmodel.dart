@@ -70,8 +70,10 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Lupa PIN — logout total, tapi PIN tetap tersimpan.
+  /// Lupa PIN — logout total + hapus PIN.
+  /// Setelah login ulang, user langsung masuk tanpa PIN.
   Future<void> forgotPin() async {
+    await AuthService.instance.removePin();
     await logout();
   }
 }
