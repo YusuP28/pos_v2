@@ -8,14 +8,15 @@ import '../viewmodels/settings_viewmodel.dart';
 import '../viewmodels/shift_viewmodel.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_toast.dart';
+import '../widgets/pin_admin_dialog.dart';
 import 'category_list_view.dart';
-import 'login_view.dart';
-import 'product_list_view.dart';
-import 'retail_pos_view.dart';
-import 'report/report_view.dart';
 import 'expense_view.dart';
 import 'info_toko_view.dart';
+import 'login_view.dart';
 import 'printer_settings_view.dart';
+import 'product_list_view.dart';
+import 'report/report_view.dart';
+import 'retail_pos_view.dart';
 import 'settings_view.dart';
 import 'shift/shift_history_view.dart';
 import 'shift_view.dart';
@@ -29,21 +30,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  Future<void> _checkBluetooth() async {
-    try {
-      final state = await FlutterBluePlus.adapterState.first;
-      if (state != BluetoothAdapterState.on) {
-        if (!mounted) return;
-        AppToast.show(
-          context,
-          'Bluetooth belum aktif. Nyalakan untuk printer.',
-          success: false,
-          duration: const Duration(seconds: 3),
-        );
-      }
-    } catch (_) {}
-  }
-
   @override
   void initState() {
     super.initState();
@@ -60,6 +46,37 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
+  Future<void> _checkBluetooth() async {
+    try {
+      final state = await FlutterBluePlus.adapterState.first;
+      if (state != BluetoothAdapterState.on) {
+        if (!mounted) return;
+        AppToast.show(
+          context,
+          'Bluetooth belum aktif. Nyalakan untuk printer.',
+          success: false,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } catch (_) {}
+  }
+
+  /// Buka menu dengan cek PIN Admin kalau user bukan admin.
+  Future<void> _openProtected(
+      BuildContext context, Widget Function() builder) async {
+    final isAdmin =
+        context.read<AuthViewModel>().currentUser?.isAdmin ?? false;
+    if (!isAdmin) {
+      final ok = await PinAdminDialog.verify(context);
+      if (!ok) return;
+    }
+    if (!context.mounted) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => builder()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthViewModel>();
@@ -74,8 +91,9 @@ class _HomeViewState extends State<HomeView> {
           IconButton(
             tooltip: 'Logout',
             icon: const Icon(Icons.logout),
-            onPressed: () {
-              auth.logout();
+            onPressed: () async {
+              await auth.logout();
+              if (!context.mounted) return;
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (_) => const LoginView()),
               );
@@ -94,8 +112,8 @@ class _HomeViewState extends State<HomeView> {
                 child: ListTile(
                   dense: true,
                   visualDensity: VisualDensity.compact,
-                  leading: const CircleAvatar(
-                      radius: 14, child: Icon(Icons.person, size: 14)),
+                  leading:
+                      const CircleAvatar(radius: 14, child: Icon(Icons.person, size: 14)),
                   title: Text(
                     'Halo, ${user?.fullName ?? "-"}',
                     style: const TextStyle(fontSize: 13),
@@ -109,10 +127,9 @@ class _HomeViewState extends State<HomeView> {
               const SizedBox(height: 8),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4),
-                child: Text(
-                  'Menu',
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-                ),
+                child: Text('Menu',
+                    style: TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.bold)),
               ),
               const SizedBox(height: 6),
               GridView.count(
@@ -128,7 +145,8 @@ class _HomeViewState extends State<HomeView> {
                     label: 'Retail POS',
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const RetailPosView()),
+                      MaterialPageRoute(
+                          builder: (_) => const RetailPosView()),
                     ),
                   ),
                   _MenuCard(
@@ -136,19 +154,19 @@ class _HomeViewState extends State<HomeView> {
                     label: 'Produk',
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const ProductListView()),
+                      MaterialPageRoute(
+                          builder: (_) => const ProductListView()),
                     ),
                   ),
-                  if (isAdmin)
-                    _MenuCard(
-                      icon: Icons.category,
-                      label: 'Kategori',
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const CategoryListView()),
-                      ),
+                  _MenuCard(
+                    icon: Icons.category,
+                    label: 'Kategori',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const CategoryListView()),
                     ),
+                  ),
                   _MenuCard(
                     icon: Icons.account_balance_wallet,
                     label: 'Shift Kas',
@@ -165,36 +183,29 @@ class _HomeViewState extends State<HomeView> {
                       MaterialPageRoute(builder: (_) => const ReportView()),
                     ),
                   ),
-                  if (isAdmin)
-                    _MenuCard(
-                      icon: Icons.print,
-                      label: 'Pengaturan Printer',
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const PrinterSettingsView()),
-                      ),
+                  _MenuCard(
+                    icon: Icons.print,
+                    label: 'Pengaturan Printer',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const PrinterSettingsView()),
                     ),
-                  if (isAdmin)
-                    _MenuCard(
-                      icon: Icons.store,
-                      label: 'Info Toko',
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const InfoTokoView()),
-                      ),
-                    ),
-                  if (isAdmin)
-                    _MenuCard(
-                      icon: Icons.settings,
-                      label: 'Pengaturan',
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const SettingsView()),
-                      ),
-                    ),
+                  ),
+                  _MenuCard(
+                    icon: Icons.store,
+                    label: 'Info Toko',
+                    locked: !isAdmin,
+                    onTap: () => _openProtected(
+                        context, () => const InfoTokoView()),
+                  ),
+                  _MenuCard(
+                    icon: Icons.settings,
+                    label: 'Pengaturan',
+                    locked: !isAdmin,
+                    onTap: () =>
+                        _openProtected(context, () => const SettingsView()),
+                  ),
                   _MenuCard(
                     icon: Icons.trending_down,
                     label: 'Pengeluaran',
@@ -213,16 +224,13 @@ class _HomeViewState extends State<HomeView> {
                           builder: (_) => const ShiftHistoryView()),
                     ),
                   ),
-                  if (isAdmin)
-                    _MenuCard(
-                      icon: Icons.people,
-                      label: 'Manajemen User',
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const UserManagementView()),
-                      ),
-                    ),
+                  _MenuCard(
+                    icon: Icons.people,
+                    label: 'Manajemen User',
+                    locked: !isAdmin,
+                    onTap: () => _openProtected(
+                        context, () => const UserManagementView()),
+                  ),
                 ],
               ),
             ],
@@ -237,11 +245,13 @@ class _MenuCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final bool locked;
 
   const _MenuCard({
     required this.icon,
     required this.label,
     required this.onTap,
+    this.locked = false,
   });
 
   @override
@@ -253,22 +263,36 @@ class _MenuCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: Padding(
           padding: const EdgeInsets.all(6),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
             children: [
-              Icon(icon, size: 22, color: Theme.of(context).colorScheme.primary),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(icon,
+                        size: 22,
+                        color: Theme.of(context).colorScheme.primary),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        label,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              if (locked)
+                const Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Icon(Icons.lock, size: 12, color: Colors.orange),
+                ),
             ],
           ),
         ),

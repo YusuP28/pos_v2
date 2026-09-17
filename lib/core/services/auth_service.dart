@@ -13,6 +13,7 @@ class AuthService {
   static const _kRole = 'auth_role';
   static const _kLoggedIn = 'auth_logged_in';
   static const _kPinHash = 'auth_pin_hash';
+  static const _kPinAdminHash = 'auth_pin_admin_hash';
 
   Future<SharedPreferences> get _prefs => SharedPreferences.getInstance();
 
@@ -71,6 +72,31 @@ class AuthService {
   Future<bool> verifyPin(String pin) async {
     final p = await _prefs;
     final saved = p.getString(_kPinHash);
+    if (saved == null) return false;
+    return saved == Hash.sha256(pin);
+  }
+
+  // ============ PIN ADMIN ============
+
+  Future<bool> hasPinAdmin() async {
+    final p = await _prefs;
+    final h = p.getString(_kPinAdminHash);
+    return h != null && h.isNotEmpty;
+  }
+
+  Future<void> setPinAdmin(String pin) async {
+    final p = await _prefs;
+    await p.setString(_kPinAdminHash, Hash.sha256(pin));
+  }
+
+  Future<void> removePinAdmin() async {
+    final p = await _prefs;
+    await p.remove(_kPinAdminHash);
+  }
+
+  Future<bool> verifyPinAdmin(String pin) async {
+    final p = await _prefs;
+    final saved = p.getString(_kPinAdminHash);
     if (saved == null) return false;
     return saved == Hash.sha256(pin);
   }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../core/services/auth_service.dart';
+import '../viewmodels/auth_viewmodel.dart';
 import '../core/services/backup_service.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
@@ -244,6 +245,116 @@ class _SettingsViewState extends State<SettingsView> {
     setState(() {});
   }
 
+  Future<void> _openPinAdminDialog() async {
+    final hasPin = await AuthService.instance.hasPinAdmin();
+    final pin = TextEditingController();
+    final confirm = TextEditingController();
+
+    if (!mounted) return;
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(hasPin ? 'Ganti PIN Admin' : 'Atur PIN Admin',
+            style: const TextStyle(fontSize: 16)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('PIN Admin 6-digit. Hanya admin yang tahu.',
+                style: TextStyle(fontSize: 11, color: Colors.grey)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: pin,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              maxLength: 6,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'PIN Admin',
+                border: OutlineInputBorder(),
+                isDense: true,
+                counterText: '',
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: confirm,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              maxLength: 6,
+              decoration: const InputDecoration(
+                labelText: 'Konfirmasi PIN Admin',
+                border: OutlineInputBorder(),
+                isDense: true,
+                counterText: '',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal', style: TextStyle(fontSize: 12)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, {
+              'pin': pin.text,
+              'confirm': confirm.text,
+            }),
+            child: const Text('Simpan', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+    if (result == null) return;
+
+    final p = result['pin'] ?? '';
+    final c = result['confirm'] ?? '';
+    if (p.length != 6 || !RegExp(r'^\d{6}$').hasMatch(p)) {
+      if (!mounted) return;
+      await AppDialog.error(context, 'PIN Admin harus 6 digit angka.',
+          title: 'PIN Tidak Valid');
+      return;
+    }
+    if (p != c) {
+      if (!mounted) return;
+      await AppDialog.error(context, 'PIN dan konfirmasi tidak sama.',
+          title: 'Tidak Cocok');
+      return;
+    }
+    await AuthService.instance.setPinAdmin(p);
+    if (!mounted) return;
+    AppToast.show(context, hasPin ? 'PIN Admin diganti.' : 'PIN Admin diatur.');
+    setState(() {});
+  }
+
+  Future<void> _removePinAdmin() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Hapus PIN Admin?', style: TextStyle(fontSize: 16)),
+        content: const Text(
+          'Setelah hapus, kasir tidak bisa akses menu admin sama sekali.',
+          style: TextStyle(fontSize: 12),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Batal', style: TextStyle(fontSize: 12)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Hapus', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    await AuthService.instance.removePinAdmin();
+    if (!mounted) return;
+    AppToast.show(context, 'PIN Admin dihapus.');
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -334,6 +445,74 @@ class _SettingsViewState extends State<SettingsView> {
                         ),
                       ),
                     ),
+
+                    // PIN Admin — admin only
+                    if (context.watch<AuthViewModel>().currentUser?.isAdmin ?? false) ...[
+                      const SizedBox(height: 8),
+                      Card(
+                        margin: EdgeInsets.zero,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: FutureBuilder<bool>(
+                            future: AuthService.instance.hasPinAdmin(),
+                            builder: (ctx, snap) {
+                              final hasPin = snap.data ?? false;
+                              return Row(
+                                children: [
+                                  Icon(
+                                    hasPin
+                                        ? Icons.admin_panel_settings
+                                        : Icons.shield_outlined,
+                                    size: 20,
+                                    color: hasPin
+                                        ? Colors.deepPurple
+                                        : Colors.grey,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          hasPin
+                                              ? 'PIN Admin aktif'
+                                              : 'PIN Admin belum diatur',
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          hasPin
+                                              ? 'Kasir butuh PIN ini untuk buka menu admin'
+                                              : 'Kasir tidak bisa akses menu admin',
+                                          style: const TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: _openPinAdminDialog,
+                                    child: Text(
+                                      hasPin ? 'Ganti' : 'Atur',
+                                      style: const TextStyle(fontSize: 11),
+                                    ),
+                                  ),
+                                  if (hasPin)
+                                    IconButton(
+                                      icon: const Icon(Icons.delete_outline,
+                                          size: 16),
+                                      onPressed: _removePinAdmin,
+                                    ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
 
                     // Info aplikasi
                     const Padding(
