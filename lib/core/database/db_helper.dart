@@ -9,7 +9,7 @@ class DbHelper {
   static final DbHelper instance = DbHelper._();
 
   static const _dbName = 'pos_v2.db';
-  static const _dbVersion = 5;
+  static const _dbVersion = 6;
 
   Database? _db;
 
@@ -34,6 +34,12 @@ class DbHelper {
       );
       if (r.isEmpty) {
         await _createExpenseTable(db);
+      }
+      final s = await db.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='stock_movements'",
+      );
+      if (s.isEmpty) {
+        await _createStockMovementTable(db);
       }
     } catch (_) {}
     return db;
@@ -61,6 +67,9 @@ class DbHelper {
     }
     if (oldV < 5) {
       await _createExpenseTable(db);
+    }
+    if (oldV < 6) {
+      await _createStockMovementTable(db);
     }
   }
 

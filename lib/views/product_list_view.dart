@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../core/utils/currency.dart';
+import '../viewmodels/auth_viewmodel.dart';
 import '../viewmodels/category_viewmodel.dart';
+import '../repositories/stock_repository.dart';
 import '../viewmodels/product_viewmodel.dart';
 import '../widgets/app_appbar.dart';
+import '../widgets/app_toast.dart';
 import 'product_form_view.dart';
 
 class ProductListView extends StatefulWidget {
@@ -30,6 +33,84 @@ class _ProductListViewState extends State<ProductListView> {
   void dispose() {
     _search.dispose();
     super.dispose();
+  }
+
+  Future<void> _addStock(Product p) async {
+    final qty = TextEditingController();
+    final notes = TextEditingController();
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Tambah Stok: ${p.name}',
+            style: const TextStyle(fontSize: 14)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Stok saat ini: ${p.stock.toStringAsFixed(0)} ${p.unit}',
+                style: const TextStyle(fontSize: 11, color: Colors.grey)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: qty,
+              keyboardType: TextInputType.number,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'Jumlah masuk',
+                border: OutlineInputBorder(),
+                isDense: true,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: notes,
+              decoration: const InputDecoration(
+                labelText: 'Catatan (mis. supplier)',
+                border: OutlineInputBorder(),
+                isDense: true,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal', style: TextStyle(fontSize: 12)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, {
+              'qty': qty.text.trim(),
+              'notes': notes.text.trim(),
+            }),
+            child: const Text('Tambah', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+    if (result == null) return;
+
+    final jumlah = double.tryParse(result['qty'] ?? '') ?? 0;
+    if (jumlah <= 0) {
+      if (!mounted) return;
+      AppToast.show(context, 'Jumlah tidak valid.', success: false);
+      return;
+    }
+
+    final userId = context.read<AuthViewModel>().currentUser?.id;
+    if (userId == null) return;
+
+    try {
+      await StockRepository.instance.addStock(
+        productId: p.id!,
+        userId: userId,
+        quantity: jumlah,
+        notes: result['notes'] ?? '',
+      );
+      if (!mounted) return;
+      AppToast.show(context, 'Stok ditambah +${jumlah.toStringAsFixed(0)}.');
+      await context.read<ProductViewModel>().load();
+    } catch (e) {
+      if (!mounted) return;
+      AppToast.show(context, 'Gagal: $e', success: false);
+    }
   }
 
   @override

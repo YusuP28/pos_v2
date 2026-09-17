@@ -64,6 +64,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthViewModel>();
     final user = auth.currentUser;
+    final isAdmin = user?.isAdmin ?? false;
 
     return Scaffold(
       appBar: AppAppBar(
@@ -138,14 +139,16 @@ class _HomeViewState extends State<HomeView> {
                       MaterialPageRoute(builder: (_) => const ProductListView()),
                     ),
                   ),
-                  _MenuCard(
-                    icon: Icons.category,
-                    label: 'Kategori',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const CategoryListView()),
+                  if (isAdmin)
+                    _MenuCard(
+                      icon: Icons.category,
+                      label: 'Kategori',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const CategoryListView()),
+                      ),
                     ),
-                  ),
                   _MenuCard(
                     icon: Icons.account_balance_wallet,
                     label: 'Shift Kas',
@@ -162,33 +165,36 @@ class _HomeViewState extends State<HomeView> {
                       MaterialPageRoute(builder: (_) => const ReportView()),
                     ),
                   ),
-                  _MenuCard(
-                    icon: Icons.print,
-                    label: 'Pengaturan Printer',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const PrinterSettingsView()),
+                  if (isAdmin)
+                    _MenuCard(
+                      icon: Icons.print,
+                      label: 'Pengaturan Printer',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const PrinterSettingsView()),
+                      ),
                     ),
-                  ),
-                  _MenuCard(
-                    icon: Icons.store,
-                    label: 'Info Toko',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const InfoTokoView()),
+                  if (isAdmin)
+                    _MenuCard(
+                      icon: Icons.store,
+                      label: 'Info Toko',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const InfoTokoView()),
+                      ),
                     ),
-                  ),
-                  _MenuCard(
-                    icon: Icons.settings,
-                    label: 'Pengaturan',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const SettingsView()),
+                  if (isAdmin)
+                    _MenuCard(
+                      icon: Icons.settings,
+                      label: 'Pengaturan',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const SettingsView()),
+                      ),
                     ),
-                  ),
                   _MenuCard(
                     icon: Icons.trending_down,
                     label: 'Pengeluaran',
@@ -207,15 +213,16 @@ class _HomeViewState extends State<HomeView> {
                           builder: (_) => const ShiftHistoryView()),
                     ),
                   ),
-                  _MenuCard(
-                    icon: Icons.people,
-                    label: 'Manajemen User',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const UserManagementView()),
+                  if (isAdmin)
+                    _MenuCard(
+                      icon: Icons.people,
+                      label: 'Manajemen User',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const UserManagementView()),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ],
