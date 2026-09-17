@@ -102,10 +102,21 @@ class PrinterService {
         final decoded = img.decodeImage(logoBytes);
         if (decoded != null) {
           final maxWidth = paper80mm ? 576 : 384;
-          final resized = img.copyResize(
-            decoded,
-            width: maxWidth,
-          );
+          final maxHeight = paper80mm ? 120 : 80;
+
+          // Resize supaya muat dalam batas lebar & tinggi
+          var w = decoded.width;
+          var h = decoded.height;
+          final ratio = w / h;
+          if (w > maxWidth) {
+            w = maxWidth;
+            h = (w / ratio).round();
+          }
+          if (h > maxHeight) {
+            h = maxHeight;
+            w = (h * ratio).round();
+          }
+          final resized = img.copyResize(decoded, width: w, height: h);
           bytes.addAll(generator.image(resized));
           bytes.addAll(generator.feed(1));
         } else {
