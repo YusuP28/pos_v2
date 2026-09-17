@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../core/utils/currency.dart';
-import '../viewmodels/auth_viewmodel.dart';
 import '../models/product.dart';
-import '../viewmodels/category_viewmodel.dart';
 import '../repositories/stock_repository.dart';
+import '../viewmodels/auth_viewmodel.dart';
+import '../viewmodels/category_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_toast.dart';
@@ -117,19 +117,21 @@ class _ProductListViewState extends State<ProductListView> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<ProductViewModel>();
+    final isAdmin =
+        context.watch<AuthViewModel>().currentUser?.isAdmin ?? false;
+
     return Scaffold(
-      appBar: AppAppBar(
-        title: 'Produk',
-        subtitle: 'Kelola produk',
-      ),
-      floatingActionButton: FloatingActionButton(
-        mini: true,
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const ProductFormView()),
-        ),
-        child: const Icon(Icons.add, size: 18),
-      ),
+      appBar: AppAppBar(title: 'Produk', subtitle: 'Kelola produk'),
+      floatingActionButton: isAdmin
+          ? FloatingActionButton(
+              mini: true,
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProductFormView()),
+              ),
+              child: const Icon(Icons.add, size: 18),
+            )
+          : null,
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1400),
@@ -178,94 +180,138 @@ class _ProductListViewState extends State<ProductListView> {
                                   final p = vm.items[i];
                                   return Card(
                                     margin: EdgeInsets.zero,
-                                    child: InkWell(
-                                      onTap: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              ProductFormView(existing: p),
-                                        ),
-                                      ),
-                                      onLongPress: () async {
-                                        final ok = await showDialog<bool>(
-                                          context: context,
-                                          builder: (ctx) => AlertDialog(
-                                            title: const Text('Hapus produk?'),
-                                            content: Text(
-                                              'Produk "${p.name}" akan dinonaktifkan.',
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.pop(ctx, false),
-                                                child: const Text('Batal'),
-                                              ),
-                                              FilledButton(
-                                                onPressed: () =>
-                                                    Navigator.pop(ctx, true),
-                                                child: const Text(
-                                                    'Nonaktifkan'),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                        if (ok == true && p.id != null) {
-                                          await vm.remove(p.id!);
-                                        }
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.inventory_2_outlined,
-                                                  size: 16,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary,
-                                                ),
-                                                const SizedBox(width: 4),
-                                                Expanded(
-                                                  child: Text(
-                                                    p.name,
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 13,
+                                    child: Stack(
+                                      children: [
+                                        InkWell(
+                                          onTap: isAdmin
+                                              ? () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          ProductFormView(
+                                                              existing: p),
                                                     ),
+                                                  )
+                                              : null,
+                                          onLongPress: isAdmin
+                                              ? () async {
+                                                  final ok =
+                                                      await showDialog<bool>(
+                                                    context: context,
+                                                    builder: (ctx) =>
+                                                        AlertDialog(
+                                                      title: const Text(
+                                                          'Hapus produk?'),
+                                                      content: Text(
+                                                        'Produk "${p.name}" akan dinonaktifkan.',
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  ctx, false),
+                                                          child: const Text(
+                                                              'Batal'),
+                                                        ),
+                                                        FilledButton(
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  ctx, true),
+                                                          child: const Text(
+                                                              'Nonaktifkan'),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                  if (ok == true &&
+                                                      p.id != null) {
+                                                    await vm.remove(p.id!);
+                                                  }
+                                                }
+                                              : null,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons
+                                                          .inventory_2_outlined,
+                                                      size: 16,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary,
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Expanded(
+                                                      child: Text(
+                                                        p.name,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 24),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 2),
+                                                Text(
+                                                  'SKU: ${p.sku.isEmpty ? "-" : p.sku}',
+                                                  style: const TextStyle(
+                                                      fontSize: 10),
+                                                ),
+                                                Text(
+                                                  'Stok: ${p.stock.toStringAsFixed(0)} ${p.unit}',
+                                                  style: const TextStyle(
+                                                      fontSize: 10),
+                                                ),
+                                                const Spacer(),
+                                                Text(
+                                                  Currency.format(p.price),
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12,
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              'SKU: ${p.sku.isEmpty ? "-" : p.sku}',
-                                              style: const TextStyle(
-                                                  fontSize: 11),
-                                            ),
-                                            Text(
-                                              'Stok: ${p.stock.toStringAsFixed(0)} ${p.unit}',
-                                              style: const TextStyle(
-                                                  fontSize: 11),
-                                            ),
-                                            const Spacer(),
-                                            Text(
-                                              Currency.format(p.price),
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 13,
+                                          ),
+                                        ),
+                                        // Tombol +Stok (selalu muncul — admin & kasir)
+                                        Positioned(
+                                          top: 4,
+                                          right: 4,
+                                          child: Material(
+                                            color: Colors.green
+                                                .withValues(alpha: 0.15),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            child: InkWell(
+                                              onTap: () => _addStock(p),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: const Padding(
+                                                padding: EdgeInsets.all(4),
+                                                child: Icon(
+                                                  Icons.add,
+                                                  size: 16,
+                                                  color: Colors.green,
+                                                ),
                                               ),
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   );
                                 },

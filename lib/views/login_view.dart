@@ -12,8 +12,8 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  final _username = TextEditingController(text: 'admin');
-  final _password = TextEditingController(text: 'admin');
+  final _username = TextEditingController();
+  final _password = TextEditingController();
   bool _obscure = true;
   String? _error;
 
