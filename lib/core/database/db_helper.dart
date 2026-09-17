@@ -188,6 +188,24 @@ class DbHelper {
         'CREATE INDEX idx_shifts_opened_at ON shifts (opened_at)');
   }
 
+  Future<void> _createExpenseTable(Database db) async {
+    await db.execute(
+      'CREATE TABLE IF NOT EXISTS expenses ('
+      'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+      'shift_id INTEGER, '
+      'user_id INTEGER NOT NULL, '
+      'amount REAL NOT NULL DEFAULT 0, '
+      'category TEXT NOT NULL DEFAULT "Lain", '
+      'notes TEXT NOT NULL DEFAULT "", '
+      'created_at TEXT NOT NULL, '
+      'FOREIGN KEY (user_id) REFERENCES users (id))',
+    );
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_expenses_shift ON expenses (shift_id)');
+    await db.execute(
+        'CREATE INDEX IF NOT EXISTS idx_expenses_created ON expenses (created_at)');
+  }
+
   /// Tutup database (untuk backup/restore).
   Future<void> close() async {
     if (_db != null) {
