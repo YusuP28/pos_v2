@@ -102,7 +102,7 @@ class PrinterService {
         final decoded = img.decodeImage(logoBytes);
         if (decoded != null) {
           final maxWidth = paper80mm ? 576 : 384;
-          final maxHeight = paper80mm ? 120 : 80;
+          final maxHeight = paper80mm ? 200 : 150;
 
           // Resize supaya muat dalam batas lebar & tinggi
           var w = decoded.width;
