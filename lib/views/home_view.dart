@@ -18,6 +18,7 @@ import 'product_list_view.dart';
 import 'report/report_view.dart';
 import 'retail_pos_view.dart';
 import 'settings_view.dart';
+import 'stock/stock_report_view.dart';
 import 'shift/shift_history_view.dart';
 import 'shift_view.dart';
 import 'user/user_management_view.dart';
@@ -249,6 +250,15 @@ class _HomeViewState extends State<HomeView> {
                       context,
                       MaterialPageRoute(
                           builder: (_) => const ShiftHistoryView()),
+                    ),
+                  ),
+                  _MenuCard(
+                    icon: Icons.inventory,
+                    label: 'Laporan Stok',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const StockReportView()),
                     ),
                   ),
                   _MenuCard(

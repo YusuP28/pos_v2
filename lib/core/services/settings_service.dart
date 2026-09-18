@@ -22,6 +22,7 @@ class SettingsService {
   static const _kLastPrinterId = 'last_printer_id';
   static const _kLastPrinterName = 'last_printer_name';
   static const _kPaper80mm = 'paper_80mm';
+  static const _kLowStock = 'low_stock_threshold';
 
   static const defaultStoreName = 'POS v2';
   static const defaultStoreAddress = 'Jl. Contoh No. 123';
@@ -147,4 +148,10 @@ class SettingsService {
       (await _prefs).getBool(_kPaper80mm) ?? false;
   Future<void> setPaper80mm(bool v) async =>
       (await _prefs).setBool(_kPaper80mm, v);
+
+  // ---- Low Stock Threshold ----
+  Future<int> getLowStockThreshold() async =>
+      (await _prefs).getInt(_kLowStock) ?? 5;
+  Future<void> setLowStockThreshold(int v) async =>
+      (await _prefs).setInt(_kLowStock, v);
 }

@@ -5,6 +5,7 @@ import '../core/utils/currency.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../viewmodels/expense_viewmodel.dart';
 import '../viewmodels/shift_viewmodel.dart';
+import '../repositories/expense_category_repository.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
 import '../widgets/app_toast.dart';
@@ -17,24 +18,99 @@ class ExpenseView extends StatefulWidget {
 }
 
 class _ExpenseViewState extends State<ExpenseView> {
-  static const _categories = [
-    'Operasional',
-    'Belanja',
-    'Transport',
-    'Gaji',
-    'Lain',
-  ];
-
+  List<String> _categories = [];
   final _amount = TextEditingController();
   final _notes = TextEditingController();
   String _category = 'Operasional';
 
+  Future<void> _loadCategories() async {
+    final list = await ExpenseCategoryRepository.instance.getAll();
+    if (!mounted) return;
+    setState(() {
+      _categories = list;
+      if (!_categories.contains(_category) && _categories.isNotEmpty) {
+        _category = _categories.first;
+      }
+    });
+  }
+
+  Future<void> _manageCategories() async {
+    final c = TextEditingController();
+    final result = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Tambah Kategori', style: TextStyle(fontSize: 15)),
+        content: TextField(
+          controller: c,
+          autofocus: true,
+          decoration: const InputDecoration(
+            labelText: 'Nama kategori',
+            border: OutlineInputBorder(),
+            isDense: true,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal', style: TextStyle(fontSize: 12)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, c.text.trim()),
+            child: const Text('Simpan', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+    if (result == null || result.isEmpty) return;
+    try {
+      await ExpenseCategoryRepository.instance.add(result);
+      await _loadCategories();
+      if (!mounted) return;
+      AppToast.show(context, 'Kategori "$result" ditambahkan.');
+    } catch (e) {
+      if (!mounted) return;
+      AppToast.show(context, 'Gagal: $e', success: false);
+    }
+  }
+
+  Future<void> _deleteCategory(String name) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Hapus Kategori?', style: TextStyle(fontSize: 15)),
+        content: Text('Kategori "$name" akan dihapus.',
+            style: const TextStyle(fontSize: 12)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Batal', style: TextStyle(fontSize: 12)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Hapus', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    try {
+      await ExpenseCategoryRepository.instance.delete(name);
+      await _loadCategories();
+      if (!mounted) return;
+      AppToast.show(context, 'Kategori dihapus.');
+    } catch (e) {
+      if (!mounted) return;
+      AppToast.show(context, '$e', success: false);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
+    Future.microtask(() async {
       final shiftId = context.read<ShiftViewModel>().current?.id;
       context.read<ExpenseViewModel>().loadByShift(shiftId);
+      await _loadCategories();
     });
   }
 
