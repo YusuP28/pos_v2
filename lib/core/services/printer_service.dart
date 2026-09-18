@@ -314,6 +314,69 @@ class PrinterService {
     return true;
   }
 
+  /// Cetak label harga + barcode untuk 1 produk.
+  /// [qty] = jumlah label yang dicetak.
+  Future<bool> printLabel({
+    required String productName,
+    required String barcode,
+    required double price,
+    int qty = 1,
+    bool paper80mm = false,
+  }) async {
+    final realtime = await checkConnection();
+    if (!realtime) return false;
+
+    final profile = await CapabilityProfile.load();
+    final generator = Generator(
+      paper80mm ? PaperSize.mm80 : PaperSize.mm58,
+      profile,
+    );
+    final bytes = <int>[];
+
+    for (var i = 0; i < qty; i++) {
+      // Nama produk
+      bytes.addAll(generator.text(
+        productName,
+        styles: const PosStyles(
+          align: PosAlign.center,
+          bold: true,
+          height: PosTextSize.size1,
+          width: PosTextSize.size1,
+        ),
+      ));
+      // Harga
+      bytes.addAll(generator.text(
+        'Rp ${price.toStringAsFixed(0)}',
+        styles: const PosStyles(
+          align: PosAlign.center,
+          bold: true,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+      ));
+      bytes.addAll(generator.feed(1));
+      // Barcode Code128
+      if (barcode.isNotEmpty) {
+        bytes.addAll(generator.barcode(
+          Barcode.code128(barcode),
+          height: 60,
+          width: 2,
+          textPosition: BarcodeText.below,
+          align: PosAlign.center,
+        ));
+      }
+      bytes.addAll(generator.feed(2));
+      if (i < qty - 1) {
+        bytes.addAll(generator.cut());
+      }
+    }
+
+    bytes.addAll(generator.cut());
+    await _printer.writeBytes(Uint8List.fromList(bytes));
+    await Future.delayed(const Duration(milliseconds: 500));
+    return true;
+  }
+
   Future<bool> printTestPage({
     bool paper80mm = false,
     String storeName = 'POS v2',

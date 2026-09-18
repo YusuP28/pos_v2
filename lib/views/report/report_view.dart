@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/utils/currency.dart';
+import '../../core/database/db_helper.dart';
 import '../../models/order.dart';
 import '../../repositories/order_repository.dart';
 import '../../widgets/app_appbar.dart';
@@ -115,6 +116,49 @@ class _ReportViewState extends State<ReportView> {
         final e = _customRange!.end;
         return '${s.day}/${s.month}/${s.year} - ${e.day}/${e.month}/${e.year}';
     }
+  }
+
+  Future<Map<String, double>> _calcProfit() async {
+    final db = await DbHelper.instance.database;
+    final (start, end) = _rangeBounds();
+    final rows = await db.rawQuery(
+      'SELECT oi.product_id, oi.price, oi.quantity '
+      'FROM order_items oi '
+      'JOIN orders o ON o.id = oi.order_id '
+      'WHERE o.created_at >= ? AND o.created_at < ? AND o.status = ?',
+      [start.toIso8601String(), end.toIso8601String(), 'paid'],
+    );
+
+    double totalSales = 0;
+    double totalCost = 0;
+
+    for (final r in rows) {
+      final qty = (r['quantity'] as num).toDouble();
+      final price = (r['price'] as num).toDouble();
+      totalSales += qty * price;
+
+      final pid = r['product_id'] as int?;
+      double cost = 0;
+      if (pid != null) {
+        final p = await db.query(
+          'products',
+          columns: ['cost_price'],
+          where: 'id = ?',
+          whereArgs: [pid],
+          limit: 1,
+        );
+        if (p.isNotEmpty) {
+          cost = (p.first['cost_price'] as num?)?.toDouble() ?? 0;
+        }
+      }
+      totalCost += cost * qty;
+    }
+
+    return {
+      'sales': totalSales,
+      'cost': totalCost,
+      'profit': totalSales - totalCost,
+    };
   }
 
   @override

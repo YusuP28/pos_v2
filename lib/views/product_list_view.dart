@@ -6,8 +6,10 @@ import '../models/product.dart';
 import '../repositories/stock_repository.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../viewmodels/category_viewmodel.dart';
+import '../viewmodels/printer_viewmodel.dart';
 import '../viewmodels/product_viewmodel.dart';
 import '../widgets/app_appbar.dart';
+import '../widgets/app_dialog.dart';
 import '../widgets/app_toast.dart';
 import 'product_form_view.dart';
 
@@ -114,6 +116,94 @@ class _ProductListViewState extends State<ProductListView> {
     }
   }
 
+  Future<void> _printLabel(Product p) async {
+    // Cek printer
+    final printer = context.read<PrinterViewModel>();
+    if (!printer.isConnected) {
+      if (!mounted) return;
+      await AppDialog.error(
+        context,
+        'Printer belum terhubung. Hubungkan dulu di Pengaturan Printer.',
+        title: 'Printer Belum Terhubung',
+      );
+      return;
+    }
+
+    // Cek barcode ada
+    if (p.barcode.isEmpty) {
+      if (!mounted) return;
+      await AppDialog.error(
+        context,
+        'Produk "${p.name}" belum punya barcode.\n\nEdit produk dulu untuk menambah barcode.',
+        title: 'Barcode Kosong',
+      );
+      return;
+    }
+
+    // Dialog pilih jumlah label
+    final qtyC = TextEditingController(text: '1');
+    final result = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Cetak Label', style: TextStyle(fontSize: 15)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Produk: ${p.name}',
+                style: const TextStyle(fontSize: 12)),
+            Text('Barcode: ${p.barcode}',
+                style: const TextStyle(fontSize: 11, color: Colors.grey)),
+            const SizedBox(height: 10),
+            TextField(
+              controller: qtyC,
+              keyboardType: TextInputType.number,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'Jumlah label',
+                border: OutlineInputBorder(),
+                isDense: true,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal', style: TextStyle(fontSize: 12)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, qtyC.text.trim()),
+            child: const Text('Cetak', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+    if (result == null) return;
+    final qty = int.tryParse(result) ?? 1;
+    if (qty <= 0) return;
+
+    try {
+      final ok = await PrinterService.instance.printLabel(
+        productName: p.name,
+        barcode: p.barcode,
+        price: p.price,
+        qty: qty,
+        paper80mm: printer.paper80mm,
+      );
+      if (!mounted) return;
+      if (ok) {
+        AppToast.show(context, 'Label dikirim ($qty).');
+      } else {
+        await AppDialog.error(context, 'Gagal cetak. Cek printer.',
+            title: 'Gagal');
+      }
+    } catch (e) {
+      if (!mounted) return;
+      await AppDialog.error(context, 'Gagal: $e', title: 'Error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<ProductViewModel>();
@@ -193,42 +283,111 @@ class _ProductListViewState extends State<ProductListView> {
                                                     ),
                                                   )
                                               : null,
-                                          onLongPress: isAdmin
-                                              ? () async {
-                                                  final ok =
-                                                      await showDialog<bool>(
-                                                    context: context,
-                                                    builder: (ctx) =>
-                                                        AlertDialog(
+                                          onLongPress: () async {
+                                            // Menu pilihan
+                                            final action =
+                                                await showModalBottomSheet<String>(
+                                              context: context,
+                                              showDragHandle: true,
+                                              builder: (ctx) => SafeArea(
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    ListTile(
+                                                      leading: const Icon(
+                                                          Icons.qr_code_2,
+                                                          size: 20),
                                                       title: const Text(
-                                                          'Hapus produk?'),
-                                                      content: Text(
-                                                        'Produk "${p.name}" akan dinonaktifkan.',
-                                                      ),
-                                                      actions: [
-                                                        TextButton(
-                                                          onPressed: () =>
-                                                              Navigator.pop(
-                                                                  ctx, false),
-                                                          child: const Text(
-                                                              'Batal'),
-                                                        ),
-                                                        FilledButton(
-                                                          onPressed: () =>
-                                                              Navigator.pop(
-                                                                  ctx, true),
-                                                          child: const Text(
-                                                              'Nonaktifkan'),
-                                                        ),
-                                                      ],
+                                                          'Cetak Label',
+                                                          style: TextStyle(
+                                                              fontSize: 13)),
+                                                      onTap: () =>
+                                                          Navigator.pop(
+                                                              ctx, 'label'),
                                                     ),
-                                                  );
-                                                  if (ok == true &&
-                                                      p.id != null) {
-                                                    await vm.remove(p.id!);
-                                                  }
-                                                }
-                                              : null,
+                                                    if (isAdmin)
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                            Icons.edit_outlined,
+                                                            size: 20),
+                                                        title: const Text(
+                                                            'Edit Produk',
+                                                            style: TextStyle(
+                                                                fontSize: 13)),
+                                                        onTap: () =>
+                                                            Navigator.pop(
+                                                                ctx, 'edit'),
+                                                      ),
+                                                    if (isAdmin)
+                                                      ListTile(
+                                                        leading: const Icon(
+                                                            Icons.delete_outline,
+                                                            size: 20,
+                                                            color: Colors.red),
+                                                        title: const Text(
+                                                            'Nonaktifkan',
+                                                            style: TextStyle(
+                                                                fontSize: 13,
+                                                                color:
+                                                                    Colors.red)),
+                                                        onTap: () =>
+                                                            Navigator.pop(
+                                                                ctx, 'delete'),
+                                                      ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+
+                                            if (!mounted) return;
+                                            if (action == 'label') {
+                                              await _printLabel(p);
+                                            } else if (action == 'edit') {
+                                              await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      ProductFormView(
+                                                          existing: p),
+                                                ),
+                                              );
+                                              await vm.load();
+                                            } else if (action == 'delete') {
+                                              final ok =
+                                                  await showDialog<bool>(
+                                                context: context,
+                                                builder: (ctx) =>
+                                                    AlertDialog(
+                                                  title: const Text(
+                                                      'Hapus produk?'),
+                                                  content: Text(
+                                                    'Produk "${p.name}" akan dinonaktifkan.',
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              ctx, false),
+                                                      child: const Text(
+                                                          'Batal'),
+                                                    ),
+                                                    FilledButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              ctx, true),
+                                                      child: const Text(
+                                                          'Nonaktifkan'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                              if (ok == true &&
+                                                  p.id != null) {
+                                                await vm.remove(p.id!);
+                                              }
+                                            }
+                                          },
                                           borderRadius:
                                               BorderRadius.circular(12),
                                           child: Padding(
