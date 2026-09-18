@@ -28,7 +28,7 @@ class _AboutViewState extends State<AboutView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppAppBar(
+      appBar: AppAppBar(
         title: 'Tentang Aplikasi',
         subtitle: 'Informasi aplikasi & developer',
       ),
