@@ -1,7 +1,7 @@
 name: pos_v2
 description: Offline POS v2 — Flutter + SQLite + GitHub Actions
 publish_to: 'none'
-version: 1.0.1+2
+version: 1.0.2+3
 
 environment:
   sdk: '>=3.5.0 <4.0.0'
@@ -24,6 +24,7 @@ dependencies:
   image: ^3.3.0
   esc_pos_utils: ^1.1.0
   crypto: ^3.0.6
+  package_info_plus: ^8.1.1
 
 dev_dependencies:
   flutter_test:

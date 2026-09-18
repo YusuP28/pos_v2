@@ -11,6 +11,7 @@ import '../core/services/backup_service.dart';
 import '../widgets/app_appbar.dart';
 import '../widgets/app_dialog.dart';
 import '../widgets/app_toast.dart';
+import 'about_view.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -791,6 +792,44 @@ class _SettingsViewState extends State<SettingsView> {
                           ),
                         ),
                       ),
+                    // Section Tentang Aplikasi
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Row(
+                        children: const [
+                          Icon(Icons.info_outline,
+                              size: 16, color: Colors.deepPurple),
+                          SizedBox(width: 6),
+                          Text('Tentang',
+                              style: TextStyle(
+                                  fontSize: 13, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Card(
+                      margin: EdgeInsets.zero,
+                      child: ListTile(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        leading: const Icon(Icons.info_outline, size: 20),
+                        title: const Text('Tentang Aplikasi',
+                            style: TextStyle(fontSize: 12)),
+                        subtitle: const Text(
+                          'Informasi aplikasi, developer, dan versi',
+                          style: TextStyle(fontSize: 10),
+                        ),
+                        trailing: const Icon(Icons.chevron_right, size: 20),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const AboutView()),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
         ),
