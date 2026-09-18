@@ -355,15 +355,25 @@ class PrinterService {
         ),
       ));
       bytes.addAll(generator.feed(1));
-      // Barcode Code128
+      // Barcode Code128 (esc_pos_utils v1.x: barcode() ambil List<int>)
       if (barcode.isNotEmpty) {
-        bytes.addAll(generator.barcode(
-          Barcode.code128(barcode),
-          height: 60,
-          width: 2,
-          textPosition: BarcodeText.below,
-          align: PosAlign.center,
-        ));
+        try {
+          final codeBytes = barcode.codeUnits;
+          bytes.addAll(generator.barcode(
+            codeBytes,
+            bcType: BarcodeType.CODE128,
+            height: 60,
+            width: 2,
+            textPos: BarcodeText.below,
+            align: PosAlign.center,
+          ));
+        } catch (_) {
+          // Kalau barcode gagal, cetak teks saja
+          bytes.addAll(generator.text(
+            barcode,
+            styles: const PosStyles(align: PosAlign.center),
+          ));
+        }
       }
       bytes.addAll(generator.feed(2));
       if (i < qty - 1) {

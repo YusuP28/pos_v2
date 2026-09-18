@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../core/utils/currency.dart';
 import '../models/product.dart';
+import '../core/services/printer_service.dart';
 import '../repositories/stock_repository.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../viewmodels/category_viewmodel.dart';
