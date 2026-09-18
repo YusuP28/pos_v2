@@ -358,17 +358,14 @@ class PrinterService {
       // Barcode Code128 (esc_pos_utils v1.x: barcode() ambil List<int>)
       if (barcode.isNotEmpty) {
         try {
-          final codeBytes = barcode.codeUnits;
           bytes.addAll(generator.barcode(
-            codeBytes,
-            bcType: BarcodeType.CODE128,
+            Barcode.code128(barcode),
             height: 60,
             width: 2,
-            textPos: BarcodeText.below,
+            textPosition: BarcodeText.below,
             align: PosAlign.center,
           ));
         } catch (_) {
-          // Kalau barcode gagal, cetak teks saja
           bytes.addAll(generator.text(
             barcode,
             styles: const PosStyles(align: PosAlign.center),
