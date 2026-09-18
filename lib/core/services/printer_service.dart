@@ -314,8 +314,7 @@ class PrinterService {
     return true;
   }
 
-  /// Cetak label harga + barcode untuk 1 produk.
-  /// [qty] = jumlah label yang dicetak.
+  /// Cetak label harga + barcode untuk 1 produk (raw ESC/POS).
   Future<bool> printLabel({
     required String productName,
     required String barcode,
@@ -334,17 +333,13 @@ class PrinterService {
     final bytes = <int>[];
 
     for (var i = 0; i < qty; i++) {
-      // Nama produk
       bytes.addAll(generator.text(
         productName,
         styles: const PosStyles(
           align: PosAlign.center,
           bold: true,
-          height: PosTextSize.size1,
-          width: PosTextSize.size1,
         ),
       ));
-      // Harga
       bytes.addAll(generator.text(
         'Rp ${price.toStringAsFixed(0)}',
         styles: const PosStyles(
@@ -355,22 +350,13 @@ class PrinterService {
         ),
       ));
       bytes.addAll(generator.feed(1));
-      // Barcode Code128 (esc_pos_utils v1.x: barcode() ambil List<int>)
       if (barcode.isNotEmpty) {
-        try {
-          bytes.addAll(generator.barcode(
-            Barcode.code128(barcode),
-            height: 60,
-            width: 2,
-            textPosition: BarcodeText.below,
-            align: PosAlign.center,
-          ));
-        } catch (_) {
-          bytes.addAll(generator.text(
-            barcode,
-            styles: const PosStyles(align: PosAlign.center),
-          ));
-        }
+        bytes.addAll(_buildCode128(barcode));
+      } else {
+        bytes.addAll(generator.text(
+          '(tanpa barcode)',
+          styles: const PosStyles(align: PosAlign.center),
+        ));
       }
       bytes.addAll(generator.feed(2));
       if (i < qty - 1) {
@@ -382,6 +368,23 @@ class PrinterService {
     await _printer.writeBytes(Uint8List.fromList(bytes));
     await Future.delayed(const Duration(milliseconds: 500));
     return true;
+  }
+
+  /// Bangun perintah barcode Code128 raw ESC/POS.
+  List<int> _buildCode128(String data) {
+    final dataBytes = data.codeUnits;
+    if (dataBytes.isEmpty || dataBytes.length > 255) return [];
+    return <int>[
+      0x1B, 0x61, 0x01,
+      0x1D, 0x68, 0x3C,
+      0x1D, 0x77, 0x02,
+      0x1D, 0x48, 0x02,
+      0x1D, 0x66, 0x00,
+      0x1D, 0x6B, 0x49,
+      dataBytes.length,
+      ...dataBytes,
+      0x0A,
+    ];
   }
 
   Future<bool> printTestPage({
