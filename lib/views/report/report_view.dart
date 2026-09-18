@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/utils/currency.dart';
 import '../../core/database/db_helper.dart';
+import '../../core/utils/currency.dart';
 import '../../models/order.dart';
 import '../../repositories/order_repository.dart';
 import '../../widgets/app_appbar.dart';
@@ -16,24 +16,38 @@ class ReportView extends StatefulWidget {
   State<ReportView> createState() => _ReportViewState();
 }
 
-class _ReportViewState extends State<ReportView> {
+class _ReportViewState extends State<ReportView>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tab;
   ReportRange _range = ReportRange.today;
   DateTimeRange? _customRange;
   List<Order> _orders = [];
   bool _loading = true;
   final _search = TextEditingController();
   String _query = '';
-  String? _methodFilter; // 'cash' | 'qris' | 'card' | null
+  String? _methodFilter;
+
+  // Profit state
+  Map<String, double> _profit = {
+    'sales': 0,
+    'cost': 0,
+    'profit': 0,
+  };
 
   @override
   void initState() {
     super.initState();
+    _tab = TabController(length: 2, vsync: this);
+    _tab.addListener(() {
+      if (mounted) setState(() {});
+    });
     _load();
   }
 
   @override
   void dispose() {
     _search.dispose();
+    _tab.dispose();
     super.dispose();
   }
 
@@ -63,12 +77,59 @@ class _ReportViewState extends State<ReportView> {
   Future<void> _load() async {
     setState(() => _loading = true);
     final (start, end) = _rangeBounds();
+
     final orders = await OrderRepository.instance.getOrdersBetween(start, end);
+    final profit = await _calcProfit(start, end);
+
     if (!mounted) return;
     setState(() {
       _orders = orders;
+      _profit = profit;
       _loading = false;
     });
+  }
+
+  Future<Map<String, double>> _calcProfit(
+      DateTime start, DateTime end) async {
+    final db = await DbHelper.instance.database;
+    final rows = await db.rawQuery(
+      'SELECT oi.product_id, oi.price, oi.quantity '
+      'FROM order_items oi '
+      'JOIN orders o ON o.id = oi.order_id '
+      'WHERE o.created_at >= ? AND o.created_at < ? AND o.status = ?',
+      [start.toIso8601String(), end.toIso8601String(), 'paid'],
+    );
+
+    double totalSales = 0;
+    double totalCost = 0;
+
+    for (final r in rows) {
+      final qty = (r['quantity'] as num).toDouble();
+      final price = (r['price'] as num).toDouble();
+      totalSales += qty * price;
+
+      final pid = r['product_id'] as int?;
+      double cost = 0;
+      if (pid != null) {
+        final p = await db.query(
+          'products',
+          columns: ['cost_price'],
+          where: 'id = ?',
+          whereArgs: [pid],
+          limit: 1,
+        );
+        if (p.isNotEmpty) {
+          cost = (p.first['cost_price'] as num?)?.toDouble() ?? 0;
+        }
+      }
+      totalCost += cost * qty;
+    }
+
+    return {
+      'sales': totalSales,
+      'cost': totalCost,
+      'profit': totalSales - totalCost,
+    };
   }
 
   Future<void> _pickCustomRange() async {
@@ -118,64 +179,8 @@ class _ReportViewState extends State<ReportView> {
     }
   }
 
-  Future<Map<String, double>> _calcProfit() async {
-    final db = await DbHelper.instance.database;
-    final (start, end) = _rangeBounds();
-    final rows = await db.rawQuery(
-      'SELECT oi.product_id, oi.price, oi.quantity '
-      'FROM order_items oi '
-      'JOIN orders o ON o.id = oi.order_id '
-      'WHERE o.created_at >= ? AND o.created_at < ? AND o.status = ?',
-      [start.toIso8601String(), end.toIso8601String(), 'paid'],
-    );
-
-    double totalSales = 0;
-    double totalCost = 0;
-
-    for (final r in rows) {
-      final qty = (r['quantity'] as num).toDouble();
-      final price = (r['price'] as num).toDouble();
-      totalSales += qty * price;
-
-      final pid = r['product_id'] as int?;
-      double cost = 0;
-      if (pid != null) {
-        final p = await db.query(
-          'products',
-          columns: ['cost_price'],
-          where: 'id = ?',
-          whereArgs: [pid],
-          limit: 1,
-        );
-        if (p.isNotEmpty) {
-          cost = (p.first['cost_price'] as num?)?.toDouble() ?? 0;
-        }
-      }
-      totalCost += cost * qty;
-    }
-
-    return {
-      'sales': totalSales,
-      'cost': totalCost,
-      'profit': totalSales - totalCost,
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
-    final orders = _filtered;
-    final total = orders.fold<double>(0, (s, o) => s + o.total);
-    final cash = orders
-        .where((o) => o.paymentMethod == 'cash')
-        .fold<double>(0, (s, o) => s + o.total);
-    final qris = orders
-        .where((o) => o.paymentMethod == 'qris')
-        .fold<double>(0, (s, o) => s + o.total);
-    final card = orders
-        .where((o) => o.paymentMethod == 'card')
-        .fold<double>(0, (s, o) => s + o.total);
-    final avg = orders.isEmpty ? 0.0 : total / orders.length;
-
     return Scaffold(
       appBar: AppAppBar(
         title: 'Laporan',
@@ -192,162 +197,302 @@ class _ReportViewState extends State<ReportView> {
             onPressed: _load,
           ),
         ],
-      ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
-            children: [
-              // Chip rentang
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
-                child: Row(
-                  children: [
-                    _rangeChip('Hari ini', ReportRange.today),
-                    const SizedBox(width: 6),
-                    _rangeChip('7 hari', ReportRange.week),
-                    const SizedBox(width: 6),
-                    _rangeChip('30 hari', ReportRange.month),
-                    if (_range == ReportRange.custom &&
-                        _customRange != null) ...[
-                      const SizedBox(width: 6),
-                      FilterChip(
-                        visualDensity: VisualDensity.compact,
-                        materialTapTargetSize:
-                            MaterialTapTargetSize.shrinkWrap,
-                        label: Text(_rangeLabel(ReportRange.custom),
-                            style: const TextStyle(fontSize: 11)),
-                        selected: true,
-                        onSelected: (_) => _pickCustomRange(),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-
-              // Search + filter metode
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _search,
-                        onChanged: (v) => setState(() => _query = v.trim()),
-                        decoration: const InputDecoration(
-                          hintText: 'Cari no. invoice...',
-                          hintStyle: TextStyle(fontSize: 12),
-                          prefixIcon: Icon(Icons.search, size: 18),
-                          prefixIconConstraints:
-                              BoxConstraints(minWidth: 32, minHeight: 32),
-                          border: OutlineInputBorder(),
-                          isDense: true,
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 8),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    _methodChip('Tunai', 'cash'),
-                    const SizedBox(width: 4),
-                    _methodChip('QRIS', 'qris'),
-                    const SizedBox(width: 4),
-                    _methodChip('Kartu', 'card'),
-                  ],
-                ),
-              ),
-
-              if (_loading)
-                const Expanded(
-                    child: Center(child: CircularProgressIndicator()))
-              else
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Ringkasan
-                      SizedBox(
-                        width: 260,
-                        child: ListView(
-                          padding: const EdgeInsets.all(8),
-                          children: [
-                            _summaryCard('Transaksi', '${orders.length}'),
-                            const SizedBox(height: 6),
-                            _summaryCard('Total', Currency.format(total),
-                                bold: true, color: Colors.green.shade700),
-                            const SizedBox(height: 6),
-                            _summaryCard('Rata-rata', Currency.format(avg)),
-                            const SizedBox(height: 12),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4),
-                              child: Text('Metode pembayaran',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                            const SizedBox(height: 6),
-                            _summaryCard('Tunai', Currency.format(cash)),
-                            const SizedBox(height: 6),
-                            _summaryCard('QRIS', Currency.format(qris)),
-                            const SizedBox(height: 6),
-                            _summaryCard('Kartu', Currency.format(card)),
-                          ],
-                        ),
-                      ),
-                      const VerticalDivider(width: 1),
-                      // Daftar transaksi
-                      Expanded(
-                        child: orders.isEmpty
-                            ? const Center(
-                                child: Text(
-                                    'Tidak ada transaksi di periode ini.'))
-                            : ListView.separated(
-                                padding: const EdgeInsets.all(8),
-                                itemCount: orders.length,
-                                separatorBuilder: (_, __) =>
-                                    const Divider(height: 1),
-                                itemBuilder: (_, i) {
-                                  final o = orders[i];
-                                  final dt = o.createdAt
-                                      .replaceFirst('T', ' ')
-                                      .substring(0, 19);
-                                  return ListTile(
-                                    dense: true,
-                                    visualDensity: VisualDensity.compact,
-                                    leading: const Icon(
-                                        Icons.receipt_long_outlined,
-                                        size: 18),
-                                    title: Text(o.invoiceNumber,
-                                        style:
-                                            const TextStyle(fontSize: 12)),
-                                    subtitle: Text(
-                                        '$dt  •  ${o.paymentMethod.toUpperCase()}',
-                                        style:
-                                            const TextStyle(fontSize: 10)),
-                                    trailing: Text(
-                                      Currency.format(o.total),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12),
-                                    ),
-                                    onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            ReceiptView(orderId: o.id!),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
+        bottom: TabBar(
+          controller: _tab,
+          tabs: const [
+            Tab(text: 'Penjualan'),
+            Tab(text: 'Profit'),
+          ],
         ),
       ),
+      body: Column(
+        children: [
+          // Chip range
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
+            child: Row(
+              children: [
+                _rangeChip('Hari ini', ReportRange.today),
+                const SizedBox(width: 6),
+                _rangeChip('7 hari', ReportRange.week),
+                const SizedBox(width: 6),
+                _rangeChip('30 hari', ReportRange.month),
+                if (_range == ReportRange.custom &&
+                    _customRange != null) ...[
+                  const SizedBox(width: 6),
+                  FilterChip(
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    label: Text(_rangeLabel(ReportRange.custom),
+                        style: const TextStyle(fontSize: 11)),
+                    selected: true,
+                    onSelected: (_) => _pickCustomRange(),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          Expanded(
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : TabBarView(
+                    controller: _tab,
+                    children: [
+                      _buildSalesTab(),
+                      _buildProfitTab(),
+                    ],
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSalesTab() {
+    final orders = _filtered;
+    final total = orders.fold<double>(0, (s, o) => s + o.total);
+    final cash = orders
+        .where((o) => o.paymentMethod == 'cash')
+        .fold<double>(0, (s, o) => s + o.total);
+    final qris = orders
+        .where((o) => o.paymentMethod == 'qris')
+        .fold<double>(0, (s, o) => s + o.total);
+    final card = orders
+        .where((o) => o.paymentMethod == 'card')
+        .fold<double>(0, (s, o) => s + o.total);
+    final avg = orders.isEmpty ? 0.0 : total / orders.length;
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1200),
+        child: Column(
+          children: [
+            // Search + filter metode
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _search,
+                      onChanged: (v) => setState(() => _query = v.trim()),
+                      decoration: const InputDecoration(
+                        hintText: 'Cari no. invoice...',
+                        hintStyle: TextStyle(fontSize: 12),
+                        prefixIcon: Icon(Icons.search, size: 18),
+                        prefixIconConstraints:
+                            BoxConstraints(minWidth: 32, minHeight: 32),
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  _methodChip('Tunai', 'cash'),
+                  const SizedBox(width: 4),
+                  _methodChip('QRIS', 'qris'),
+                  const SizedBox(width: 4),
+                  _methodChip('Kartu', 'card'),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 260,
+                    child: ListView(
+                      padding: const EdgeInsets.all(8),
+                      children: [
+                        _summaryCard('Transaksi', '${orders.length}'),
+                        const SizedBox(height: 6),
+                        _summaryCard('Total', Currency.format(total),
+                            bold: true, color: Colors.green.shade700),
+                        const SizedBox(height: 6),
+                        _summaryCard('Rata-rata', Currency.format(avg)),
+                        const SizedBox(height: 12),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4),
+                          child: Text('Metode pembayaran',
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold)),
+                        ),
+                        const SizedBox(height: 6),
+                        _summaryCard('Tunai', Currency.format(cash)),
+                        const SizedBox(height: 6),
+                        _summaryCard('QRIS', Currency.format(qris)),
+                        const SizedBox(height: 6),
+                        _summaryCard('Kartu', Currency.format(card)),
+                      ],
+                    ),
+                  ),
+                  const VerticalDivider(width: 1),
+                  Expanded(
+                    child: orders.isEmpty
+                        ? const Center(
+                            child:
+                                Text('Tidak ada transaksi di periode ini.'))
+                        : ListView.separated(
+                            padding: const EdgeInsets.all(8),
+                            itemCount: orders.length,
+                            separatorBuilder: (_, __) =>
+                                const Divider(height: 1),
+                            itemBuilder: (_, i) {
+                              final o = orders[i];
+                              final dt = o.createdAt
+                                  .replaceFirst('T', ' ')
+                                  .substring(0, 19);
+                              return ListTile(
+                                dense: true,
+                                visualDensity: VisualDensity.compact,
+                                leading: const Icon(
+                                    Icons.receipt_long_outlined,
+                                    size: 18),
+                                title: Text(o.invoiceNumber,
+                                    style: const TextStyle(fontSize: 12)),
+                                subtitle: Text(
+                                    '$dt  •  ${o.paymentMethod.toUpperCase()}',
+                                    style: const TextStyle(fontSize: 10)),
+                                trailing: Text(
+                                  Currency.format(o.total),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12),
+                                ),
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        ReceiptView(orderId: o.id!),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfitTab() {
+    final sales = _profit['sales'] ?? 0;
+    final cost = _profit['cost'] ?? 0;
+    final profit = _profit['profit'] ?? 0;
+    final margin = sales > 0 ? (profit / sales * 100) : 0.0;
+
+    final profitColor =
+        profit >= 0 ? Colors.green.shade700 : Colors.red.shade700;
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 700),
+        child: ListView(
+          padding: const EdgeInsets.all(12),
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    const Icon(Icons.trending_up,
+                        size: 40, color: Colors.deepPurple),
+                    const SizedBox(height: 8),
+                    const Text('Ringkasan Profit',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Text(_rangeLabel(_range),
+                        style: const TextStyle(
+                            fontSize: 11, color: Colors.grey)),
+                    const SizedBox(height: 16),
+                    _profitRow('Total Penjualan', sales, bold: true),
+                    const Divider(height: 20),
+                    _profitRow('Total Modal (HPP)', cost,
+                        color: Colors.orange.shade800),
+                    const Divider(height: 20),
+                    _profitRow('Profit Kotor', profit,
+                        bold: true, color: profitColor, big: true),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: profitColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Margin: ',
+                              style: TextStyle(fontSize: 13)),
+                          Text(
+                            '${margin.toStringAsFixed(1)}%',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: profitColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Card(
+              child: Padding(
+                padding: EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('ℹ️ Info',
+                        style: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 4),
+                    Text(
+                      'Profit = (Total Penjualan) − (Total Modal / HPP).\n'
+                      'Margin = Profit ÷ Penjualan × 100%.\n\n'
+                      'Modal diambil dari "Harga Modal" yang diisi pada setiap produk.',
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _profitRow(String label, double value,
+      {bool bold = false, Color? color, bool big = false}) {
+    return Row(
+      children: [
+        Text(label,
+            style: TextStyle(
+                fontSize: big ? 14 : 13,
+                fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
+        const Spacer(),
+        Text(
+          Currency.format(value),
+          style: TextStyle(
+            fontSize: big ? 18 : 14,
+            fontWeight: bold ? FontWeight.bold : FontWeight.w600,
+            color: color,
+          ),
+        ),
+      ],
     );
   }
 

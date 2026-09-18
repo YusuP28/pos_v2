@@ -35,42 +35,146 @@ class _ExpenseViewState extends State<ExpenseView> {
   }
 
   Future<void> _manageCategories() async {
-    final c = TextEditingController();
-    final result = await showDialog<String>(
+    await showDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Tambah Kategori', style: TextStyle(fontSize: 15)),
-        content: TextField(
-          controller: c,
-          autofocus: true,
-          decoration: const InputDecoration(
-            labelText: 'Nama kategori',
-            border: OutlineInputBorder(),
-            isDense: true,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal', style: TextStyle(fontSize: 12)),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, c.text.trim()),
-            child: const Text('Simpan', style: TextStyle(fontSize: 12)),
-          ),
-        ],
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setLocal) {
+          final categories = List<String>.from(_categories);
+          return AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.category_outlined, size: 20),
+                SizedBox(width: 8),
+                Text('Kelola Kategori', style: TextStyle(fontSize: 15)),
+              ],
+            ),
+            content: SizedBox(
+              width: 340,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Kategori default tidak bisa dihapus.',
+                    style: TextStyle(fontSize: 10, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 8),
+                  if (categories.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Text('Belum ada kategori.',
+                          style: TextStyle(fontSize: 12)),
+                    )
+                  else
+                    Flexible(
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: categories.length,
+                        separatorBuilder: (_, __) =>
+                            const Divider(height: 1),
+                        itemBuilder: (_, i) {
+                          final name = categories[i];
+                          return ListTile(
+                            dense: true,
+                            visualDensity: VisualDensity.compact,
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(name,
+                                style: const TextStyle(fontSize: 13)),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete_outline, size: 18),
+                              onPressed: () async {
+                                try {
+                                  await ExpenseCategoryRepository.instance
+                                      .delete(name);
+                                  await _loadCategories();
+                                  if (!ctx.mounted) return;
+                                  setLocal(() {});
+                                  if (!mounted) return;
+                                  AppToast.show(
+                                      context, 'Kategori dihapus.');
+                                } catch (e) {
+                                  if (!mounted) return;
+                                  AppToast.show(context, '$e',
+                                      success: false);
+                                }
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  const SizedBox(height: 12),
+                  const Divider(height: 1),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 36,
+                    child: FilledButton.icon(
+                      onPressed: () async {
+                        final c = TextEditingController();
+                        final result = await showDialog<String>(
+                          context: ctx,
+                          builder: (dctx) => AlertDialog(
+                            title: const Text('Tambah Kategori',
+                                style: TextStyle(fontSize: 15)),
+                            content: TextField(
+                              controller: c,
+                              autofocus: true,
+                              decoration: const InputDecoration(
+                                labelText: 'Nama kategori',
+                                border: OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(dctx),
+                                child: const Text('Batal',
+                                    style: TextStyle(fontSize: 12)),
+                              ),
+                              FilledButton(
+                                onPressed: () =>
+                                    Navigator.pop(dctx, c.text.trim()),
+                                child: const Text('Simpan',
+                                    style: TextStyle(fontSize: 12)),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (result == null || result.isEmpty) return;
+                        try {
+                          await ExpenseCategoryRepository.instance
+                              .add(result);
+                          await _loadCategories();
+                          if (!ctx.mounted) return;
+                          setLocal(() {});
+                          if (!mounted) return;
+                          AppToast.show(
+                              context, 'Kategori "$result" ditambahkan.');
+                        } catch (e) {
+                          if (!mounted) return;
+                          AppToast.show(context, 'Gagal: $e',
+                              success: false);
+                        }
+                      },
+                      icon: const Icon(Icons.add, size: 16),
+                      label: const Text('Tambah Kategori',
+                          style: TextStyle(fontSize: 12)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Tutup', style: TextStyle(fontSize: 12)),
+              ),
+            ],
+          );
+        },
       ),
     );
-    if (result == null || result.isEmpty) return;
-    try {
-      await ExpenseCategoryRepository.instance.add(result);
-      await _loadCategories();
-      if (!mounted) return;
-      AppToast.show(context, 'Kategori "$result" ditambahkan.');
-    } catch (e) {
-      if (!mounted) return;
-      AppToast.show(context, 'Gagal: $e', success: false);
-    }
+    if (mounted) setState(() {});
   }
 
   Future<void> _deleteCategory(String name) async {
@@ -191,6 +295,13 @@ class _ExpenseViewState extends State<ExpenseView> {
       appBar: AppAppBar(
         title: 'Pengeluaran Kas',
         subtitle: 'Catat belanja / biaya operasional',
+        actions: [
+          IconButton(
+            tooltip: 'Kelola kategori',
+            icon: const Icon(Icons.category_outlined),
+            onPressed: _manageCategories,
+          ),
+        ],
       ),
       body: Center(
         child: ConstrainedBox(
