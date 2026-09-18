@@ -7,6 +7,7 @@ class AppAppBar extends AppBar {
     required String subtitle,
     super.leading,
     super.actions,
+    super.bottom,
   }) : super(
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -224,6 +224,26 @@ class DbHelper {
         'CREATE INDEX IF NOT EXISTS idx_expenses_created ON expenses (created_at)');
   }
 
+  Future<void> _createExpenseCategoryTable(Database db) async {
+    await db.execute(
+      'CREATE TABLE IF NOT EXISTS expense_categories ('
+      'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+      'name TEXT NOT NULL UNIQUE, '
+      'is_default INTEGER NOT NULL DEFAULT 0, '
+      'created_at TEXT NOT NULL)',
+    );
+    final defaults = ['Operasional', 'Belanja', 'Transport', 'Gaji', 'Lain'];
+    for (final name in defaults) {
+      try {
+        await db.insert('expense_categories', {
+          'name': name,
+          'is_default': 1,
+          'created_at': DateTime.now().toIso8601String(),
+        });
+      } catch (_) {}
+    }
+  }
+
   Future<void> _createStockMovementTable(Database db) async {
     await db.execute(
       'CREATE TABLE IF NOT EXISTS stock_movements ('
