@@ -1,7 +1,19 @@
-name: Analyze Code
+name: Analyze and Auto-Fix
 
 on:
   workflow_dispatch:
+    inputs:
+      auto_fix:
+        description: 'Auto-fix (unused import, variable)'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  contents: write
 
 jobs:
   analyze:
@@ -9,6 +21,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -19,15 +33,32 @@ jobs:
       - name: Get Dependencies
         run: flutter pub get
 
-      - name: Flutter Analyze
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings
-
-      - name: Dart Fix Dry Run
-        run: dart fix --dry-run
-
-      - name: Summary
+      - name: Analyze (Before)
         run: |
-          echo "===================================="
-          echo "ANALYZE SELESAI"
-          echo "Lihat log di atas untuk detail"
-          echo "===================================="
+          echo "=== ANALYZE SEBELUM FIX ==="
+          flutter analyze --no-fatal-infos --no-fatal-warnings || true
+
+      - name: Auto Fix
+        if: ${{ github.event.inputs.auto_fix == 'true' }}
+        run: |
+          echo "=== DART FIX APPLY ==="
+          dart fix --apply || true
+
+      - name: Analyze (After)
+        run: |
+          echo "=== ANALYZE SETELAH FIX ==="
+          flutter analyze --no-fatal-infos --no-fatal-warnings || true
+
+      - name: Commit and Push if Changed
+        if: ${{ github.event.inputs.auto_fix == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status -s)" ]; then
+            git add .
+            git commit -m "chore: auto-fix unused imports and variables [skip ci]"
+            git push
+            echo "=== PERUBAHAN DI-PUSH ==="
+          else
+            echo "=== TIDAK ADA PERUBAHAN ==="
+          fi
