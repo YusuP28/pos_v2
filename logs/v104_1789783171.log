@@ -1,0 +1,497 @@
+build	Set up job	﻿2026-09-19T01:59:40.5732116Z Current runner version: '2.337.0'
+build	Set up job	2026-09-19T01:59:40.5758680Z ##[group]Runner Image Provisioner
+build	Set up job	2026-09-19T01:59:40.5759602Z Hosted Compute Agent
+build	Set up job	2026-09-19T01:59:40.5760310Z Version: 20260828.587
+build	Set up job	2026-09-19T01:59:40.5760952Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+build	Set up job	2026-09-19T01:59:40.5761723Z Build Date: 2026-08-28T16:44:25Z
+build	Set up job	2026-09-19T01:59:40.5762458Z Worker ID: {b9e2545d-1683-468c-b1d9-7fb183c78ea3}
+build	Set up job	2026-09-19T01:59:40.5763190Z Azure Region: eastus
+build	Set up job	2026-09-19T01:59:40.5763828Z ##[endgroup]
+build	Set up job	2026-09-19T01:59:40.5765634Z ##[group]Operating System
+build	Set up job	2026-09-19T01:59:40.5766389Z Ubuntu
+build	Set up job	2026-09-19T01:59:40.5767334Z 24.04.5
+build	Set up job	2026-09-19T01:59:40.5767885Z LTS
+build	Set up job	2026-09-19T01:59:40.5768487Z ##[endgroup]
+build	Set up job	2026-09-19T01:59:40.5769051Z ##[group]Runner Image
+build	Set up job	2026-09-19T01:59:40.5769684Z Image: ubuntu-24.04
+build	Set up job	2026-09-19T01:59:40.5770300Z Version: 20260907.300.1
+build	Set up job	2026-09-19T01:59:40.5771385Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+build	Set up job	2026-09-19T01:59:40.5773178Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+build	Set up job	2026-09-19T01:59:40.5774557Z ##[endgroup]
+build	Set up job	2026-09-19T01:59:40.5775816Z ##[group]GITHUB_TOKEN Permissions
+build	Set up job	2026-09-19T01:59:40.5778402Z Contents: write
+build	Set up job	2026-09-19T01:59:40.5779057Z Metadata: read
+build	Set up job	2026-09-19T01:59:40.5779682Z ##[endgroup]
+build	Set up job	2026-09-19T01:59:40.5781877Z Secret source: Actions
+build	Set up job	2026-09-19T01:59:40.5782834Z Cache mode: write
+build	Set up job	2026-09-19T01:59:40.5784069Z Prepare workflow directory
+build	Set up job	2026-09-19T01:59:40.6118220Z Prepare all required actions
+build	Set up job	2026-09-19T01:59:40.6166539Z Getting action download info
+build	Set up job	2026-09-19T01:59:40.8639615Z Download action repository 'actions/checkout@v5' (SHA:fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09)
+build	Set up job	2026-09-19T01:59:40.9942498Z Download action repository 'actions/setup-java@v5' (SHA:b6effb05e454b25005698d916606bdc6ffcbf961)
+build	Set up job	2026-09-19T01:59:41.2239947Z Download action repository 'subosito/flutter-action@v2' (SHA:1a449444c387b1966244ae4d4f8c696479add0b2)
+build	Set up job	2026-09-19T01:59:41.2943027Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+build	Set up job	2026-09-19T01:59:41.4601967Z Download action repository 'softprops/action-gh-release@v2' (SHA:3bb12739c298aeb8a4eeaf626c5b8d85266b0e65)
+build	Set up job	2026-09-19T01:59:41.6653965Z Getting action download info
+build	Set up job	2026-09-19T01:59:41.7511360Z Download action repository 'actions/cache@v5' (SHA:caa296126883cff596d87d8935842f9db880ef25)
+build	Set up job	2026-09-19T01:59:41.9611806Z Complete job name: build
+build	Checkout	﻿2026-09-19T01:59:42.0551717Z ##[group]Run actions/checkout@v5
+build	Checkout	2026-09-19T01:59:42.0552639Z with:
+build	Checkout	2026-09-19T01:59:42.0553098Z   repository: YusuP28/pos_v2
+build	Checkout	2026-09-19T01:59:42.0557308Z   token: ***
+build	Checkout	2026-09-19T01:59:42.0557815Z   ssh-strict: true
+build	Checkout	2026-09-19T01:59:42.0558240Z   ssh-user: git
+build	Checkout	2026-09-19T01:59:42.0558679Z   persist-credentials: true
+build	Checkout	2026-09-19T01:59:42.0559163Z   clean: true
+build	Checkout	2026-09-19T01:59:42.0559590Z   sparse-checkout-cone-mode: true
+build	Checkout	2026-09-19T01:59:42.0560108Z   fetch-depth: 1
+build	Checkout	2026-09-19T01:59:42.0560532Z   fetch-tags: false
+build	Checkout	2026-09-19T01:59:42.0560990Z   show-progress: true
+build	Checkout	2026-09-19T01:59:42.0561427Z   lfs: false
+build	Checkout	2026-09-19T01:59:42.0561832Z   submodules: false
+build	Checkout	2026-09-19T01:59:42.0562270Z   set-safe-directory: true
+build	Checkout	2026-09-19T01:59:42.0562758Z   allow-unsafe-pr-checkout: false
+build	Checkout	2026-09-19T01:59:42.0563518Z ##[endgroup]
+build	Checkout	2026-09-19T01:59:42.1640251Z Syncing repository: YusuP28/pos_v2
+build	Checkout	2026-09-19T01:59:42.1642824Z ##[group]Getting Git version info
+build	Checkout	2026-09-19T01:59:42.1643976Z Working directory is '/home/runner/work/pos_v2/pos_v2'
+build	Checkout	2026-09-19T01:59:42.1645755Z [command]/usr/bin/git version
+build	Checkout	2026-09-19T01:59:42.1712444Z git version 2.55.0
+build	Checkout	2026-09-19T01:59:42.1739758Z ##[endgroup]
+build	Checkout	2026-09-19T01:59:42.1753714Z Temporarily overriding HOME='/home/runner/work/_temp/8ca6ebd9-2ebf-43b3-8566-fcadd0560cf7' before making global git config changes
+build	Checkout	2026-09-19T01:59:42.1756446Z Adding repository directory to the temporary git global config as a safe directory
+build	Checkout	2026-09-19T01:59:42.1759850Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pos_v2/pos_v2
+build	Checkout	2026-09-19T01:59:42.1815679Z Deleting the contents of '/home/runner/work/pos_v2/pos_v2'
+build	Checkout	2026-09-19T01:59:42.1820688Z ##[group]Initializing the repository
+build	Checkout	2026-09-19T01:59:42.1824653Z [command]/usr/bin/git init /home/runner/work/pos_v2/pos_v2
+build	Checkout	2026-09-19T01:59:42.1929373Z hint: Using 'master' as the name for the initial branch. This default branch name
+build	Checkout	2026-09-19T01:59:42.1934010Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+build	Checkout	2026-09-19T01:59:42.1935753Z hint: to use in all of your new repositories, which will suppress this warning,
+build	Checkout	2026-09-19T01:59:42.1937192Z hint: call:
+build	Checkout	2026-09-19T01:59:42.1938239Z hint:
+build	Checkout	2026-09-19T01:59:42.1939107Z hint: 	git config --global init.defaultBranch <name>
+build	Checkout	2026-09-19T01:59:42.1940083Z hint:
+build	Checkout	2026-09-19T01:59:42.1940996Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+build	Checkout	2026-09-19T01:59:42.1942591Z hint: 'development'. The just-created branch can be renamed via this command:
+build	Checkout	2026-09-19T01:59:42.1943857Z hint:
+build	Checkout	2026-09-19T01:59:42.1944507Z hint: 	git branch -m <name>
+build	Checkout	2026-09-19T01:59:42.1945247Z hint:
+build	Checkout	2026-09-19T01:59:42.1946245Z hint: Disable this message with "git config set advice.defaultBranchName false"
+build	Checkout	2026-09-19T01:59:42.1948040Z Initialized empty Git repository in /home/runner/work/pos_v2/pos_v2/.git/
+build	Checkout	2026-09-19T01:59:42.1950350Z [command]/usr/bin/git remote add origin https://github.com/YusuP28/pos_v2
+build	Checkout	2026-09-19T01:59:42.1994304Z ##[endgroup]
+build	Checkout	2026-09-19T01:59:42.1995517Z ##[group]Disabling automatic garbage collection
+build	Checkout	2026-09-19T01:59:42.1998764Z [command]/usr/bin/git config --local gc.auto 0
+build	Checkout	2026-09-19T01:59:42.2034524Z ##[endgroup]
+build	Checkout	2026-09-19T01:59:42.2035792Z ##[group]Setting up auth
+build	Checkout	2026-09-19T01:59:42.2047067Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build	Checkout	2026-09-19T01:59:42.2077170Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build	Checkout	2026-09-19T01:59:42.2459564Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build	Checkout	2026-09-19T01:59:42.2501271Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build	Checkout	2026-09-19T01:59:42.2732160Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build	Checkout	2026-09-19T01:59:42.2769633Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build	Checkout	2026-09-19T01:59:42.2999871Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+build	Checkout	2026-09-19T01:59:42.3041142Z ##[endgroup]
+build	Checkout	2026-09-19T01:59:42.3041968Z ##[group]Fetching the repository
+build	Checkout	2026-09-19T01:59:42.3052572Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +912df30c628f8ca9249f78a1a84d603b1069bf64:refs/tags/v1.0.4
+build	Checkout	2026-09-19T01:59:42.5609947Z From https://github.com/YusuP28/pos_v2
+build	Checkout	2026-09-19T01:59:42.5612590Z  * [new ref]         912df30c628f8ca9249f78a1a84d603b1069bf64 -> v1.0.4
+build	Checkout	2026-09-19T01:59:42.5621350Z ##[endgroup]
+build	Checkout	2026-09-19T01:59:42.5624052Z ##[group]Determining the checkout info
+build	Checkout	2026-09-19T01:59:42.5627687Z ##[endgroup]
+build	Checkout	2026-09-19T01:59:42.5629587Z [command]/usr/bin/git sparse-checkout disable
+build	Checkout	2026-09-19T01:59:42.5680465Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+build	Checkout	2026-09-19T01:59:42.5716015Z ##[group]Checking out the ref
+build	Checkout	2026-09-19T01:59:42.5720972Z [command]/usr/bin/git checkout --progress --force refs/tags/v1.0.4
+build	Checkout	2026-09-19T01:59:42.5866484Z Note: switching to 'refs/tags/v1.0.4'.
+build	Checkout	2026-09-19T01:59:42.5868308Z 
+build	Checkout	2026-09-19T01:59:42.5869862Z You are in 'detached HEAD' state. You can look around, make experimental
+build	Checkout	2026-09-19T01:59:42.5872698Z changes and commit them, and you can discard any commits you make in this
+build	Checkout	2026-09-19T01:59:42.5875038Z state without impacting any branches by switching back to a branch.
+build	Checkout	2026-09-19T01:59:42.5876123Z 
+build	Checkout	2026-09-19T01:59:42.5877209Z If you want to create a new branch to retain commits you create, you may
+build	Checkout	2026-09-19T01:59:42.5879133Z do so (now or later) by using -c with the switch command. Example:
+build	Checkout	2026-09-19T01:59:42.5880233Z 
+build	Checkout	2026-09-19T01:59:42.5880694Z   git switch -c <new-branch-name>
+build	Checkout	2026-09-19T01:59:42.5881469Z 
+build	Checkout	2026-09-19T01:59:42.5881908Z Or undo this operation with:
+build	Checkout	2026-09-19T01:59:42.5882675Z 
+build	Checkout	2026-09-19T01:59:42.5883096Z   git switch -
+build	Checkout	2026-09-19T01:59:42.5883678Z 
+build	Checkout	2026-09-19T01:59:42.5884652Z Turn off this advice by setting config variable advice.detachedHead to false
+build	Checkout	2026-09-19T01:59:42.5886132Z 
+build	Checkout	2026-09-19T01:59:42.5887428Z HEAD is now at 912df30 release: v1.0.4 - kode lebih bersih (cleanup deprecated & unused)
+build	Checkout	2026-09-19T01:59:42.5900860Z ##[endgroup]
+build	Checkout	2026-09-19T01:59:42.5942765Z [command]/usr/bin/git log -1 --format=%H
+build	Checkout	2026-09-19T01:59:42.5972217Z 912df30c628f8ca9249f78a1a84d603b1069bf64
+build	Setup Java	﻿2026-09-19T01:59:42.6453039Z ##[group]Run actions/setup-java@v5
+build	Setup Java	2026-09-19T01:59:42.6454169Z with:
+build	Setup Java	2026-09-19T01:59:42.6454959Z   distribution: zulu
+build	Setup Java	2026-09-19T01:59:42.6455844Z   java-version: 17
+build	Setup Java	2026-09-19T01:59:42.6456697Z   java-package: jdk
+build	Setup Java	2026-09-19T01:59:42.6457775Z   check-latest: false
+build	Setup Java	2026-09-19T01:59:42.6458659Z   set-default: true
+build	Setup Java	2026-09-19T01:59:42.6459530Z   verify-signature: false
+build	Setup Java	2026-09-19T01:59:42.6460479Z   server-id: github
+build	Setup Java	2026-09-19T01:59:42.6461355Z   server-username: GITHUB_ACTOR
+build	Setup Java	2026-09-19T01:59:42.6462396Z   server-password: GITHUB_TOKEN
+build	Setup Java	2026-09-19T01:59:42.6463434Z   overwrite-settings: true
+build	Setup Java	2026-09-19T01:59:42.6464384Z   job-status: success
+build	Setup Java	2026-09-19T01:59:42.6475207Z   token: ***
+build	Setup Java	2026-09-19T01:59:42.6476078Z   show-download-progress: false
+build	Setup Java	2026-09-19T01:59:42.6477221Z ##[endgroup]
+build	Setup Java	2026-09-19T01:59:42.7998048Z ##[group]Installed distributions
+build	Setup Java	2026-09-19T01:59:42.8026557Z Trying to resolve the latest version from remote
+build	Setup Java	2026-09-19T01:59:42.9139851Z Resolved latest version as 17.0.20+8
+build	Setup Java	2026-09-19T01:59:42.9141757Z Trying to download...
+build	Setup Java	2026-09-19T01:59:42.9143832Z Downloading Java 17.0.20+8 (Zulu) from https://cdn.azul.com/zulu/bin/zulu17.68.17-ca-jdk17.0.20-linux_x64.tar.gz ...
+build	Setup Java	2026-09-19T01:59:45.7999771Z Extracting Java archive...
+build	Setup Java	2026-09-19T01:59:45.8143255Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/413c90a6-3eb2-44e0-ab85-15afe55277ef -f /home/runner/work/_temp/15663621-0666-4468-a1b4-f43643fdcd58
+build	Setup Java	2026-09-19T01:59:48.4615523Z Java 17.0.20+8 was downloaded
+build	Setup Java	2026-09-19T01:59:48.4616291Z Setting Java 17.0.20+8 as the default
+build	Setup Java	2026-09-19T01:59:48.4624826Z Creating toolchains.xml for JDK version 17 from zulu
+build	Setup Java	2026-09-19T01:59:48.4717586Z Writing to /home/runner/.m2/toolchains.xml
+build	Setup Java	2026-09-19T01:59:48.4718612Z 
+build	Setup Java	2026-09-19T01:59:48.4719231Z Java configuration:
+build	Setup Java	2026-09-19T01:59:48.4747853Z   Distribution: zulu
+build	Setup Java	2026-09-19T01:59:48.4761429Z   Version: 17.0.20+8
+build	Setup Java	2026-09-19T01:59:48.4762283Z   Path: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Java	2026-09-19T01:59:48.4763028Z 
+build	Setup Java	2026-09-19T01:59:48.4763820Z ##[endgroup]
+build	Setup Java	2026-09-19T01:59:48.4801838Z Creating settings.xml with server-id: github
+build	Setup Java	2026-09-19T01:59:48.4802316Z Writing to /home/runner/.m2/settings.xml
+build	Setup Java	2026-09-19T01:59:48.4803104Z Configured MAVEN_ARGS to include -ntp to suppress Maven transfer progress logs. Set 'show-download-progress: true' to keep the download progress output.
+build	Setup Flutter	﻿2026-09-19T01:59:48.6187965Z ##[group]Run subosito/flutter-action@v2
+build	Setup Flutter	2026-09-19T01:59:48.6188340Z with:
+build	Setup Flutter	2026-09-19T01:59:48.6188545Z   channel: stable
+build	Setup Flutter	2026-09-19T01:59:48.6188763Z   cache: true
+build	Setup Flutter	2026-09-19T01:59:48.6188962Z   architecture: X64
+build	Setup Flutter	2026-09-19T01:59:48.6189185Z   pub-cache-path: default
+build	Setup Flutter	2026-09-19T01:59:48.6189418Z   dry-run: false
+build	Setup Flutter	2026-09-19T01:59:48.6189694Z   git-source: https://github.com/flutter/flutter.git
+build	Setup Flutter	2026-09-19T01:59:48.6190029Z env:
+build	Setup Flutter	2026-09-19T01:59:48.6190297Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T01:59:48.6190718Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T01:59:48.6191303Z   MAVEN_ARGS: -ntp
+build	Setup Flutter	2026-09-19T01:59:48.6191516Z ##[endgroup]
+build	Setup Flutter	2026-09-19T01:59:48.6255554Z ##[start-action display=Make yq tool available on Windows runners;id=__subosito_flutter-action.__run]
+build	Setup Flutter	2026-09-19T01:59:48.6268048Z ##[end-action id=__subosito_flutter-action.__run;outcome=skipped;conclusion=skipped;duration_ms=0]
+build	Setup Flutter	2026-09-19T01:59:48.6270476Z ##[start-action display=Make setup script executable;id=__subosito_flutter-action.__run_2]
+build	Setup Flutter	2026-09-19T01:59:48.7826257Z ##[group]Run chmod +x "$GITHUB_ACTION_PATH/setup.sh"
+build	Setup Flutter	2026-09-19T01:59:48.7827198Z ^[[36;1mchmod +x "$GITHUB_ACTION_PATH/setup.sh"^[[0m
+build	Setup Flutter	2026-09-19T01:59:48.7882483Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+build	Setup Flutter	2026-09-19T01:59:48.7883104Z env:
+build	Setup Flutter	2026-09-19T01:59:48.7883559Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T01:59:48.7884287Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T01:59:48.7884916Z   MAVEN_ARGS: -ntp
+build	Setup Flutter	2026-09-19T01:59:48.7885260Z ##[endgroup]
+build	Setup Flutter	2026-09-19T01:59:48.8025414Z ##[end-action id=__subosito_flutter-action.__run_2;outcome=success;conclusion=success;duration_ms=175]
+build	Setup Flutter	2026-09-19T01:59:48.8029621Z ##[start-action display=Set action inputs;id=__subosito_flutter-action.flutter-action]
+build	Setup Flutter	2026-09-19T01:59:48.8082594Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh -p \
+build	Setup Flutter	2026-09-19T01:59:48.8083221Z ^[[36;1m$GITHUB_ACTION_PATH/setup.sh -p \^[[0m
+build	Setup Flutter	2026-09-19T01:59:48.8083726Z ^[[36;1m  -n '' \^[[0m
+build	Setup Flutter	2026-09-19T01:59:48.8084066Z ^[[36;1m  -f '' \^[[0m
+build	Setup Flutter	2026-09-19T01:59:48.8084403Z ^[[36;1m  -a 'X64' \^[[0m
+build	Setup Flutter	2026-09-19T01:59:48.8084746Z ^[[36;1m  -k '' \^[[0m
+build	Setup Flutter	2026-09-19T01:59:48.8085071Z ^[[36;1m  -c '' \^[[0m
+build	Setup Flutter	2026-09-19T01:59:48.8085404Z ^[[36;1m  -l '' \^[[0m
+build	Setup Flutter	2026-09-19T01:59:48.8085744Z ^[[36;1m  -d 'default' \^[[0m
+build	Setup Flutter	2026-09-19T01:59:48.8086270Z ^[[36;1m  -g 'https://github.com/flutter/flutter.git' \^[[0m
+build	Setup Flutter	2026-09-19T01:59:48.8086817Z ^[[36;1m  stable^[[0m
+build	Setup Flutter	2026-09-19T01:59:48.8135791Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+build	Setup Flutter	2026-09-19T01:59:48.8136397Z env:
+build	Setup Flutter	2026-09-19T01:59:48.8137036Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T01:59:48.8137831Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T01:59:48.8138470Z   MAVEN_ARGS: -ntp
+build	Setup Flutter	2026-09-19T01:59:48.8138816Z ##[endgroup]
+build	Setup Flutter	2026-09-19T01:59:48.9924220Z ##[end-action id=__subosito_flutter-action.flutter-action;outcome=success;conclusion=success;duration_ms=189]
+build	Setup Flutter	2026-09-19T01:59:48.9929296Z ##[start-action display=Cache Flutter;id=__subosito_flutter-action.cache-flutter]
+build	Setup Flutter	2026-09-19T01:59:48.9983588Z ##[group]Run actions/cache@v5
+build	Setup Flutter	2026-09-19T01:59:48.9983848Z with:
+build	Setup Flutter	2026-09-19T01:59:48.9984108Z   path: /opt/hostedtoolcache/flutter/stable-3.47.5-x64
+build	Setup Flutter	2026-09-19T01:59:48.9984594Z   key: flutter-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1
+build	Setup Flutter	2026-09-19T01:59:48.9985027Z   enableCrossOsArchive: false
+build	Setup Flutter	2026-09-19T01:59:48.9985283Z   fail-on-cache-miss: false
+build	Setup Flutter	2026-09-19T01:59:48.9985520Z   lookup-only: false
+build	Setup Flutter	2026-09-19T01:59:48.9985748Z   save-always: false
+build	Setup Flutter	2026-09-19T01:59:48.9985945Z env:
+build	Setup Flutter	2026-09-19T01:59:48.9986194Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T01:59:48.9986605Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T01:59:48.9987296Z   MAVEN_ARGS: -ntp
+build	Setup Flutter	2026-09-19T01:59:48.9987519Z ##[endgroup]
+build	Setup Flutter	2026-09-19T01:59:49.2009980Z Cache hit for: flutter-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1
+build	Setup Flutter	2026-09-19T01:59:50.2504414Z Received 251658240 of 1720502499 (14.6%), 239.5 MBs/sec
+build	Setup Flutter	2026-09-19T01:59:51.2579476Z Received 536870912 of 1720502499 (31.2%), 254.9 MBs/sec
+build	Setup Flutter	2026-09-19T01:59:52.2602847Z Received 830472192 of 1720502499 (48.3%), 262.9 MBs/sec
+build	Setup Flutter	2026-09-19T01:59:53.2658295Z Received 1119879168 of 1720502499 (65.1%), 266.1 MBs/sec
+build	Setup Flutter	2026-09-19T01:59:54.2628182Z Received 1434451968 of 1720502499 (83.4%), 272.8 MBs/sec
+build	Setup Flutter	2026-09-19T01:59:55.2067793Z Received 1720502499 of 1720502499 (100.0%), 275.4 MBs/sec
+build	Setup Flutter	2026-09-19T01:59:55.2070545Z Cache Size: ~1641 MB (1720502499 B)
+build	Setup Flutter	2026-09-19T01:59:55.2179813Z [command]/usr/bin/tar -xf /home/runner/work/_temp/3bd43f8b-d5b6-4ce4-aa77-9b9e218d37d4/cache.tzst -P -C /home/runner/work/pos_v2/pos_v2 --use-compress-program unzstd
+build	Setup Flutter	2026-09-19T02:00:00.1076599Z Cache restored successfully
+build	Setup Flutter	2026-09-19T02:00:00.4288001Z Cache restored from key: flutter-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1
+build	Setup Flutter	2026-09-19T02:00:00.4428657Z ##[end-action id=__subosito_flutter-action.cache-flutter;outcome=success;conclusion=success;duration_ms=11449]
+build	Setup Flutter	2026-09-19T02:00:00.4433264Z ##[start-action display=Cache pub dependencies;id=__subosito_flutter-action.cache-pub]
+build	Setup Flutter	2026-09-19T02:00:00.6641990Z ##[group]Run actions/cache@v5
+build	Setup Flutter	2026-09-19T02:00:00.6642415Z with:
+build	Setup Flutter	2026-09-19T02:00:00.6642756Z   path: /home/runner/.pub-cache
+build	Setup Flutter	2026-09-19T02:00:00.6644026Z   key: flutter-pub-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1-45cbea64a265a1561aaf1b2be4893b24aac76a6c032a1c127417a109129f309b
+build	Setup Flutter	2026-09-19T02:00:00.6645384Z   enableCrossOsArchive: false
+build	Setup Flutter	2026-09-19T02:00:00.6645811Z   fail-on-cache-miss: false
+build	Setup Flutter	2026-09-19T02:00:00.6646198Z   lookup-only: false
+build	Setup Flutter	2026-09-19T02:00:00.6646552Z   save-always: false
+build	Setup Flutter	2026-09-19T02:00:00.6647131Z env:
+build	Setup Flutter	2026-09-19T02:00:00.6647580Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T02:00:00.6648307Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T02:00:00.6648928Z   MAVEN_ARGS: -ntp
+build	Setup Flutter	2026-09-19T02:00:00.6649282Z ##[endgroup]
+build	Setup Flutter	2026-09-19T02:00:00.8703030Z Cache hit for: flutter-pub-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1-45cbea64a265a1561aaf1b2be4893b24aac76a6c032a1c127417a109129f309b
+build	Setup Flutter	2026-09-19T02:00:01.4225045Z Received 81357720 of 81357720 (100.0%), 170.2 MBs/sec
+build	Setup Flutter	2026-09-19T02:00:01.4225907Z Cache Size: ~78 MB (81357720 B)
+build	Setup Flutter	2026-09-19T02:00:01.4274842Z [command]/usr/bin/tar -xf /home/runner/work/_temp/00fd99a1-2f04-4efd-ab9f-a492481a2e9e/cache.tzst -P -C /home/runner/work/pos_v2/pos_v2 --use-compress-program unzstd
+build	Setup Flutter	2026-09-19T02:00:02.6514956Z Cache restored successfully
+build	Setup Flutter	2026-09-19T02:00:02.6630239Z Cache restored from key: flutter-pub-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1-45cbea64a265a1561aaf1b2be4893b24aac76a6c032a1c127417a109129f309b
+build	Setup Flutter	2026-09-19T02:00:02.6745732Z ##[end-action id=__subosito_flutter-action.cache-pub;outcome=success;conclusion=success;duration_ms=2231]
+build	Setup Flutter	2026-09-19T02:00:02.6749132Z ##[start-action display=Run setup script;id=__subosito_flutter-action.__run_3]
+build	Setup Flutter	2026-09-19T02:00:02.6784526Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh \
+build	Setup Flutter	2026-09-19T02:00:02.6784919Z ^[[36;1m$GITHUB_ACTION_PATH/setup.sh \^[[0m
+build	Setup Flutter	2026-09-19T02:00:02.6785207Z ^[[36;1m  -n '3.47.5' \^[[0m
+build	Setup Flutter	2026-09-19T02:00:02.6785442Z ^[[36;1m  -a 'x64' \^[[0m
+build	Setup Flutter	2026-09-19T02:00:02.6785753Z ^[[36;1m  -c '/opt/hostedtoolcache/flutter/stable-3.47.5-x64' \^[[0m
+build	Setup Flutter	2026-09-19T02:00:02.6786129Z ^[[36;1m  -d '/home/runner/.pub-cache' \^[[0m
+build	Setup Flutter	2026-09-19T02:00:02.6786416Z ^[[36;1m  stable^[[0m
+build	Setup Flutter	2026-09-19T02:00:02.6824748Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+build	Setup Flutter	2026-09-19T02:00:02.6825150Z env:
+build	Setup Flutter	2026-09-19T02:00:02.6825449Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T02:00:02.6825903Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Setup Flutter	2026-09-19T02:00:02.6826279Z   MAVEN_ARGS: -ntp
+build	Setup Flutter	2026-09-19T02:00:02.6826500Z ##[endgroup]
+build	Setup Flutter	2026-09-19T02:00:02.8309058Z ##[end-action id=__subosito_flutter-action.__run_3;outcome=success;conclusion=success;duration_ms=155]
+build	Flutter Version	﻿2026-09-19T02:00:02.8364998Z ##[group]Run flutter --version
+build	Flutter Version	2026-09-19T02:00:02.8365347Z ^[[36;1mflutter --version^[[0m
+build	Flutter Version	2026-09-19T02:00:02.8402438Z shell: /usr/bin/bash -e {0}
+build	Flutter Version	2026-09-19T02:00:02.8402718Z env:
+build	Flutter Version	2026-09-19T02:00:02.8403006Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Flutter Version	2026-09-19T02:00:02.8403461Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Flutter Version	2026-09-19T02:00:02.8403822Z   MAVEN_ARGS: -ntp
+build	Flutter Version	2026-09-19T02:00:02.8404141Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.5-x64/flutter
+build	Flutter Version	2026-09-19T02:00:02.8404719Z   PUB_CACHE: /home/runner/.pub-cache
+build	Flutter Version	2026-09-19T02:00:02.8404981Z ##[endgroup]
+build	Flutter Version	2026-09-19T02:00:03.1752417Z Flutter 3.47.5 • channel stable • https://github.com/flutter/flutter.git
+build	Flutter Version	2026-09-19T02:00:03.1753565Z Framework • revision 6a19cca564 (32 hours ago) • 2026-09-17 14:13:22 -0400
+build	Flutter Version	2026-09-19T02:00:03.1755213Z Engine • hash ab598368592da0064197e2bc15c7f5b0a2c6bb1f (revision af7e796e16) (2 days ago) • 2026-09-16 18:35:09.000Z
+build	Flutter Version	2026-09-19T02:00:03.1756398Z Tools • Dart 3.13.4 • DevTools 2.60.0
+build	Get Dependencies	﻿2026-09-19T02:00:03.1845145Z ##[group]Run flutter pub get
+build	Get Dependencies	2026-09-19T02:00:03.1845493Z ^[[36;1mflutter pub get^[[0m
+build	Get Dependencies	2026-09-19T02:00:03.1881780Z shell: /usr/bin/bash -e {0}
+build	Get Dependencies	2026-09-19T02:00:03.1882064Z env:
+build	Get Dependencies	2026-09-19T02:00:03.1882350Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Get Dependencies	2026-09-19T02:00:03.1882791Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Get Dependencies	2026-09-19T02:00:03.1883150Z   MAVEN_ARGS: -ntp
+build	Get Dependencies	2026-09-19T02:00:03.1883479Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.5-x64/flutter
+build	Get Dependencies	2026-09-19T02:00:03.1883911Z   PUB_CACHE: /home/runner/.pub-cache
+build	Get Dependencies	2026-09-19T02:00:03.1884176Z ##[endgroup]
+build	Get Dependencies	2026-09-19T02:00:03.3502471Z Resolving dependencies...
+build	Get Dependencies	2026-09-19T02:00:03.4882920Z Downloading packages...
+build	Get Dependencies	2026-09-19T02:00:03.5931602Z   archive 3.6.1 (4.3.0 available)
+build	Get Dependencies	2026-09-19T02:00:03.5932209Z   dbus 0.7.15 (0.8.0 available)
+build	Get Dependencies	2026-09-19T02:00:03.5932684Z   flutter_blue_plus 1.36.8 (2.3.12 available)
+build	Get Dependencies	2026-09-19T02:00:03.5933250Z   flutter_blue_plus_android 7.0.4 (9.0.3 available)
+build	Get Dependencies	2026-09-19T02:00:03.5933899Z   flutter_blue_plus_darwin 7.0.3 (9.0.4 available)
+build	Get Dependencies	2026-09-19T02:00:03.5934452Z   flutter_blue_plus_linux 7.0.3 (9.0.3 available)
+build	Get Dependencies	2026-09-19T02:00:03.5935163Z   flutter_blue_plus_platform_interface 7.0.0 (9.0.3 available)
+build	Get Dependencies	2026-09-19T02:00:03.5935788Z   flutter_blue_plus_web 7.0.2 (9.0.3 available)
+build	Get Dependencies	2026-09-19T02:00:03.5936278Z   flutter_lints 5.0.0 (6.0.0 available)
+build	Get Dependencies	2026-09-19T02:00:03.5936705Z   image 3.3.0 (4.10.1 available)
+build	Get Dependencies	2026-09-19T02:00:03.5937401Z   lints 5.1.1 (6.1.0 available)
+build	Get Dependencies	2026-09-19T02:00:03.5937859Z   material_color_utilities 0.13.0 (0.13.1 available)
+build	Get Dependencies	2026-09-19T02:00:03.5938400Z   package_info_plus 8.3.1 (10.2.1 available)
+build	Get Dependencies	2026-09-19T02:00:03.5938989Z   package_info_plus_platform_interface 3.2.1 (4.1.0 available)
+build	Get Dependencies	2026-09-19T02:00:03.5939545Z   qr 3.0.2 (4.0.0 available)
+build	Get Dependencies	2026-09-19T02:00:03.5939922Z   test_api 0.7.12 (0.7.14 available)
+build	Get Dependencies	2026-09-19T02:00:03.5940399Z   win32 5.15.0 (6.4.0 available)
+build	Get Dependencies	2026-09-19T02:00:03.5941001Z   xml 6.6.1 (7.0.1 available)
+build	Get Dependencies	2026-09-19T02:00:03.5941465Z Got dependencies!
+build	Get Dependencies	2026-09-19T02:00:03.5942057Z 18 packages have newer versions incompatible with dependency constraints.
+build	Get Dependencies	2026-09-19T02:00:03.5942804Z Try `flutter pub outdated` for more information.
+build	Analyze	﻿2026-09-19T02:00:03.8267706Z ##[group]Run flutter analyze --no-fatal-infos --no-fatal-warnings || true
+build	Analyze	2026-09-19T02:00:03.8268348Z ^[[36;1mflutter analyze --no-fatal-infos --no-fatal-warnings || true^[[0m
+build	Analyze	2026-09-19T02:00:03.8304241Z shell: /usr/bin/bash -e {0}
+build	Analyze	2026-09-19T02:00:03.8304524Z env:
+build	Analyze	2026-09-19T02:00:03.8304810Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Analyze	2026-09-19T02:00:03.8305262Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Analyze	2026-09-19T02:00:03.8305620Z   MAVEN_ARGS: -ntp
+build	Analyze	2026-09-19T02:00:03.8305941Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.5-x64/flutter
+build	Analyze	2026-09-19T02:00:03.8306332Z   PUB_CACHE: /home/runner/.pub-cache
+build	Analyze	2026-09-19T02:00:03.8306598Z ##[endgroup]
+build	Analyze	2026-09-19T02:00:03.9886047Z Resolving dependencies...
+build	Analyze	2026-09-19T02:00:04.1216321Z Downloading packages...
+build	Analyze	2026-09-19T02:00:04.1622399Z   archive 3.6.1 (4.3.0 available)
+build	Analyze	2026-09-19T02:00:04.1623126Z   dbus 0.7.15 (0.8.0 available)
+build	Analyze	2026-09-19T02:00:04.1623741Z   flutter_blue_plus 1.36.8 (2.3.12 available)
+build	Analyze	2026-09-19T02:00:04.1624560Z   flutter_blue_plus_android 7.0.4 (9.0.3 available)
+build	Analyze	2026-09-19T02:00:04.1625323Z   flutter_blue_plus_darwin 7.0.3 (9.0.4 available)
+build	Analyze	2026-09-19T02:00:04.1626106Z   flutter_blue_plus_linux 7.0.3 (9.0.3 available)
+build	Analyze	2026-09-19T02:00:04.1628399Z   flutter_blue_plus_platform_interface 7.0.0 (9.0.3 available)
+build	Analyze	2026-09-19T02:00:04.1628984Z   flutter_blue_plus_web 7.0.2 (9.0.3 available)
+build	Analyze	2026-09-19T02:00:04.1629362Z   flutter_lints 5.0.0 (6.0.0 available)
+build	Analyze	2026-09-19T02:00:04.1629689Z   image 3.3.0 (4.10.1 available)
+build	Analyze	2026-09-19T02:00:04.1629984Z   lints 5.1.1 (6.1.0 available)
+build	Analyze	2026-09-19T02:00:04.1630320Z   material_color_utilities 0.13.0 (0.13.1 available)
+build	Analyze	2026-09-19T02:00:04.1630710Z   package_info_plus 8.3.1 (10.2.1 available)
+build	Analyze	2026-09-19T02:00:04.1631135Z   package_info_plus_platform_interface 3.2.1 (4.1.0 available)
+build	Analyze	2026-09-19T02:00:04.1631821Z   qr 3.0.2 (4.0.0 available)
+build	Analyze	2026-09-19T02:00:04.1632260Z   test_api 0.7.12 (0.7.14 available)
+build	Analyze	2026-09-19T02:00:04.1632660Z   win32 5.15.0 (6.4.0 available)
+build	Analyze	2026-09-19T02:00:04.1632960Z   xml 6.6.1 (7.0.1 available)
+build	Analyze	2026-09-19T02:00:04.1633246Z Got dependencies!
+build	Analyze	2026-09-19T02:00:04.1633630Z 18 packages have newer versions incompatible with dependency constraints.
+build	Analyze	2026-09-19T02:00:04.1634145Z Try `flutter pub outdated` for more information.
+build	Analyze	2026-09-19T02:00:16.0217427Z Analyzing pos_v2...                                             
+build	Analyze	2026-09-19T02:00:16.0224124Z 
+build	Analyze	2026-09-19T02:00:16.0250804Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/category_list_view.dart:19:28 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0254147Z warning • The declaration '_deleteCategory' isn't referenced. Try removing the declaration of '_deleteCategory' • lib/views/expense_view.dart:180:16 • unused_element
+build	Analyze	2026-09-19T02:00:16.0255796Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/expense_view.dart:215:23 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0258357Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/expense_view.dart:216:7 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0263464Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/expense_view.dart:286:11 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0279185Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:38:20 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0282348Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:39:7 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0285986Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:42:7 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0289455Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:45:7 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0292715Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/info_toko_view.dart:33:13 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0295895Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/info_toko_view.dart:63:13 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0299387Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/info_toko_view.dart:78:13 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0303012Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/printer_settings_view.dart:21:28 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0306309Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_form_view.dart:49:28 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0309737Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_list_view.dart:31:7 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0312926Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_list_view.dart:32:7 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0316086Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_list_view.dart:101:20 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0320231Z    info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext • lib/views/product_list_view.dart:349:49 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0324424Z    info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext • lib/views/product_list_view.dart:360:58 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0326488Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:34:7 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0329457Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:35:7 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0332466Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:36:7 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0334560Z warning • The value of the local variable 'cart' isn't used. Try removing the variable or using it • lib/views/retail_pos_view.dart:50:11 • unused_local_variable
+build	Analyze	2026-09-19T02:00:16.0336192Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:572:25 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0338224Z   error • The values in a const list literal must be constants. Try removing the keyword 'const' from the list literal • lib/views/scanner/barcode_scanner_view.dart:25:7 • non_constant_list_element
+build	Analyze	2026-09-19T02:00:16.0339615Z   error • Undefined name 'BarcodeFormats'. Try correcting the name to one that is defined, or defining the name • lib/views/scanner/barcode_scanner_view.dart:25:7 • undefined_identifier
+build	Analyze	2026-09-19T02:00:16.0342060Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/shift/shift_detail_view.dart:31:21 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0344571Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/shift_view.dart:27:20 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0346300Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/shift_view.dart:28:7 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0348055Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/splash_view.dart:21:20 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0349605Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:22:28 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0351226Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:110:16 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0352819Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:166:27 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0354406Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:168:13 • use_build_context_synchronously
+build	Analyze	2026-09-19T02:00:16.0355186Z 
+build	Analyze	2026-09-19T02:00:16.0384825Z 34 issues found. (ran in 11.2s)
+build	Build Release APK	﻿2026-09-19T02:00:16.0470638Z ##[group]Run flutter build apk --release
+build	Build Release APK	2026-09-19T02:00:16.0471019Z ^[[36;1mflutter build apk --release^[[0m
+build	Build Release APK	2026-09-19T02:00:16.0507260Z shell: /usr/bin/bash -e {0}
+build	Build Release APK	2026-09-19T02:00:16.0507527Z env:
+build	Build Release APK	2026-09-19T02:00:16.0507813Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Build Release APK	2026-09-19T02:00:16.0508257Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.20-8/x64
+build	Build Release APK	2026-09-19T02:00:16.0508634Z   MAVEN_ARGS: -ntp
+build	Build Release APK	2026-09-19T02:00:16.0508961Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.5-x64/flutter
+build	Build Release APK	2026-09-19T02:00:16.0509340Z   PUB_CACHE: /home/runner/.pub-cache
+build	Build Release APK	2026-09-19T02:00:16.0509608Z ##[endgroup]
+build	Build Release APK	2026-09-19T02:00:16.2757859Z Resolving dependencies...
+build	Build Release APK	2026-09-19T02:00:16.3964214Z Downloading packages...
+build	Build Release APK	2026-09-19T02:00:16.4439994Z   archive 3.6.1 (4.3.0 available)
+build	Build Release APK	2026-09-19T02:00:16.4440613Z   dbus 0.7.15 (0.8.0 available)
+build	Build Release APK	2026-09-19T02:00:16.4441115Z   flutter_blue_plus 1.36.8 (2.3.12 available)
+build	Build Release APK	2026-09-19T02:00:16.4441711Z   flutter_blue_plus_android 7.0.4 (9.0.3 available)
+build	Build Release APK	2026-09-19T02:00:16.4442382Z   flutter_blue_plus_darwin 7.0.3 (9.0.4 available)
+build	Build Release APK	2026-09-19T02:00:16.4442965Z   flutter_blue_plus_linux 7.0.3 (9.0.3 available)
+build	Build Release APK	2026-09-19T02:00:16.4443612Z   flutter_blue_plus_platform_interface 7.0.0 (9.0.3 available)
+build	Build Release APK	2026-09-19T02:00:16.4444235Z   flutter_blue_plus_web 7.0.2 (9.0.3 available)
+build	Build Release APK	2026-09-19T02:00:16.4444597Z   flutter_lints 5.0.0 (6.0.0 available)
+build	Build Release APK	2026-09-19T02:00:16.4444889Z   image 3.3.0 (4.10.1 available)
+build	Build Release APK	2026-09-19T02:00:16.4445333Z   lints 5.1.1 (6.1.0 available)
+build	Build Release APK	2026-09-19T02:00:16.4445837Z   material_color_utilities 0.13.0 (0.13.1 available)
+build	Build Release APK	2026-09-19T02:00:16.4446292Z   package_info_plus 8.3.1 (10.2.1 available)
+build	Build Release APK	2026-09-19T02:00:16.4446669Z   package_info_plus_platform_interface 3.2.1 (4.1.0 available)
+build	Build Release APK	2026-09-19T02:00:16.4447270Z   qr 3.0.2 (4.0.0 available)
+build	Build Release APK	2026-09-19T02:00:16.4447531Z   test_api 0.7.12 (0.7.14 available)
+build	Build Release APK	2026-09-19T02:00:16.4447807Z   win32 5.15.0 (6.4.0 available)
+build	Build Release APK	2026-09-19T02:00:16.4448060Z   xml 6.6.1 (7.0.1 available)
+build	Build Release APK	2026-09-19T02:00:16.4448337Z Got dependencies!
+build	Build Release APK	2026-09-19T02:00:16.4448677Z 18 packages have newer versions incompatible with dependency constraints.
+build	Build Release APK	2026-09-19T02:00:16.4449116Z Try `flutter pub outdated` for more information.
+build	Build Release APK	2026-09-19T02:00:16.7651026Z Upgrading build.gradle
+build	Build Release APK	2026-09-19T02:00:16.7669786Z Upgrading gradle.properties
+build	Build Release APK	2026-09-19T02:00:16.7682801Z Upgrading gradle.properties
+build	Build Release APK	2026-09-19T02:01:38.2888282Z Running Gradle task 'assembleRelease'...                        
+build	Build Release APK	2026-09-19T02:01:38.2960293Z Warning: Flutter support for your project's Gradle version (8.14.3) will soon be dropped. Please upgrade your Gradle version to a version of at least 9.1.0 soon.
+build	Build Release APK	2026-09-19T02:01:38.2962092Z Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
+build	Build Release APK	2026-09-19T02:01:38.2977715Z 
+build	Build Release APK	2026-09-19T02:01:38.2980572Z Potential fix: Your project's gradle version is typically defined in the gradle wrapper file. By default, this can be found at /home/runner/work/pos_v2/pos_v2/android/gradle/wrapper/gradle-wrapper.properties. 
+build	Build Release APK	2026-09-19T02:01:38.2982528Z For more information, see https://docs.gradle.org/current/userguide/gradle_wrapper.html.
+build	Build Release APK	2026-09-19T02:01:38.2983200Z 
+build	Build Release APK	2026-09-19T02:01:38.2984676Z Warning: Flutter support for your project's Android Gradle Plugin version (Android Gradle Plugin version 8.11.1) will soon be dropped. Please upgrade your Android Gradle Plugin version to a version of at least Android Gradle Plugin version 9.0.1 soon.
+build	Build Release APK	2026-09-19T02:01:38.2994186Z Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
+build	Build Release APK	2026-09-19T02:01:38.2995018Z 
+build	Build Release APK	2026-09-19T02:01:38.2996393Z Potential fix: Your project's AGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/pos_v2/pos_v2/android/settings.gradle), by a plugin with the id of com.android.application. 
+build	Build Release APK	2026-09-19T02:01:38.3000429Z If you don't see a plugins block, your project was likely created with an older template version. In this case it is most likely defined in the top-level build.gradle file (/home/runner/work/pos_v2/pos_v2/android/build.gradle) by the following line in the dependencies block of the buildscript: "classpath 'com.android.tools.build:gradle:<version>'".
+build	Build Release APK	2026-09-19T02:01:38.3007509Z 
+build	Build Release APK	2026-09-19T02:01:38.3018289Z Warning: Flutter support for your project's Kotlin version (2.2.20) will soon be dropped. Please upgrade your Kotlin version to a version of at least 2.3.20 soon.
+build	Build Release APK	2026-09-19T02:01:38.3031070Z Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
+build	Build Release APK	2026-09-19T02:01:38.3050617Z 
+build	Build Release APK	2026-09-19T02:01:38.3069197Z Potential fix: Your project's KGP version is typically defined in the plugins block of the `settings.gradle` file (/home/runner/work/pos_v2/pos_v2/android/settings.gradle), by a plugin with the id of org.jetbrains.kotlin.android. 
+build	Build Release APK	2026-09-19T02:01:38.3072561Z If you don't see a plugins block, your project was likely created with an older template version, in which case it is most likely defined in the top-level build.gradle file (/home/runner/work/pos_v2/pos_v2/android/build.gradle) by the ext.kotlin_version property.
+build	Build Release APK	2026-09-19T02:01:38.3074512Z 
+build	Build Release APK	2026-09-19T02:02:27.3737329Z Checking the license for package Android SDK Platform 31 in /usr/local/lib/android/sdk/licenses
+build	Build Release APK	2026-09-19T02:02:27.3738740Z License for package Android SDK Platform 31 accepted.
+build	Build Release APK	2026-09-19T02:02:27.3739619Z Preparing "Install Android SDK Platform 31 (revision 1)".
+build	Build Release APK	2026-09-19T02:02:30.3715177Z "Install Android SDK Platform 31 (revision 1)" ready.
+build	Build Release APK	2026-09-19T02:02:30.3728071Z Installing Android SDK Platform 31 in /usr/local/lib/android/sdk/platforms/android-31
+build	Build Release APK	2026-09-19T02:02:30.3751749Z "Install Android SDK Platform 31 (revision 1)" complete.
+build	Build Release APK	2026-09-19T02:02:30.4720384Z "Install Android SDK Platform 31 (revision 1)" finished.
+build	Build Release APK	2026-09-19T02:02:30.5758259Z [=========                              ] 25%                                   
+build	Build Release APK	2026-09-19T02:02:30.5759545Z [=========                              ] 25% Fetch remote repository...        
+build	Build Release APK	2026-09-19T02:02:30.5817750Z [=======================================] 100% Fetch remote repository...       
+build	Build Release APK	2026-09-19T02:02:39.5714641Z lib/views/scanner/barcode_scanner_view.dart:25:7: Error: Undefined name 'BarcodeFormats'.
+build	Build Release APK	2026-09-19T02:02:39.5715632Z       BarcodeFormats.itf14,
+build	Build Release APK	2026-09-19T02:02:39.5716089Z       ^^^^^^^^^^^^^^
+build	Build Release APK	2026-09-19T02:02:44.9714917Z Target kernel_snapshot_program failed: Exception
+build	Build Release APK	2026-09-19T02:02:44.9715828Z 
+build	Build Release APK	2026-09-19T02:02:45.0753412Z 
+build	Build Release APK	2026-09-19T02:02:45.0754274Z FAILURE: Build failed with an exception.
+build	Build Release APK	2026-09-19T02:02:45.0754710Z 
+build	Build Release APK	2026-09-19T02:02:45.0754884Z * What went wrong:
+build	Build Release APK	2026-09-19T02:02:45.0755460Z Execution failed for task ':app:compileFlutterBuildRelease'.
+build	Build Release APK	2026-09-19T02:02:45.0757264Z > Process 'command '/opt/hostedtoolcache/flutter/stable-3.47.5-x64/flutter/bin/flutter'' finished with non-zero exit value 1
+build	Build Release APK	2026-09-19T02:02:45.0758245Z 
+build	Build Release APK	2026-09-19T02:02:45.0758389Z * Try:
+build	Build Release APK	2026-09-19T02:02:45.0758873Z > Run with --stacktrace option to get the stack trace.
+build	Build Release APK	2026-09-19T02:02:45.0759634Z > Run with --info or --debug option to get more log output.
+build	Build Release APK	2026-09-19T02:02:45.0760282Z > Run with --scan to get full insights.
+build	Build Release APK	2026-09-19T02:02:45.0760841Z > Get more help at https://help.gradle.org.
+build	Build Release APK	2026-09-19T02:02:45.0761231Z 
+build	Build Release APK	2026-09-19T02:02:45.0761398Z BUILD FAILED in 2m 28s
+build	Build Release APK	2026-09-19T02:02:45.4917430Z Running Gradle task 'assembleRelease'...                          148.7s
+build	Build Release APK	2026-09-19T02:02:45.5326344Z Gradle task assembleRelease failed with exit code 1
+build	Build Release APK	2026-09-19T02:02:45.5383319Z ##[error]Process completed with exit code 1.
+build	Post Setup Flutter	﻿2026-09-19T02:02:45.5569528Z Post job cleanup.
+build	Post Setup Flutter	2026-09-19T02:02:45.5573554Z ##[start-action display=Cache pub dependencies;id=__73ecbdce-b1c6-4480-981e-e53d496c2dff.cache-pub]
+build	Post Setup Flutter	2026-09-19T02:02:45.5575681Z ##[end-action id=__73ecbdce-b1c6-4480-981e-e53d496c2dff.cache-pub;outcome=skipped;conclusion=skipped;duration_ms=0]
+build	Post Setup Flutter	2026-09-19T02:02:45.5594363Z ##[start-action display=Cache Flutter;id=__73ecbdce-b1c6-4480-981e-e53d496c2dff.cache-flutter]
+build	Post Setup Flutter	2026-09-19T02:02:45.5598602Z ##[end-action id=__73ecbdce-b1c6-4480-981e-e53d496c2dff.cache-flutter;outcome=skipped;conclusion=skipped;duration_ms=0]
+build	Post Setup Java	﻿2026-09-19T02:02:45.5668277Z Post job cleanup.
+build	Post Checkout	﻿2026-09-19T02:02:45.7073269Z Post job cleanup.
+build	Post Checkout	2026-09-19T02:02:45.7994407Z [command]/usr/bin/git version
+build	Post Checkout	2026-09-19T02:02:45.8037170Z git version 2.55.0
+build	Post Checkout	2026-09-19T02:02:45.8076150Z Temporarily overriding HOME='/home/runner/work/_temp/d0fc2eed-51e0-4e1c-9cc0-68d1d8c2b5a2' before making global git config changes
+build	Post Checkout	2026-09-19T02:02:45.8078712Z Adding repository directory to the temporary git global config as a safe directory
+build	Post Checkout	2026-09-19T02:02:45.8083392Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pos_v2/pos_v2
+build	Post Checkout	2026-09-19T02:02:45.8122734Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build	Post Checkout	2026-09-19T02:02:45.8168115Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build	Post Checkout	2026-09-19T02:02:45.8418594Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build	Post Checkout	2026-09-19T02:02:45.8445535Z http.https://github.com/.extraheader
+build	Post Checkout	2026-09-19T02:02:45.8458728Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+build	Post Checkout	2026-09-19T02:02:45.8492331Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build	Post Checkout	2026-09-19T02:02:45.8753797Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build	Post Checkout	2026-09-19T02:02:45.8794099Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build	Complete job	﻿2026-09-19T02:02:45.9226203Z Cleaning up orphan processes
+build	Complete job	2026-09-19T02:02:45.9635266Z Terminate orphan process: pid (2664) (java)
+build	Complete job	2026-09-19T02:02:45.9682371Z Terminate orphan process: pid (2778) (java)
