@@ -1,0 +1,33 @@
+name: Analyze Code
+
+on:
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Get Dependencies
+        run: flutter pub get
+
+      - name: Flutter Analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Dart Fix Dry Run
+        run: dart fix --dry-run
+
+      - name: Summary
+        run: |
+          echo "===================================="
+          echo "ANALYZE SELESAI"
+          echo "Lihat log di atas untuk detail"
+          echo "===================================="
