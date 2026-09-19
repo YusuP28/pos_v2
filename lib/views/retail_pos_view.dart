@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import '../core/utils/currency.dart';
 import '../viewmodels/auth_viewmodel.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../core/services/auth_service.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../widgets/app_toast.dart';
 import 'home_view.dart';
