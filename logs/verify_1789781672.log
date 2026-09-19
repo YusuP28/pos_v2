@@ -1,0 +1,387 @@
+analyze	Set up job	﻿2026-09-19T01:33:37.2820279Z Current runner version: '2.337.0'
+analyze	Set up job	2026-09-19T01:33:37.2857033Z ##[group]Runner Image Provisioner
+analyze	Set up job	2026-09-19T01:33:37.2858353Z Hosted Compute Agent
+analyze	Set up job	2026-09-19T01:33:37.2859495Z Version: 20260828.587
+analyze	Set up job	2026-09-19T01:33:37.2861149Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+analyze	Set up job	2026-09-19T01:33:37.2862463Z Build Date: 2026-08-28T16:44:25Z
+analyze	Set up job	2026-09-19T01:33:37.2863916Z Worker ID: {b98796a8-5510-4e14-af1f-f30a4191aecd}
+analyze	Set up job	2026-09-19T01:33:37.2865306Z Azure Region: eastus
+analyze	Set up job	2026-09-19T01:33:37.2866254Z ##[endgroup]
+analyze	Set up job	2026-09-19T01:33:37.2868586Z ##[group]Operating System
+analyze	Set up job	2026-09-19T01:33:37.2869680Z Ubuntu
+analyze	Set up job	2026-09-19T01:33:37.2870641Z 24.04.5
+analyze	Set up job	2026-09-19T01:33:37.2871528Z LTS
+analyze	Set up job	2026-09-19T01:33:37.2872372Z ##[endgroup]
+analyze	Set up job	2026-09-19T01:33:37.2873797Z ##[group]Runner Image
+analyze	Set up job	2026-09-19T01:33:37.2874908Z Image: ubuntu-24.04
+analyze	Set up job	2026-09-19T01:33:37.2876126Z Version: 20260907.300.1
+analyze	Set up job	2026-09-19T01:33:37.2878233Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+analyze	Set up job	2026-09-19T01:33:37.2881331Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+analyze	Set up job	2026-09-19T01:33:37.2883409Z ##[endgroup]
+analyze	Set up job	2026-09-19T01:33:37.2885555Z ##[group]GITHUB_TOKEN Permissions
+analyze	Set up job	2026-09-19T01:33:37.2888640Z Contents: write
+analyze	Set up job	2026-09-19T01:33:37.2889776Z Metadata: read
+analyze	Set up job	2026-09-19T01:33:37.2890808Z ##[endgroup]
+analyze	Set up job	2026-09-19T01:33:37.2894288Z Secret source: Actions
+analyze	Set up job	2026-09-19T01:33:37.2895881Z Cache mode: write
+analyze	Set up job	2026-09-19T01:33:37.2897562Z Prepare workflow directory
+analyze	Set up job	2026-09-19T01:33:37.3388760Z Prepare all required actions
+analyze	Set up job	2026-09-19T01:33:37.3462660Z Getting action download info
+analyze	Set up job	2026-09-19T01:33:37.5575385Z Download action repository 'actions/checkout@v5' (SHA:fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09)
+analyze	Set up job	2026-09-19T01:33:37.6689639Z Download action repository 'subosito/flutter-action@v2' (SHA:1a449444c387b1966244ae4d4f8c696479add0b2)
+analyze	Set up job	2026-09-19T01:33:37.8867619Z Getting action download info
+analyze	Set up job	2026-09-19T01:33:37.9685788Z Download action repository 'actions/cache@v5' (SHA:caa296126883cff596d87d8935842f9db880ef25)
+analyze	Set up job	2026-09-19T01:33:38.1088934Z Complete job name: analyze
+analyze	Checkout	﻿2026-09-19T01:33:38.1887149Z ##[group]Run actions/checkout@v5
+analyze	Checkout	2026-09-19T01:33:38.1888122Z with:
+analyze	Checkout	2026-09-19T01:33:38.1892090Z   token: ***
+analyze	Checkout	2026-09-19T01:33:38.1892594Z   repository: YusuP28/pos_v2
+analyze	Checkout	2026-09-19T01:33:38.1893396Z   ssh-strict: true
+analyze	Checkout	2026-09-19T01:33:38.1893875Z   ssh-user: git
+analyze	Checkout	2026-09-19T01:33:38.1894353Z   persist-credentials: true
+analyze	Checkout	2026-09-19T01:33:38.1894884Z   clean: true
+analyze	Checkout	2026-09-19T01:33:38.1895363Z   sparse-checkout-cone-mode: true
+analyze	Checkout	2026-09-19T01:33:38.1895923Z   fetch-depth: 1
+analyze	Checkout	2026-09-19T01:33:38.1896380Z   fetch-tags: false
+analyze	Checkout	2026-09-19T01:33:38.1896851Z   show-progress: true
+analyze	Checkout	2026-09-19T01:33:38.1897331Z   lfs: false
+analyze	Checkout	2026-09-19T01:33:38.1897827Z   submodules: false
+analyze	Checkout	2026-09-19T01:33:38.1898329Z   set-safe-directory: true
+analyze	Checkout	2026-09-19T01:33:38.1898865Z   allow-unsafe-pr-checkout: false
+analyze	Checkout	2026-09-19T01:33:38.1899699Z ##[endgroup]
+analyze	Checkout	2026-09-19T01:33:38.2982158Z Syncing repository: YusuP28/pos_v2
+analyze	Checkout	2026-09-19T01:33:38.2985832Z ##[group]Getting Git version info
+analyze	Checkout	2026-09-19T01:33:38.2987264Z Working directory is '/home/runner/work/pos_v2/pos_v2'
+analyze	Checkout	2026-09-19T01:33:38.2989405Z [command]/usr/bin/git version
+analyze	Checkout	2026-09-19T01:33:38.3101756Z git version 2.55.0
+analyze	Checkout	2026-09-19T01:33:38.3125204Z ##[endgroup]
+analyze	Checkout	2026-09-19T01:33:38.3159456Z Temporarily overriding HOME='/home/runner/work/_temp/f3a91316-ffa3-4675-806b-a18e91ab2e96' before making global git config changes
+analyze	Checkout	2026-09-19T01:33:38.3163472Z Adding repository directory to the temporary git global config as a safe directory
+analyze	Checkout	2026-09-19T01:33:38.3166569Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pos_v2/pos_v2
+analyze	Checkout	2026-09-19T01:33:38.3274176Z Deleting the contents of '/home/runner/work/pos_v2/pos_v2'
+analyze	Checkout	2026-09-19T01:33:38.3289310Z ##[group]Initializing the repository
+analyze	Checkout	2026-09-19T01:33:38.3291192Z [command]/usr/bin/git init /home/runner/work/pos_v2/pos_v2
+analyze	Checkout	2026-09-19T01:33:38.3377749Z hint: Using 'master' as the name for the initial branch. This default branch name
+analyze	Checkout	2026-09-19T01:33:38.3380252Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+analyze	Checkout	2026-09-19T01:33:38.3382372Z hint: to use in all of your new repositories, which will suppress this warning,
+analyze	Checkout	2026-09-19T01:33:38.3384538Z hint: call:
+analyze	Checkout	2026-09-19T01:33:38.3385909Z hint:
+analyze	Checkout	2026-09-19T01:33:38.3387406Z hint: 	git config --global init.defaultBranch <name>
+analyze	Checkout	2026-09-19T01:33:38.3389105Z hint:
+analyze	Checkout	2026-09-19T01:33:38.3390685Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+analyze	Checkout	2026-09-19T01:33:38.3393329Z hint: 'development'. The just-created branch can be renamed via this command:
+analyze	Checkout	2026-09-19T01:33:38.3395293Z hint:
+analyze	Checkout	2026-09-19T01:33:38.3396596Z hint: 	git branch -m <name>
+analyze	Checkout	2026-09-19T01:33:38.3398001Z hint:
+analyze	Checkout	2026-09-19T01:33:38.3399718Z hint: Disable this message with "git config set advice.defaultBranchName false"
+analyze	Checkout	2026-09-19T01:33:38.3402116Z Initialized empty Git repository in /home/runner/work/pos_v2/pos_v2/.git/
+analyze	Checkout	2026-09-19T01:33:38.3406243Z [command]/usr/bin/git remote add origin https://github.com/YusuP28/pos_v2
+analyze	Checkout	2026-09-19T01:33:38.3466425Z ##[endgroup]
+analyze	Checkout	2026-09-19T01:33:38.3468243Z ##[group]Disabling automatic garbage collection
+analyze	Checkout	2026-09-19T01:33:38.3469763Z [command]/usr/bin/git config --local gc.auto 0
+analyze	Checkout	2026-09-19T01:33:38.3516181Z ##[endgroup]
+analyze	Checkout	2026-09-19T01:33:38.3517627Z ##[group]Setting up auth
+analyze	Checkout	2026-09-19T01:33:38.3522081Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+analyze	Checkout	2026-09-19T01:33:38.3559132Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+analyze	Checkout	2026-09-19T01:33:38.3969155Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+analyze	Checkout	2026-09-19T01:33:38.4011477Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+analyze	Checkout	2026-09-19T01:33:38.4238595Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+analyze	Checkout	2026-09-19T01:33:38.4274961Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+analyze	Checkout	2026-09-19T01:33:38.4496777Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+analyze	Checkout	2026-09-19T01:33:38.4536326Z ##[endgroup]
+analyze	Checkout	2026-09-19T01:33:38.4537736Z ##[group]Fetching the repository
+analyze	Checkout	2026-09-19T01:33:38.4546387Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +b8b52c4e122f6df69e4ec95a05bd67352222a739:refs/remotes/origin/main
+analyze	Checkout	2026-09-19T01:33:38.7425865Z From https://github.com/YusuP28/pos_v2
+analyze	Checkout	2026-09-19T01:33:38.7434853Z  * [new ref]         b8b52c4e122f6df69e4ec95a05bd67352222a739 -> origin/main
+analyze	Checkout	2026-09-19T01:33:38.7437931Z ##[endgroup]
+analyze	Checkout	2026-09-19T01:33:38.7439416Z ##[group]Determining the checkout info
+analyze	Checkout	2026-09-19T01:33:38.7441658Z ##[endgroup]
+analyze	Checkout	2026-09-19T01:33:38.7443211Z [command]/usr/bin/git sparse-checkout disable
+analyze	Checkout	2026-09-19T01:33:38.7491745Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+analyze	Checkout	2026-09-19T01:33:38.7526023Z ##[group]Checking out the ref
+analyze	Checkout	2026-09-19T01:33:38.7529398Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+analyze	Checkout	2026-09-19T01:33:38.7648038Z Switched to a new branch 'main'
+analyze	Checkout	2026-09-19T01:33:38.7654804Z branch 'main' set up to track 'origin/main'.
+analyze	Checkout	2026-09-19T01:33:38.7659921Z ##[endgroup]
+analyze	Checkout	2026-09-19T01:33:38.7700477Z [command]/usr/bin/git log -1 --format=%H
+analyze	Checkout	2026-09-19T01:33:38.7727387Z b8b52c4e122f6df69e4ec95a05bd67352222a739
+analyze	Setup Flutter	﻿2026-09-19T01:33:38.8459606Z ##[group]Run subosito/flutter-action@v2
+analyze	Setup Flutter	2026-09-19T01:33:38.8460870Z with:
+analyze	Setup Flutter	2026-09-19T01:33:38.8461734Z   channel: stable
+analyze	Setup Flutter	2026-09-19T01:33:38.8462651Z   cache: true
+analyze	Setup Flutter	2026-09-19T01:33:38.8463753Z   architecture: X64
+analyze	Setup Flutter	2026-09-19T01:33:38.8464742Z   pub-cache-path: default
+analyze	Setup Flutter	2026-09-19T01:33:38.8465772Z   dry-run: false
+analyze	Setup Flutter	2026-09-19T01:33:38.8467063Z   git-source: https://github.com/flutter/flutter.git
+analyze	Setup Flutter	2026-09-19T01:33:38.8468375Z ##[endgroup]
+analyze	Setup Flutter	2026-09-19T01:33:38.8538945Z ##[start-action display=Make yq tool available on Windows runners;id=__subosito_flutter-action.__run]
+analyze	Setup Flutter	2026-09-19T01:33:38.8573773Z ##[end-action id=__subosito_flutter-action.__run;outcome=skipped;conclusion=skipped;duration_ms=0]
+analyze	Setup Flutter	2026-09-19T01:33:38.8580713Z ##[start-action display=Make setup script executable;id=__subosito_flutter-action.__run_2]
+analyze	Setup Flutter	2026-09-19T01:33:38.8637452Z ##[group]Run chmod +x "$GITHUB_ACTION_PATH/setup.sh"
+analyze	Setup Flutter	2026-09-19T01:33:38.8638956Z ^[[36;1mchmod +x "$GITHUB_ACTION_PATH/setup.sh"^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:38.8683752Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+analyze	Setup Flutter	2026-09-19T01:33:38.8685230Z ##[endgroup]
+analyze	Setup Flutter	2026-09-19T01:33:38.8806351Z ##[end-action id=__subosito_flutter-action.__run_2;outcome=success;conclusion=success;duration_ms=22]
+analyze	Setup Flutter	2026-09-19T01:33:38.8813544Z ##[start-action display=Set action inputs;id=__subosito_flutter-action.flutter-action]
+analyze	Setup Flutter	2026-09-19T01:33:38.8871142Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh -p \
+analyze	Setup Flutter	2026-09-19T01:33:38.8872536Z ^[[36;1m$GITHUB_ACTION_PATH/setup.sh -p \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:38.8874032Z ^[[36;1m  -n '' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:38.8874957Z ^[[36;1m  -f '' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:38.8875870Z ^[[36;1m  -a 'X64' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:38.8876806Z ^[[36;1m  -k '' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:38.8877711Z ^[[36;1m  -c '' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:38.8878616Z ^[[36;1m  -l '' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:38.8879542Z ^[[36;1m  -d 'default' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:38.8880746Z ^[[36;1m  -g 'https://github.com/flutter/flutter.git' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:38.8882064Z ^[[36;1m  stable^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:38.8920588Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+analyze	Setup Flutter	2026-09-19T01:33:38.8921966Z ##[endgroup]
+analyze	Setup Flutter	2026-09-19T01:33:39.0778478Z ##[end-action id=__subosito_flutter-action.flutter-action;outcome=success;conclusion=success;duration_ms=196]
+analyze	Setup Flutter	2026-09-19T01:33:39.0788488Z ##[start-action display=Cache Flutter;id=__subosito_flutter-action.cache-flutter]
+analyze	Setup Flutter	2026-09-19T01:33:39.0908687Z ##[group]Run actions/cache@v5
+analyze	Setup Flutter	2026-09-19T01:33:39.0909799Z with:
+analyze	Setup Flutter	2026-09-19T01:33:39.0910835Z   path: /opt/hostedtoolcache/flutter/stable-3.47.5-x64
+analyze	Setup Flutter	2026-09-19T01:33:39.0912671Z   key: flutter-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1
+analyze	Setup Flutter	2026-09-19T01:33:39.0914753Z   enableCrossOsArchive: false
+analyze	Setup Flutter	2026-09-19T01:33:39.0915842Z   fail-on-cache-miss: false
+analyze	Setup Flutter	2026-09-19T01:33:39.0916860Z   lookup-only: false
+analyze	Setup Flutter	2026-09-19T01:33:39.0917790Z   save-always: false
+analyze	Setup Flutter	2026-09-19T01:33:39.0918719Z ##[endgroup]
+analyze	Setup Flutter	2026-09-19T01:33:39.2820738Z Cache hit for: flutter-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1
+analyze	Setup Flutter	2026-09-19T01:33:40.3424510Z Received 251658240 of 1720502499 (14.6%), 239.8 MBs/sec
+analyze	Setup Flutter	2026-09-19T01:33:41.3431984Z Received 499122176 of 1720502499 (29.0%), 237.8 MBs/sec
+analyze	Setup Flutter	2026-09-19T01:33:42.3567655Z Received 805306368 of 1720502499 (46.8%), 254.6 MBs/sec
+analyze	Setup Flutter	2026-09-19T01:33:43.3572446Z Received 1073741824 of 1720502499 (62.4%), 254.9 MBs/sec
+analyze	Setup Flutter	2026-09-19T01:33:44.3617667Z Received 1346371584 of 1720502499 (78.3%), 255.7 MBs/sec
+analyze	Setup Flutter	2026-09-19T01:33:45.3644624Z Received 1635778560 of 1720502499 (95.1%), 259.0 MBs/sec
+analyze	Setup Flutter	2026-09-19T01:33:45.6149990Z Received 1720502499 of 1720502499 (100.0%), 261.5 MBs/sec
+analyze	Setup Flutter	2026-09-19T01:33:45.6152137Z Cache Size: ~1641 MB (1720502499 B)
+analyze	Setup Flutter	2026-09-19T01:33:45.6253337Z [command]/usr/bin/tar -xf /home/runner/work/_temp/4f904b18-e3ae-4b5c-b4de-55061cc117e2/cache.tzst -P -C /home/runner/work/pos_v2/pos_v2 --use-compress-program unzstd
+analyze	Setup Flutter	2026-09-19T01:33:50.8733765Z Cache restored successfully
+analyze	Setup Flutter	2026-09-19T01:33:50.9555218Z Cache restored from key: flutter-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1
+analyze	Setup Flutter	2026-09-19T01:33:50.9685406Z ##[end-action id=__subosito_flutter-action.cache-flutter;outcome=success;conclusion=success;duration_ms=11889]
+analyze	Setup Flutter	2026-09-19T01:33:50.9689083Z ##[start-action display=Cache pub dependencies;id=__subosito_flutter-action.cache-pub]
+analyze	Setup Flutter	2026-09-19T01:33:51.1751238Z ##[group]Run actions/cache@v5
+analyze	Setup Flutter	2026-09-19T01:33:51.1751752Z with:
+analyze	Setup Flutter	2026-09-19T01:33:51.1752013Z   path: /home/runner/.pub-cache
+analyze	Setup Flutter	2026-09-19T01:33:51.1752764Z   key: flutter-pub-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1-45cbea64a265a1561aaf1b2be4893b24aac76a6c032a1c127417a109129f309b
+analyze	Setup Flutter	2026-09-19T01:33:51.1753835Z   enableCrossOsArchive: false
+analyze	Setup Flutter	2026-09-19T01:33:51.1754109Z   fail-on-cache-miss: false
+analyze	Setup Flutter	2026-09-19T01:33:51.1754359Z   lookup-only: false
+analyze	Setup Flutter	2026-09-19T01:33:51.1754576Z   save-always: false
+analyze	Setup Flutter	2026-09-19T01:33:51.1754791Z ##[endgroup]
+analyze	Setup Flutter	2026-09-19T01:33:51.3566128Z Cache not found for input keys: flutter-pub-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1-45cbea64a265a1561aaf1b2be4893b24aac76a6c032a1c127417a109129f309b
+analyze	Setup Flutter	2026-09-19T01:33:51.3682744Z ##[end-action id=__subosito_flutter-action.cache-pub;outcome=success;conclusion=success;duration_ms=399]
+analyze	Setup Flutter	2026-09-19T01:33:51.3687092Z ##[start-action display=Run setup script;id=__subosito_flutter-action.__run_3]
+analyze	Setup Flutter	2026-09-19T01:33:51.4026234Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh \
+analyze	Setup Flutter	2026-09-19T01:33:51.4026678Z ^[[36;1m$GITHUB_ACTION_PATH/setup.sh \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:51.4027025Z ^[[36;1m  -n '3.47.5' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:51.4027288Z ^[[36;1m  -a 'x64' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:51.4027673Z ^[[36;1m  -c '/opt/hostedtoolcache/flutter/stable-3.47.5-x64' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:51.4028139Z ^[[36;1m  -d '/home/runner/.pub-cache' \^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:51.4028457Z ^[[36;1m  stable^[[0m
+analyze	Setup Flutter	2026-09-19T01:33:51.4065050Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+analyze	Setup Flutter	2026-09-19T01:33:51.4065440Z ##[endgroup]
+analyze	Setup Flutter	2026-09-19T01:33:51.5952385Z ##[end-action id=__subosito_flutter-action.__run_3;outcome=success;conclusion=success;duration_ms=226]
+analyze	Get Dependencies	﻿2026-09-19T01:33:51.6554676Z ##[group]Run flutter pub get
+analyze	Get Dependencies	2026-09-19T01:33:51.6555185Z ^[[36;1mflutter pub get^[[0m
+analyze	Get Dependencies	2026-09-19T01:33:51.6596353Z shell: /usr/bin/bash -e {0}
+analyze	Get Dependencies	2026-09-19T01:33:51.6596636Z env:
+analyze	Get Dependencies	2026-09-19T01:33:51.6597127Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.5-x64/flutter
+analyze	Get Dependencies	2026-09-19T01:33:51.6597582Z   PUB_CACHE: /home/runner/.pub-cache
+analyze	Get Dependencies	2026-09-19T01:33:51.6597884Z ##[endgroup]
+analyze	Get Dependencies	2026-09-19T01:33:55.8563897Z Resolving dependencies...
+analyze	Get Dependencies	2026-09-19T01:33:56.2422993Z Downloading packages...
+analyze	Get Dependencies	2026-09-19T01:34:01.3830249Z   archive 3.6.1 (4.3.0 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3831053Z   dbus 0.7.15 (0.8.0 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3831525Z   flutter_blue_plus 1.36.8 (2.3.12 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3832117Z   flutter_blue_plus_android 7.0.4 (9.0.3 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3832699Z   flutter_blue_plus_darwin 7.0.3 (9.0.4 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3833478Z   flutter_blue_plus_linux 7.0.3 (9.0.3 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3834106Z   flutter_blue_plus_platform_interface 7.0.0 (9.0.3 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3834831Z   flutter_blue_plus_web 7.0.2 (9.0.3 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3835334Z   flutter_lints 5.0.0 (6.0.0 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3835763Z   image 3.3.0 (4.10.1 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3836169Z   lints 5.1.1 (6.1.0 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3836618Z   material_color_utilities 0.13.0 (0.13.1 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3837173Z   package_info_plus 8.3.1 (10.2.1 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3837746Z   package_info_plus_platform_interface 3.2.1 (4.1.0 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3838325Z   qr 3.0.2 (4.0.0 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3838752Z   test_api 0.7.12 (0.7.14 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3839185Z   win32 5.15.0 (6.4.0 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3839581Z   xml 6.6.1 (7.0.1 available)
+analyze	Get Dependencies	2026-09-19T01:34:01.3840006Z Got dependencies!
+analyze	Get Dependencies	2026-09-19T01:34:01.3840572Z 18 packages have newer versions incompatible with dependency constraints.
+analyze	Get Dependencies	2026-09-19T01:34:01.3841311Z Try `flutter pub outdated` for more information.
+analyze	Analyze (Before)	﻿2026-09-19T01:34:01.6215787Z ##[group]Run echo "=== ANALYZE SEBELUM FIX ==="
+analyze	Analyze (Before)	2026-09-19T01:34:01.6216221Z ^[[36;1mecho "=== ANALYZE SEBELUM FIX ==="^[[0m
+analyze	Analyze (Before)	2026-09-19T01:34:01.6216636Z ^[[36;1mflutter analyze --no-fatal-infos --no-fatal-warnings || true^[[0m
+analyze	Analyze (Before)	2026-09-19T01:34:01.6252181Z shell: /usr/bin/bash -e {0}
+analyze	Analyze (Before)	2026-09-19T01:34:01.6252434Z env:
+analyze	Analyze (Before)	2026-09-19T01:34:01.6253200Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.5-x64/flutter
+analyze	Analyze (Before)	2026-09-19T01:34:01.6253618Z   PUB_CACHE: /home/runner/.pub-cache
+analyze	Analyze (Before)	2026-09-19T01:34:01.6253898Z ##[endgroup]
+analyze	Analyze (Before)	2026-09-19T01:34:01.6307627Z === ANALYZE SEBELUM FIX ===
+analyze	Analyze (Before)	2026-09-19T01:34:01.7743008Z Resolving dependencies...
+analyze	Analyze (Before)	2026-09-19T01:34:01.8961083Z Downloading packages...
+analyze	Analyze (Before)	2026-09-19T01:34:01.9363719Z   archive 3.6.1 (4.3.0 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9364229Z   dbus 0.7.15 (0.8.0 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9364696Z   flutter_blue_plus 1.36.8 (2.3.12 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9365255Z   flutter_blue_plus_android 7.0.4 (9.0.3 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9365830Z   flutter_blue_plus_darwin 7.0.3 (9.0.4 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9366443Z   flutter_blue_plus_linux 7.0.3 (9.0.3 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9367075Z   flutter_blue_plus_platform_interface 7.0.0 (9.0.3 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9367698Z   flutter_blue_plus_web 7.0.2 (9.0.3 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9368220Z   flutter_lints 5.0.0 (6.0.0 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9368614Z   image 3.3.0 (4.10.1 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9369047Z   lints 5.1.1 (6.1.0 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9369521Z   material_color_utilities 0.13.0 (0.13.1 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9370082Z   package_info_plus 8.3.1 (10.2.1 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9370687Z   package_info_plus_platform_interface 3.2.1 (4.1.0 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9371268Z   qr 3.0.2 (4.0.0 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9371673Z   test_api 0.7.12 (0.7.14 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9372115Z   win32 5.15.0 (6.4.0 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9372524Z   xml 6.6.1 (7.0.1 available)
+analyze	Analyze (Before)	2026-09-19T01:34:01.9373148Z Got dependencies!
+analyze	Analyze (Before)	2026-09-19T01:34:01.9373577Z 18 packages have newer versions incompatible with dependency constraints.
+analyze	Analyze (Before)	2026-09-19T01:34:01.9374044Z Try `flutter pub outdated` for more information.
+analyze	Analyze (Before)	2026-09-19T01:34:13.2656624Z Analyzing pos_v2...                                             
+analyze	Analyze (Before)	2026-09-19T01:34:13.2663537Z 
+analyze	Analyze (Before)	2026-09-19T01:34:13.2690002Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/category_list_view.dart:19:28 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2693634Z warning • The declaration '_deleteCategory' isn't referenced. Try removing the declaration of '_deleteCategory' • lib/views/expense_view.dart:180:16 • unused_element
+analyze	Analyze (Before)	2026-09-19T01:34:13.2696957Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/expense_view.dart:215:23 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2700139Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/expense_view.dart:216:7 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2704108Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/expense_view.dart:286:11 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2707563Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:38:20 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2710835Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:39:7 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2714800Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:42:7 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2718442Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:45:7 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2722043Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/info_toko_view.dart:33:13 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2725607Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/info_toko_view.dart:63:13 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2728954Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/info_toko_view.dart:78:13 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2732820Z    info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/views/info_toko_view.dart:204:25 • deprecated_member_use
+analyze	Analyze (Before)	2026-09-19T01:34:13.2737623Z    info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/views/info_toko_view.dart:205:25 • deprecated_member_use
+analyze	Analyze (Before)	2026-09-19T01:34:13.2741894Z    info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/views/info_toko_view.dart:214:25 • deprecated_member_use
+analyze	Analyze (Before)	2026-09-19T01:34:13.2746446Z    info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/views/info_toko_view.dart:215:25 • deprecated_member_use
+analyze	Analyze (Before)	2026-09-19T01:34:13.2750201Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/printer_settings_view.dart:21:28 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2753889Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_form_view.dart:49:28 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2757198Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_list_view.dart:31:7 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2760440Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_list_view.dart:32:7 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2763483Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_list_view.dart:101:20 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2766164Z    info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext • lib/views/product_list_view.dart:349:49 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2768333Z    info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext • lib/views/product_list_view.dart:360:58 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2770531Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:34:7 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2772038Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:35:7 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2774521Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:36:7 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2777077Z warning • The value of the local variable 'cart' isn't used. Try removing the variable or using it • lib/views/retail_pos_view.dart:50:11 • unused_local_variable
+analyze	Analyze (Before)	2026-09-19T01:34:13.2779766Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:572:25 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2783085Z    info • 'itf' is deprecated and shouldn't be used. Use BarcodeFormats.itf14 instead. Try replacing the use of the deprecated member with the replacement • lib/views/scanner/barcode_scanner_view.dart:25:21 • deprecated_member_use
+analyze	Analyze (Before)	2026-09-19T01:34:13.2786258Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/shift/shift_detail_view.dart:31:21 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2789152Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/shift_view.dart:27:20 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2792007Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/shift_view.dart:28:7 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2795073Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/splash_view.dart:21:20 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2798067Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:22:28 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2801172Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:110:16 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2803169Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:166:27 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2804874Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:168:13 • use_build_context_synchronously
+analyze	Analyze (Before)	2026-09-19T01:34:13.2805668Z 
+analyze	Analyze (Before)	2026-09-19T01:34:13.2830351Z 37 issues found. (ran in 10.7s)
+analyze	Analyze (After)	﻿2026-09-19T01:34:13.2925870Z ##[group]Run echo "=== ANALYZE SETELAH FIX ==="
+analyze	Analyze (After)	2026-09-19T01:34:13.2926282Z ^[[36;1mecho "=== ANALYZE SETELAH FIX ==="^[[0m
+analyze	Analyze (After)	2026-09-19T01:34:13.2926693Z ^[[36;1mflutter analyze --no-fatal-infos --no-fatal-warnings || true^[[0m
+analyze	Analyze (After)	2026-09-19T01:34:13.2962713Z shell: /usr/bin/bash -e {0}
+analyze	Analyze (After)	2026-09-19T01:34:13.2963254Z env:
+analyze	Analyze (After)	2026-09-19T01:34:13.2963568Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.47.5-x64/flutter
+analyze	Analyze (After)	2026-09-19T01:34:13.2963969Z   PUB_CACHE: /home/runner/.pub-cache
+analyze	Analyze (After)	2026-09-19T01:34:13.2964414Z ##[endgroup]
+analyze	Analyze (After)	2026-09-19T01:34:13.3020028Z === ANALYZE SETELAH FIX ===
+analyze	Analyze (After)	2026-09-19T01:34:13.4656213Z Resolving dependencies...
+analyze	Analyze (After)	2026-09-19T01:34:13.5890736Z Downloading packages...
+analyze	Analyze (After)	2026-09-19T01:34:13.6266173Z   archive 3.6.1 (4.3.0 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6266694Z   dbus 0.7.15 (0.8.0 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6267162Z   flutter_blue_plus 1.36.8 (2.3.12 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6267744Z   flutter_blue_plus_android 7.0.4 (9.0.3 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6268334Z   flutter_blue_plus_darwin 7.0.3 (9.0.4 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6268967Z   flutter_blue_plus_linux 7.0.3 (9.0.3 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6269601Z   flutter_blue_plus_platform_interface 7.0.0 (9.0.3 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6270212Z   flutter_blue_plus_web 7.0.2 (9.0.3 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6270710Z   flutter_lints 5.0.0 (6.0.0 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6271141Z   image 3.3.0 (4.10.1 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6271518Z   lints 5.1.1 (6.1.0 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6271950Z   material_color_utilities 0.13.0 (0.13.1 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6272491Z   package_info_plus 8.3.1 (10.2.1 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6273275Z   package_info_plus_platform_interface 3.2.1 (4.1.0 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6273808Z   qr 3.0.2 (4.0.0 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6274225Z   test_api 0.7.12 (0.7.14 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6274689Z   win32 5.15.0 (6.4.0 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6275103Z   xml 6.6.1 (7.0.1 available)
+analyze	Analyze (After)	2026-09-19T01:34:13.6275496Z Got dependencies!
+analyze	Analyze (After)	2026-09-19T01:34:13.6276082Z 18 packages have newer versions incompatible with dependency constraints.
+analyze	Analyze (After)	2026-09-19T01:34:13.6276831Z Try `flutter pub outdated` for more information.
+analyze	Analyze (After)	2026-09-19T01:34:22.5053819Z Analyzing pos_v2...                                             
+analyze	Analyze (After)	2026-09-19T01:34:22.5059740Z 
+analyze	Analyze (After)	2026-09-19T01:34:22.5081473Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/category_list_view.dart:19:28 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5085277Z warning • The declaration '_deleteCategory' isn't referenced. Try removing the declaration of '_deleteCategory' • lib/views/expense_view.dart:180:16 • unused_element
+analyze	Analyze (After)	2026-09-19T01:34:22.5088091Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/expense_view.dart:215:23 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5091161Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/expense_view.dart:216:7 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5094664Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/expense_view.dart:286:11 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5097751Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:38:20 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5100866Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:39:7 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5104122Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:42:7 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5107594Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/home_view.dart:45:7 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5110733Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/info_toko_view.dart:33:13 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5114302Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/info_toko_view.dart:63:13 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5117395Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/info_toko_view.dart:78:13 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5121165Z    info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/views/info_toko_view.dart:204:25 • deprecated_member_use
+analyze	Analyze (After)	2026-09-19T01:34:22.5125711Z    info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/views/info_toko_view.dart:205:25 • deprecated_member_use
+analyze	Analyze (After)	2026-09-19T01:34:22.5129905Z    info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/views/info_toko_view.dart:214:25 • deprecated_member_use
+analyze	Analyze (After)	2026-09-19T01:34:22.5134536Z    info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/views/info_toko_view.dart:215:25 • deprecated_member_use
+analyze	Analyze (After)	2026-09-19T01:34:22.5149211Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/printer_settings_view.dart:21:28 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5152510Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_form_view.dart:49:28 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5156131Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_list_view.dart:31:7 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5159516Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_list_view.dart:32:7 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5163170Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/product_list_view.dart:101:20 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5167130Z    info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext • lib/views/product_list_view.dart:349:49 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5171530Z    info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext • lib/views/product_list_view.dart:360:58 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5175747Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:34:7 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5179228Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:35:7 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5182474Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:36:7 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5186627Z warning • The value of the local variable 'cart' isn't used. Try removing the variable or using it • lib/views/retail_pos_view.dart:50:11 • unused_local_variable
+analyze	Analyze (After)	2026-09-19T01:34:22.5190125Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/retail_pos_view.dart:572:25 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5193820Z    info • 'itf' is deprecated and shouldn't be used. Use BarcodeFormats.itf14 instead. Try replacing the use of the deprecated member with the replacement • lib/views/scanner/barcode_scanner_view.dart:25:21 • deprecated_member_use
+analyze	Analyze (After)	2026-09-19T01:34:22.5197284Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/shift/shift_detail_view.dart:31:21 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5200561Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/shift_view.dart:27:20 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5203912Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/shift_view.dart:28:7 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5207172Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/splash_view.dart:21:20 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5210537Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:22:28 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5214212Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:110:16 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5217792Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:166:27 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5221216Z    info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/views/user/user_management_view.dart:168:13 • use_build_context_synchronously
+analyze	Analyze (After)	2026-09-19T01:34:22.5223060Z 37 issues found. (ran in 8.3s)
+analyze	Analyze (After)	2026-09-19T01:34:22.5223686Z 
+analyze	Post Setup Flutter	﻿2026-09-19T01:34:22.5462550Z Post job cleanup.
+analyze	Post Setup Flutter	2026-09-19T01:34:22.5467362Z ##[start-action display=Cache pub dependencies;id=__b093452c-e8bb-4dd9-883d-16962c83255b.cache-pub]
+analyze	Post Setup Flutter	2026-09-19T01:34:22.6232564Z Post job cleanup.
+analyze	Post Setup Flutter	2026-09-19T01:34:22.7925805Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/pos_v2/pos_v2 --files-from manifest.txt --use-compress-program zstdmt
+analyze	Post Setup Flutter	2026-09-19T01:34:24.9648147Z Sent 81357720 of 81357720 (100.0%), 77.6 MBs/sec
+analyze	Post Setup Flutter	2026-09-19T01:34:25.1182085Z Cache saved with key: flutter-pub-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1-45cbea64a265a1561aaf1b2be4893b24aac76a6c032a1c127417a109129f309b
+analyze	Post Setup Flutter	2026-09-19T01:34:25.1252258Z ##[end-action id=__b093452c-e8bb-4dd9-883d-16962c83255b.cache-pub;outcome=success;conclusion=success;duration_ms=2578]
+analyze	Post Setup Flutter	2026-09-19T01:34:25.1257093Z ##[start-action display=Cache Flutter;id=__b093452c-e8bb-4dd9-883d-16962c83255b.cache-flutter]
+analyze	Post Setup Flutter	2026-09-19T01:34:25.1296567Z Post job cleanup.
+analyze	Post Setup Flutter	2026-09-19T01:34:25.2599612Z Cache hit occurred on the primary key flutter-linux-stable-3.47.5-x64-6a19cca56475dbfba1478ee68d7bd0c2ef891da1, not saving cache.
+analyze	Post Setup Flutter	2026-09-19T01:34:25.2658701Z ##[end-action id=__b093452c-e8bb-4dd9-883d-16962c83255b.cache-flutter;outcome=success;conclusion=success;duration_ms=140]
+analyze	Post Checkout	﻿2026-09-19T01:34:25.2725942Z Post job cleanup.
+analyze	Post Checkout	2026-09-19T01:34:25.3578625Z [command]/usr/bin/git version
+analyze	Post Checkout	2026-09-19T01:34:25.3619126Z git version 2.55.0
+analyze	Post Checkout	2026-09-19T01:34:25.3661435Z Temporarily overriding HOME='/home/runner/work/_temp/770a9a76-227a-495e-9a61-5a8fd0400f63' before making global git config changes
+analyze	Post Checkout	2026-09-19T01:34:25.3663479Z Adding repository directory to the temporary git global config as a safe directory
+analyze	Post Checkout	2026-09-19T01:34:25.3667649Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/pos_v2/pos_v2
+analyze	Post Checkout	2026-09-19T01:34:25.3708152Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+analyze	Post Checkout	2026-09-19T01:34:25.3746328Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+analyze	Post Checkout	2026-09-19T01:34:25.4037505Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+analyze	Post Checkout	2026-09-19T01:34:25.4065124Z http.https://github.com/.extraheader
+analyze	Post Checkout	2026-09-19T01:34:25.4077634Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+analyze	Post Checkout	2026-09-19T01:34:25.4119505Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+analyze	Post Checkout	2026-09-19T01:34:25.4386725Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+analyze	Post Checkout	2026-09-19T01:34:25.4423988Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+analyze	Complete job	﻿2026-09-19T01:34:25.4800390Z Cleaning up orphan processes

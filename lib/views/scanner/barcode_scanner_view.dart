@@ -22,7 +22,7 @@ class _BarcodeScannerViewState extends State<BarcodeScannerView> {
       BarcodeFormat.upcE,
       BarcodeFormat.qrCode,
       BarcodeFormat.dataMatrix,
-      BarcodeFormat.itf,
+      BarcodeFormats.itf14,
       BarcodeFormat.codabar,
     ],
   );

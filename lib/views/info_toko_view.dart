@@ -201,7 +201,9 @@ class _InfoTokoViewState extends State<InfoTokoView> {
                         visualDensity: VisualDensity.compact,
                         contentPadding: EdgeInsets.zero,
                         value: 'text',
+                        // ignore: deprecated_member_use
                         groupValue: _mode,
+                        // ignore: deprecated_member_use
                         onChanged: (v) => setState(() => _mode = v ?? 'text'),
                         title: const Text('Pakai nama toko sebagai header',
                             style: TextStyle(fontSize: 12)),
@@ -211,7 +213,9 @@ class _InfoTokoViewState extends State<InfoTokoView> {
                         visualDensity: VisualDensity.compact,
                         contentPadding: EdgeInsets.zero,
                         value: 'image',
+                        // ignore: deprecated_member_use
                         groupValue: _mode,
+                        // ignore: deprecated_member_use
                         onChanged: (v) => setState(() => _mode = v ?? 'text'),
                         title: const Text('Pakai gambar logo dari galeri',
                             style: TextStyle(fontSize: 12)),
