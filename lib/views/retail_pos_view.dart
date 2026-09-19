@@ -47,7 +47,6 @@ class _RetailPosViewState extends State<RetailPosView> {
   Widget build(BuildContext context) {
     final pvm = context.watch<ProductViewModel>();
     final cvm = context.watch<CategoryViewModel>();
-    final cart = context.watch<CartViewModel>();
 
     final filtered = pvm.items.where((p) {
       if (_selectedCategoryId == null) return true;

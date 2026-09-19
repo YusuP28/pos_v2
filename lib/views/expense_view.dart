@@ -177,37 +177,6 @@ class _ExpenseViewState extends State<ExpenseView> {
     if (mounted) setState(() {});
   }
 
-  Future<void> _deleteCategory(String name) async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Hapus Kategori?', style: TextStyle(fontSize: 15)),
-        content: Text('Kategori "$name" akan dihapus.',
-            style: const TextStyle(fontSize: 12)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Batal', style: TextStyle(fontSize: 12)),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Hapus', style: TextStyle(fontSize: 12)),
-          ),
-        ],
-      ),
-    );
-    if (ok != true) return;
-    try {
-      await ExpenseCategoryRepository.instance.delete(name);
-      await _loadCategories();
-      if (!mounted) return;
-      AppToast.show(context, 'Kategori dihapus.');
-    } catch (e) {
-      if (!mounted) return;
-      AppToast.show(context, '$e', success: false);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
