@@ -395,15 +395,55 @@ class _OrderPanel extends StatelessWidget {
                                           .add(it.product)
                                       : null,
                                 ),
+                                IconButton(
+                                  visualDensity: VisualDensity.compact,
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(
+                                      minWidth: 26, minHeight: 26),
+                                  icon: Icon(
+                                    Icons.percent,
+                                    size: 16,
+                                    color: it.discountType != DiscountType.none
+                                        ? Colors.orange
+                                        : null,
+                                  ),
+                                  onPressed: () => _openDiscountDialog(context, it),
+                                ),
                                 const Spacer(),
                                 Flexible(
-                                  child: Text(
-                                    Currency.format(it.subtotal),
-                                    textAlign: TextAlign.right,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 11,
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (it.discountType != DiscountType.none) ...[
+                                        Text(
+                                          Currency.format(it.subtotal),
+                                          style: const TextStyle(
+                                            fontSize: 9,
+                                            color: Colors.grey,
+                                            decoration: TextDecoration.lineThrough,
+                                          ),
+                                        ),
+                                        Text(
+                                          '- ${Currency.format(it.discountAmount)}',
+                                          style: const TextStyle(
+                                            fontSize: 9,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                      Text(
+                                        Currency.format(it.total),
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 11,
+                                          color: it.discountType != DiscountType.none
+                                              ? Colors.green.shade700
+                                              : null,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -443,6 +483,38 @@ class _OrderPanel extends StatelessWidget {
                     ),
                   ],
                 ),
+                if (cart.totalDiscount > 0) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Text('Diskon', style: TextStyle(fontSize: 12, color: Colors.red)),
+                      const Spacer(),
+                      Text(
+                        '- ${Currency.format(cart.totalDiscount)}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Text('Total', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                      const Spacer(),
+                      Text(
+                        Currency.format(cart.total),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
                 const SizedBox(height: 4),
                 SizedBox(
                   width: double.infinity,
@@ -462,6 +534,147 @@ class _OrderPanel extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openDiscountDialog(BuildContext context, CartItem item) async {
+    final percentCtrl = TextEditingController(
+      text: item.discountType == DiscountType.percent && item.discountValue > 0
+          ? item.discountValue.toStringAsFixed(0)
+          : '',
+    );
+    final nominalCtrl = TextEditingController(
+      text: item.discountType == DiscountType.nominal && item.discountValue > 0
+          ? item.discountValue.toStringAsFixed(0)
+          : '',
+    );
+
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Diskon Item', style: TextStyle(fontSize: 15)),
+        content: SizedBox(
+          width: 340,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.product.name,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Harga: ${Currency.format(item.subtotal)}',
+                style: const TextStyle(fontSize: 11, color: Colors.grey),
+              ),
+              const SizedBox(height: 12),
+              const Text('Diskon (%)', style: TextStyle(fontSize: 11)),
+              const SizedBox(height: 4),
+              TextField(
+                controller: percentCtrl,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: 'Contoh: 10',
+                  suffixText: '%',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text('Diskon (Rp)', style: TextStyle(fontSize: 11)),
+              const SizedBox(height: 4),
+              TextField(
+                controller: nominalCtrl,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: 'Contoh: 5000',
+                  prefixText: 'Rp ',
+                  border: OutlineInputBorder(),
+                  isDense: true,
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal', style: TextStyle(fontSize: 12)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, {'type': DiscountType.none, 'value': 0.0}),
+            child: const Text('Hapus Diskon', style: TextStyle(fontSize: 12, color: Colors.red)),
+          ),
+          FilledButton(
+            onPressed: () {
+              final p = double.tryParse(percentCtrl.text) ?? 0;
+              final n = double.tryParse(nominalCtrl.text) ?? 0;
+              if (p > 0) {
+                Navigator.pop(ctx, {'type': DiscountType.percent, 'value': p.clamp(0, 100)});
+              } else if (n > 0) {
+                Navigator.pop(ctx, {'type': DiscountType.nominal, 'value': n});
+              } else {
+                Navigator.pop(ctx, {'type': DiscountType.none, 'value': 0.0});
+              }
+            },
+            child: const Text('Simpan', style: TextStyle(fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null) {
+      final type = result['type'] as DiscountType;
+      final value = result['value'] as double;
+      if (type == DiscountType.none || value == 0) {
+        if (!context.mounted) return;
+        context.read<CartViewModel>().setDiscount(item.product, DiscountType.none, 0);
+      } else if (value > 20 && type == DiscountType.percent) {
+        // PIN admin jika diskon > 20%
+        if (!context.mounted) return;
+        final pinOk = await _askAdminPin(context);
+        if (pinOk == true) {
+          if (!context.mounted) return;
+          context.read<CartViewModel>().setDiscount(item.product, type, value);
+        }
+      } else {
+        if (!context.mounted) return;
+        context.read<CartViewModel>().setDiscount(item.product, type, value);
+      }
+    }
+  }
+
+  Future<bool?> _askAdminPin(BuildContext context) async {
+    final ctrl = TextEditingController();
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('PIN Admin', style: TextStyle(fontSize: 15)),
+        content: TextField(
+          controller: ctrl,
+          keyboardType: TextInputType.number,
+          obscureText: true,
+          maxLength: 6,
+          autofocus: true,
+          decoration: const InputDecoration(
+            labelText: 'PIN 6-digit',
+            border: OutlineInputBorder(),
+            isDense: true,
+            counterText: '',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Batal', style: TextStyle(fontSize: 12)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('OK', style: TextStyle(fontSize: 12)),
           ),
         ],
       ),

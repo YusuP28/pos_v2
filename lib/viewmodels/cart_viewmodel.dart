@@ -12,7 +12,9 @@ class CartViewModel extends ChangeNotifier {
       _items.fold<int>(0, (sum, it) => sum + it.quantity.toInt());
   double get subtotal =>
       _items.fold<double>(0, (sum, it) => sum + it.subtotal);
-  double get total => subtotal;
+  double get totalDiscount =>
+      _items.fold<double>(0, (sum, it) => sum + it.discountAmount);
+  double get total => subtotal - totalDiscount;
 
   double quantityOf(Product product) {
     final idx = _items.indexWhere((it) => it.product.id == product.id);
@@ -43,6 +45,14 @@ class CartViewModel extends ChangeNotifier {
     } else {
       _items.removeAt(idx);
     }
+    notifyListeners();
+  }
+
+  void setDiscount(Product product, DiscountType type, double value) {
+    final idx = _items.indexWhere((it) => it.product.id == product.id);
+    if (idx < 0) return;
+    _items[idx].discountType = type;
+    _items[idx].discountValue = value;
     notifyListeners();
   }
 
