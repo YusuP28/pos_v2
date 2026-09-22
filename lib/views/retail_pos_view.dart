@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../core/utils/currency.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../models/cart_item.dart';
+import '../models/cart_item.dart';
 import '../viewmodels/cart_viewmodel.dart';
 import '../viewmodels/category_viewmodel.dart';
 import '../viewmodels/printer_viewmodel.dart';
