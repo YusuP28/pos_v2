@@ -3,6 +3,7 @@ class Order {
   final String invoiceNumber;
   final int userId;
   final int? shiftId;
+  final int? customerId;
   final double subtotal;
   final double discount;
   final double tax;
@@ -18,6 +19,7 @@ class Order {
     required this.invoiceNumber,
     required this.userId,
     this.shiftId,
+    this.customerId,
     required this.subtotal,
     this.discount = 0,
     this.tax = 0,
@@ -34,6 +36,7 @@ class Order {
         invoiceNumber: map['invoice_number'] as String,
         userId: map['user_id'] as int,
         shiftId: map['shift_id'] as int?,
+        customerId: map['customer_id'] as int?,
         subtotal: (map['subtotal'] as num).toDouble(),
         discount: (map['discount'] as num).toDouble(),
         tax: (map['tax'] as num).toDouble(),
@@ -50,6 +53,7 @@ class Order {
         'invoice_number': invoiceNumber,
         'user_id': userId,
         'shift_id': shiftId,
+        'customer_id': customerId,
         'subtotal': subtotal,
         'discount': discount,
         'tax': tax,

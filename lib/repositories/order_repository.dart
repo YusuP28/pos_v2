@@ -35,6 +35,7 @@ class OrderRepository {
     required String paymentMethod,
     required double paidAmount,
     int? shiftId,
+    int? customerId,
   }) async {
     if (items.isEmpty) {
       throw Exception('Cart kosong.');
@@ -73,6 +74,7 @@ class OrderRepository {
         'invoice_number': invoice,
         'user_id': userId,
         'shift_id': shiftId,
+        'customer_id': customerId,
         'subtotal': subtotal,
         'discount': 0,
         'tax': 0,

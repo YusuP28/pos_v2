@@ -26,6 +26,7 @@ class RetailPosView extends StatefulWidget {
 class _RetailPosViewState extends State<RetailPosView> {
   final _search = TextEditingController();
   int? _selectedCategoryId;
+  int? _selectedCustomerId;
 
   @override
   void initState() {
@@ -483,6 +484,9 @@ class _OrderPanel extends StatelessWidget {
       return;
     }
 
+    // Tanyakan pelanggan dulu
+    final customerId = await _pickCustomer(context);
+
     final result = await showDialog<_CheckoutResult>(
       context: context,
       barrierDismissible: false,
@@ -490,6 +494,7 @@ class _OrderPanel extends StatelessWidget {
         total: cart.total,
         userId: auth.currentUser!.id!,
         shiftId: shift.current!.id!,
+        customerId: customerId,
         items: cart.items.toList(),
       ),
     );
@@ -504,6 +509,55 @@ class _OrderPanel extends StatelessWidget {
       ),
     );
   }
+
+  Future<int?> _pickCustomer(BuildContext context) async {
+    final customers = await CustomerRepository.instance.getAll();
+    final result = await showDialog<int?>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Pilih Pelanggan'),
+        content: SizedBox(
+          width: double.maxWidth,
+          height: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.person_outline),
+                title: const Text('Tamuan (Guest)'),
+                subtitle: const Text('Tanpa data pelanggan'),
+                onTap: () => Navigator.pop(ctx, null),
+              ),
+              const Divider(),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: customers.length,
+                  itemBuilder: (_, i) {
+                    final c = customers[i];
+                    return ListTile(
+                      leading: CircleAvatar(
+                        child: Text(c.name.substring(0, 1)),
+                      ),
+                      title: Text(c.name),
+                      subtitle: Text(c.phone.isEmpty ? '-' : c.phone),
+                      onTap: () => Navigator.pop(ctx, c.id),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal'),
+          ),
+        ],
+      ),
+    );
+    return result;
+  }
 }
 
 class _CheckoutResult {
@@ -515,6 +569,7 @@ class _CheckoutDialog extends StatefulWidget {
   final double total;
   final int userId;
   final int shiftId;
+  final int? customerId;
   final List items;
 
   const _CheckoutDialog({
@@ -522,6 +577,7 @@ class _CheckoutDialog extends StatefulWidget {
     required this.userId,
     required this.shiftId,
     required this.items,
+    this.customerId,
   });
 
   @override
@@ -560,6 +616,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
       final orderId = await OrderRepository.instance.createOrder(
         userId: widget.userId,
         shiftId: widget.shiftId,
+        customerId: widget.customerId,
         items: widget.items.cast(),
         paymentMethod: _method,
         paidAmount: (_method == 'qris' || _method == 'card')

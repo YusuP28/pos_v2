@@ -9,7 +9,7 @@ class DbHelper {
   static final DbHelper instance = DbHelper._();
 
   static const _dbName = 'pos_v2.db';
-  static const _dbVersion = 7;
+  static const _dbVersion = 9;
 
   Database? _db;
 
@@ -79,6 +79,12 @@ class DbHelper {
     }
     if (oldV < 7) {
       await _createExpenseCategoryTable(db);
+    }
+    if (oldV < 8) {
+      await _createCustomersTable(db);
+    }
+    if (oldV < 9) {
+      await _addCustomerIdToOrders(db);
     }
   }
 
@@ -259,6 +265,29 @@ class DbHelper {
         'CREATE INDEX IF NOT EXISTS idx_stock_mov_prod ON stock_movements (product_id)');
     await db.execute(
         'CREATE INDEX IF NOT EXISTS idx_stock_mov_created ON stock_movements (created_at)');
+  }
+
+  Future<void> _createCustomersTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE customers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        phone TEXT DEFAULT '',
+        email TEXT DEFAULT '',
+        address TEXT DEFAULT '',
+        notes TEXT DEFAULT '',
+        points INTEGER NOT NULL DEFAULT 0,
+        is_active INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    ''');
+    await db.execute('CREATE INDEX idx_customers_name ON customers (name)');
+  }
+
+  Future<void> _addCustomerIdToOrders(Database db) async {
+    await db.execute(
+        'ALTER TABLE orders ADD COLUMN customer_id INTEGER REFERENCES customers(id)');
   }
 
   /// Tutup database (untuk backup/restore).
