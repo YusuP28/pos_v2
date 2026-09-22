@@ -11,3 +11,4 @@ android/key.properties
 *.jks
 *.keystore
 artifacts/
+logs/
