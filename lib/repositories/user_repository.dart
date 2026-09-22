@@ -22,15 +22,16 @@ class UserRepository {
 
     final user = User.fromMap(rows.first);
     final salt = user.passwordSalt ?? '';
+    final hash = user.passwordHash ?? '';
 
     // PBKDF2 verify
     if (salt.isNotEmpty) {
-      if (Hash.verify(password, salt, user.passwordHash)) return user;
+      if (Hash.verify(password, salt, hash)) return user;
       return null;
     }
 
     // Legacy SHA256 fallback → auto-migrate
-    if (user.passwordHash == Hash.sha256(password)) {
+    if (hash == Hash.sha256(password)) {
       final newSalt = Hash.generateSalt();
       final newHash = Hash.pbkdf2(password, newSalt);
       await db.update(
