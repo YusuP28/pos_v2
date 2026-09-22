@@ -80,6 +80,9 @@ class DbHelper {
     if (oldV < 7) {
       await _createExpenseCategoryTable(db);
     }
+    if (oldV < 8) {
+      await db.execute("ALTER TABLE users ADD COLUMN password_salt TEXT NOT NULL DEFAULT ''");
+    }
   }
 
   Future<void> _createUsersTable(Database db) async {
@@ -88,6 +91,7 @@ class DbHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL UNIQUE,
         password_hash TEXT NOT NULL,
+        password_salt TEXT NOT NULL DEFAULT '',
         full_name TEXT NOT NULL,
         role TEXT NOT NULL DEFAULT 'kasir',
         created_at TEXT NOT NULL
@@ -96,9 +100,12 @@ class DbHelper {
   }
 
   Future<void> _seedAdmin(Database db) async {
+    final salt = Hash.generateSalt();
+    final hash = Hash.pbkdf2('admin', salt);
     await db.insert('users', {
       'username': 'admin',
-      'password_hash': Hash.sha256('admin'),
+      'password_hash': hash,
+      'password_salt': salt,
       'full_name': 'Administrator',
       'role': 'admin',
       'created_at': DateTime.now().toIso8601String(),

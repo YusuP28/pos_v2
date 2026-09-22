@@ -14,11 +14,33 @@ class UserRepository {
     final db = await _db;
     final rows = await db.query(
       'users',
-      where: 'username = ? AND password_hash = ?',
-      whereArgs: [username, Hash.sha256(password)],
+      where: 'username = ?',
+      whereArgs: [username],
       limit: 1,
     );
     if (rows.isEmpty) return null;
-    return User.fromMap(rows.first);
+
+    final user = User.fromMap(rows.first);
+    final salt = user.passwordSalt ?? '';
+
+    // PBKDF2 verify
+    if (salt.isNotEmpty) {
+      if (Hash.verify(password, salt, user.passwordHash)) return user;
+      return null;
+    }
+
+    // Legacy SHA256 fallback → auto-migrate
+    if (user.passwordHash == Hash.sha256(password)) {
+      final newSalt = Hash.generateSalt();
+      final newHash = Hash.pbkdf2(password, newSalt);
+      await db.update(
+        'users',
+        {'password_hash': newHash, 'password_salt': newSalt},
+        where: 'id = ?',
+        whereArgs: [user.id],
+      );
+      return user;
+    }
+    return null;
   }
 }
