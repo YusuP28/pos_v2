@@ -543,112 +543,119 @@ class _OrderPanel extends StatelessWidget {
   }
 
   Future<void> _openDiscountDialog(BuildContext context, CartItem item) async {
-    final percentCtrl = TextEditingController(
-      text: item.discountType == DiscountType.percent && item.discountValue > 0
-          ? item.discountValue.toStringAsFixed(0)
-          : '',
-    );
-    final nominalCtrl = TextEditingController(
-      text: item.discountType == DiscountType.nominal && item.discountValue > 0
-          ? item.discountValue.toStringAsFixed(0)
-          : '',
+    DiscountType selectedType = item.discountType == DiscountType.none
+        ? DiscountType.percent
+        : item.discountType;
+    final valueCtrl = TextEditingController(
+      text: item.discountValue > 0 ? item.discountValue.toStringAsFixed(0) : '',
     );
 
     final result = await showDialog<Map<String, dynamic>>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Diskon Item', style: TextStyle(fontSize: 15)),
-        content: SizedBox(
-          width: 340,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.product.name,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Harga: ${Currency.format(item.subtotal)}',
-                style: const TextStyle(fontSize: 11, color: Colors.grey),
-              ),
-              const SizedBox(height: 12),
-              const Text('Diskon (%)', style: TextStyle(fontSize: 11)),
-              const SizedBox(height: 4),
-              TextField(
-                controller: percentCtrl,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  hintText: 'Contoh: 10',
-                  suffixText: '%',
-                  border: OutlineInputBorder(),
-                  isDense: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSt) => AlertDialog(
+          title: const Text('Diskon Item', style: TextStyle(fontSize: 15)),
+          content: SizedBox(
+            width: 340,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(item.product.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                const SizedBox(height: 4),
+                Text('Harga: ${Currency.format(item.subtotal)}',
+                    style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: RadioListTile<DiscountType>(
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                        value: DiscountType.percent,
+                        groupValue: selectedType,
+                        onChanged: (v) => setSt(() => selectedType = v!),
+                        title: const Text('Persen (%)', style: TextStyle(fontSize: 12)),
+                      ),
+                    ),
+                    Expanded(
+                      child: RadioListTile<DiscountType>(
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                        value: DiscountType.nominal,
+                        groupValue: selectedType,
+                        onChanged: (v) => setSt(() => selectedType = v!),
+                        title: const Text('Nominal (Rp)', style: TextStyle(fontSize: 12)),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 12),
-              const Text('Diskon (Rp)', style: TextStyle(fontSize: 11)),
-              const SizedBox(height: 4),
-              TextField(
-                controller: nominalCtrl,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  hintText: 'Contoh: 5000',
-                  prefixText: 'Rp ',
-                  border: OutlineInputBorder(),
-                  isDense: true,
+                const SizedBox(height: 8),
+                TextField(
+                  controller: valueCtrl,
+                  keyboardType: TextInputType.number,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    hintText: selectedType == DiscountType.percent ? 'Contoh: 15' : 'Contoh: 5000',
+                    suffixText: selectedType == DiscountType.percent ? '%' : null,
+                    prefixText: selectedType == DiscountType.nominal ? 'Rp ' : null,
+                    border: const OutlineInputBorder(),
+                    isDense: true,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Batal', style: TextStyle(fontSize: 12)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, {'type': DiscountType.none, 'value': 0.0}),
+              child: const Text('Hapus Diskon',
+                  style: TextStyle(fontSize: 12, color: Colors.red)),
+            ),
+            FilledButton(
+              onPressed: () {
+                final v = double.tryParse(valueCtrl.text) ?? 0;
+                if (v <= 0) {
+                  Navigator.pop(ctx, {'type': DiscountType.none, 'value': 0.0});
+                  return;
+                }
+                if (selectedType == DiscountType.percent && v > 100) {
+                  ScaffoldMessenger.of(ctx).showSnackBar(
+                    const SnackBar(content: Text('Diskon maksimal 100%')),
+                  );
+                  return;
+                }
+                Navigator.pop(ctx, {'type': selectedType, 'value': v});
+              },
+              child: const Text('Simpan', style: TextStyle(fontSize: 12)),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal', style: TextStyle(fontSize: 12)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, {'type': DiscountType.none, 'value': 0.0}),
-            child: const Text('Hapus Diskon', style: TextStyle(fontSize: 12, color: Colors.red)),
-          ),
-          FilledButton(
-            onPressed: () {
-              final p = double.tryParse(percentCtrl.text) ?? 0;
-              final n = double.tryParse(nominalCtrl.text) ?? 0;
-              if (p > 0) {
-                Navigator.pop(ctx, {'type': DiscountType.percent, 'value': p.clamp(0, 100)});
-              } else if (n > 0) {
-                Navigator.pop(ctx, {'type': DiscountType.nominal, 'value': n});
-              } else {
-                Navigator.pop(ctx, {'type': DiscountType.none, 'value': 0.0});
-              }
-            },
-            child: const Text('Simpan', style: TextStyle(fontSize: 12)),
-          ),
-        ],
       ),
     );
 
     if (result != null) {
       final type = result['type'] as DiscountType;
       final value = result['value'] as double;
+      if (!context.mounted) return;
       if (type == DiscountType.none || value == 0) {
-        if (!context.mounted) return;
         context.read<CartViewModel>().setDiscount(item.product, DiscountType.none, 0);
       } else if (value > 20 && type == DiscountType.percent) {
-        // PIN admin jika diskon > 20%
-        if (!context.mounted) return;
         final pinOk = await _askAdminPin(context);
-        if (pinOk == true) {
-          if (!context.mounted) return;
+        if (pinOk == true && context.mounted) {
           context.read<CartViewModel>().setDiscount(item.product, type, value);
         }
       } else {
-        if (!context.mounted) return;
         context.read<CartViewModel>().setDiscount(item.product, type, value);
       }
     }
   }
+
 
   Future<bool?> _askAdminPin(BuildContext context) async {
     final ctrl = TextEditingController();
