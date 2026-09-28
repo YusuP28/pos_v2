@@ -2,10 +2,8 @@ name: Build Android APK
 
 on:
   push:
-    branches:
-      - main
-    tags:
-      - 'v*'
+    branches: [main]
+    tags: ['v*']
   workflow_dispatch:
 
 permissions:
@@ -14,52 +12,46 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-      - name: Setup Java
-        uses: actions/setup-java@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: false
 
-      - name: Flutter Version
-        run: flutter --version
-
       - name: Clean
         run: flutter clean
 
-      - name: Get Dependencies
+      - name: Pub Get
         run: flutter pub get
 
       - name: Analyze
         run: flutter analyze --no-fatal-infos --no-fatal-warnings || true
 
-      - name: Build Release APK
-        run: flutter build apk --release
+      - name: Build APK (split per ABI)
+        run: flutter build apk --release --split-per-abi
 
-      - name: Rename APK
+      - name: List APK
+        run: ls -lh build/app/outputs/flutter-apk/
+
+      - name: Pick arm64
         run: |
           cd build/app/outputs/flutter-apk
-          ls -lh
-          cp app-release.apk pos_v2-arm64.apk
+          cp app-arm64-v8a-release.apk pos_v2-arm64.apk
+          ls -lh pos_v2-arm64.apk
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: pos-v2-arm64-apk
+          name: pos-v2-arm64
           path: build/app/outputs/flutter-apk/pos_v2-arm64.apk
 
-      - name: Upload to Release
-        if: startsWith(github.ref, 'refs/tags/v')
+      - if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: build/app/outputs/flutter-apk/pos_v2-arm64.apk
