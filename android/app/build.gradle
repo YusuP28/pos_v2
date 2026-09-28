@@ -35,6 +35,7 @@ android {
                 abiFilters 'arm64-v8a'
             }
         }
+        }
             signingConfig = signingConfigs.debug
             minifyEnabled = true
             shrinkResources = true
