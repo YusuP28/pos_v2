@@ -30,22 +30,36 @@ class ShiftRepository {
     return Shift.fromMap(rows.first);
   }
 
+  /// Buka shift baru.
+  ///
+  /// Pengecekan "sudah ada shift terbuka" dan INSERT dijalankan dalam satu
+  /// transaksi, sehingga dua panggilan bersamaan tidak bisa sama-sama lolos
+  /// (sqflite menyerialkan transaksi pada satu koneksi).
   Future<int> openShift({
     required int userId,
     required double openingCash,
     String notes = '',
   }) async {
     final db = await _db;
-    final existing = await getOpenShift();
-    if (existing != null) {
-      throw Exception('Sudah ada shift terbuka. Tutup dulu sebelum buka baru.');
-    }
-    return db.insert('shifts', {
-      'user_id': userId,
-      'opened_at': DateTime.now().toIso8601String(),
-      'opening_cash': openingCash,
-      'status': 'open',
-      'notes': notes,
+    return db.transaction<int>((txn) async {
+      final existing = await txn.query(
+        'shifts',
+        columns: ['id'],
+        where: 'status = ?',
+        whereArgs: ['open'],
+        limit: 1,
+      );
+      if (existing.isNotEmpty) {
+        throw Exception(
+            'Sudah ada shift terbuka. Tutup dulu sebelum buka baru.');
+      }
+      return txn.insert('shifts', {
+        'user_id': userId,
+        'opened_at': DateTime.now().toIso8601String(),
+        'opening_cash': openingCash,
+        'status': 'open',
+        'notes': notes,
+      });
     });
   }
 

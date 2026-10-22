@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../core/security/hash.dart';
-import '../core/database/db_helper.dart';
 import '../models/user.dart';
+import '../repositories/user_repository.dart';
 
 class UserViewModel extends ChangeNotifier {
   List<User> _items = [];
@@ -15,9 +14,7 @@ class UserViewModel extends ChangeNotifier {
     _loading = true;
     notifyListeners();
     try {
-      final db = await DbHelper.instance.database;
-      final rows = await db.query('users', orderBy: 'username ASC');
-      _items = rows.map(User.fromMap).toList();
+      _items = await UserRepository.instance.getAll();
     } catch (_) {
       _items = [];
     }
@@ -31,14 +28,12 @@ class UserViewModel extends ChangeNotifier {
     required String fullName,
     required String role,
   }) async {
-    final db = await DbHelper.instance.database;
-    await db.insert('users', {
-      'username': username,
-      'password_hash': Hash.sha256(password),
-      'full_name': fullName,
-      'role': role,
-      'created_at': DateTime.now().toIso8601String(),
-    });
+    await UserRepository.instance.create(
+      username: username,
+      password: password,
+      fullName: fullName,
+      role: role,
+    );
     await load();
   }
 
@@ -48,34 +43,17 @@ class UserViewModel extends ChangeNotifier {
     required String role,
     String? newPassword,
   }) async {
-    final db = await DbHelper.instance.database;
-    final data = <String, Object?>{
-      'full_name': fullName,
-      'role': role,
-    };
-    if (newPassword != null && newPassword.isNotEmpty) {
-      data['password_hash'] = Hash.sha256(newPassword);
-    }
-    await db.update('users', data, where: 'id = ?', whereArgs: [id]);
+    await UserRepository.instance.updateProfile(
+      id: id,
+      fullName: fullName,
+      role: role,
+      newPassword: newPassword,
+    );
     await load();
   }
 
   Future<void> delete(int id, {required int currentUserId}) async {
-    if (id == currentUserId) {
-      throw Exception('Tidak bisa menghapus akun yang sedang login.');
-    }
-    final db = await DbHelper.instance.database;
-    // Cek apakah user ini punya transaksi
-    final cek = await db.rawQuery(
-      'SELECT COUNT(*) AS c FROM orders WHERE user_id = ?',
-      [id],
-    );
-    final count = (cek.first['c'] as int?) ?? 0;
-    if (count > 0) {
-      throw Exception(
-          'User ini punya $count transaksi. Tidak bisa dihapus. Nonaktifkan saja (ganti role).');
-    }
-    await db.delete('users', where: 'id = ?', whereArgs: [id]);
+    await UserRepository.instance.delete(id, currentUserId: currentUserId);
     await load();
   }
 
@@ -84,21 +62,10 @@ class UserViewModel extends ChangeNotifier {
     required String oldPassword,
     required String newPassword,
   }) async {
-    final db = await DbHelper.instance.database;
-    final rows = await db.query(
-      'users',
-      where: 'id = ? AND password_hash = ?',
-      whereArgs: [userId, Hash.sha256(oldPassword)],
-      limit: 1,
-    );
-    if (rows.isEmpty) {
-      throw Exception('Password lama salah.');
-    }
-    await db.update(
-      'users',
-      {'password_hash': Hash.sha256(newPassword)},
-      where: 'id = ?',
-      whereArgs: [userId],
+    await UserRepository.instance.changePassword(
+      userId: userId,
+      oldPassword: oldPassword,
+      newPassword: newPassword,
     );
   }
 }

@@ -9,6 +9,7 @@ class ShiftViewModel extends ChangeNotifier {
   ShiftStats? _stats;
   double _expenseTotal = 0;
   bool _loading = false;
+  bool _opening = false;
 
   List<Shift> _history = [];
   bool _historyLoading = false;
@@ -17,6 +18,7 @@ class ShiftViewModel extends ChangeNotifier {
   ShiftStats? get stats => _stats;
   double get expenseTotal => _expenseTotal;
   bool get loading => _loading;
+  bool get opening => _opening;
   bool get hasOpenShift => _current != null;
 
   List<Shift> get history => _history;
@@ -51,14 +53,22 @@ class ShiftViewModel extends ChangeNotifier {
   }
 
   Future<void> open(double openingCash, {String notes = ''}) async {
+    if (_opening) return;
     final user = _pendingUserId;
     if (user == null) throw Exception('User tidak dikenal.');
-    await ShiftRepository.instance.openShift(
-      userId: user,
-      openingCash: openingCash,
-      notes: notes,
-    );
-    await load();
+    _opening = true;
+    notifyListeners();
+    try {
+      await ShiftRepository.instance.openShift(
+        userId: user,
+        openingCash: openingCash,
+        notes: notes,
+      );
+      await load();
+    } finally {
+      _opening = false;
+      notifyListeners();
+    }
   }
 
   int? _pendingUserId;

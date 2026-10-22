@@ -70,14 +70,14 @@ class _ShiftViewState extends State<ShiftView> {
           child: vm.loading
               ? const Center(child: CircularProgressIndicator())
               : shift == null
-                  ? _buildOpenForm()
+                  ? _buildOpenForm(vm)
                   : _buildActiveShift(vm, shift, stats),
         ),
       ),
     );
   }
 
-  Widget _buildOpenForm() {
+  Widget _buildOpenForm(ShiftViewModel vm) {
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
@@ -127,7 +127,7 @@ class _ShiftViewState extends State<ShiftView> {
         SizedBox(
           height: 40,
           child: FilledButton.icon(
-            onPressed: _openShift,
+            onPressed: vm.opening ? null : _openShift,
             icon: const Icon(Icons.lock_open, size: 18),
             label: const Text('BUKA SHIFT'),
           ),
