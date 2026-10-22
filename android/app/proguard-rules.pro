@@ -5,3 +5,7 @@
 -keep class io.flutter.view.** { *; }
 -keep class io.flutter.** { *; }
 -keep class io.flutter.plugins.** { *; }
+
+# Flutter embedding mereferensikan Play Core (deferred components) yang tidak
+# dipakai aplikasi ini. Tanpa aturan ini R8 gagal: "Missing classes detected".
+-dontwarn com.google.android.play.core.**
