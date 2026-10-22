@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../core/services/auth_service.dart';
 import '../core/services/export_service.dart';
@@ -22,6 +23,7 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   Map<String, dynamic>? _info;
+  PackageInfo? _pkg;
   List<BackupFile> _backups = [];
   bool _loading = true;
   bool _busy = false;
@@ -36,10 +38,12 @@ class _SettingsViewState extends State<SettingsView> {
     setState(() => _loading = true);
     final info = await BackupService.instance.getInfo();
     final backups = await BackupService.instance.listBackups();
+    final pkg = await PackageInfo.fromPlatform();
     if (!mounted) return;
     setState(() {
       _info = info;
       _backups = backups;
+      _pkg = pkg;
       _loading = false;
     });
   }
@@ -561,7 +565,11 @@ class _SettingsViewState extends State<SettingsView> {
                         padding: const EdgeInsets.all(12),
                         child: Column(
                           children: [
-                            _kv('Versi', '0.1.0'),
+                            _kv(
+                                'Versi',
+                                _pkg == null
+                                    ? '-'
+                                    : '${_pkg!.version}+${_pkg!.buildNumber}'),
                             _kv('Jumlah produk aktif',
                                 '${_info?['products'] ?? 0}'),
                             _kv('Jumlah transaksi',

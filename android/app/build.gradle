@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.yusup.posv2"
-    ndkVersion = "28.2.13676358"
-    compileSdk = 36
+    namespace "com.yusup.posv2"
+    ndkVersion "28.2.13676358"
+    compileSdk 36
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
@@ -19,30 +19,26 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.yusup.posv2"
-        minSdk = 23
-        targetSdk = 36
-        versionCode = 6
-        versionName = "1.0.5"
+        applicationId "com.yusup.posv2"
+        minSdk 23
+        targetSdk 36
+        versionCode 7
+        versionName "1.0.6"
     }
 
     buildTypes {
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             ndk {
-                abiFilters 'arm64-v8a'
+                abiFilters "arm64-v8a"
             }
-        }
-        }
-            signingConfig = signingConfigs.debug
-            minifyEnabled = true
-            shrinkResources = true
         }
     }
 }
 
 flutter {
-    source = "../.."
+    source "../.."
 }
