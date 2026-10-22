@@ -35,7 +35,7 @@ jobs:
         run: flutter analyze --no-fatal-infos --no-fatal-warnings || true
 
       - name: Build APK (split per ABI)
-        run: flutter build apk --release --split-per-abi
+        run: flutter build apk --release --split-per-abi --target-platform android-arm64
 
       - name: List APK
         run: ls -lh build/app/outputs/flutter-apk/
