@@ -27,28 +27,36 @@ class UserRepository {
     if (rows.isEmpty) return null;
 
     final user = User.fromMap(rows.first);
-    final salt = user.passwordSalt ?? '';
-    final hash = user.passwordHash ?? '';
+    final check = Hash.checkPassword(
+      password,
+      hash: user.passwordHash ?? '',
+      salt: user.passwordSalt ?? '',
+    );
+    if (check == PasswordCheck.mismatch) return null;
 
-    // PBKDF2 verify
-    if (salt.isNotEmpty) {
-      if (Hash.verify(password, salt, hash)) return user;
-      return null;
+    // Migrasi otomatis SHA-256 → PBKDF2 + salt baru, sekali saat login.
+    if (check == PasswordCheck.matchLegacy && user.id != null) {
+      await _storePassword(db, user.id!, password);
     }
+    return user;
+  }
 
-    // Legacy SHA256 fallback → auto-migrate
-    if (hash == Hash.sha256(password)) {
-      final newSalt = Hash.generateSalt();
-      final newHash = Hash.pbkdf2(password, newSalt);
-      await db.update(
-        'users',
-        {'password_hash': newHash, 'password_salt': newSalt},
-        where: 'id = ?',
-        whereArgs: [user.id],
-      );
-      return user;
-    }
-    return null;
+  /// Tulis hash PBKDF2 + salt baru untuk satu user.
+  Future<void> _storePassword(
+    DatabaseExecutor db,
+    int userId,
+    String password,
+  ) async {
+    final hashed = Hash.hashPassword(password);
+    await db.update(
+      'users',
+      {
+        'password_hash': hashed.hash,
+        'password_salt': hashed.salt,
+      },
+      where: 'id = ?',
+      whereArgs: [userId],
+    );
   }
 
   Future<int> create({
@@ -58,9 +66,11 @@ class UserRepository {
     required String role,
   }) async {
     final db = await _db;
+    final hashed = Hash.hashPassword(password);
     return db.insert('users', {
       'username': username,
-      'password_hash': Hash.sha256(password),
+      'password_hash': hashed.hash,
+      'password_salt': hashed.salt,
       'full_name': fullName,
       'role': role,
       'created_at': DateTime.now().toIso8601String(),
@@ -79,7 +89,9 @@ class UserRepository {
       'role': role,
     };
     if (newPassword != null && newPassword.isNotEmpty) {
-      data['password_hash'] = Hash.sha256(newPassword);
+      final hashed = Hash.hashPassword(newPassword);
+      data['password_hash'] = hashed.hash;
+      data['password_salt'] = hashed.salt;
     }
     await db.update('users', data, where: 'id = ?', whereArgs: [id]);
   }
@@ -110,18 +122,24 @@ class UserRepository {
     final db = await _db;
     final rows = await db.query(
       'users',
-      where: 'id = ? AND password_hash = ?',
-      whereArgs: [userId, Hash.sha256(oldPassword)],
+      where: 'id = ?',
+      whereArgs: [userId],
       limit: 1,
     );
     if (rows.isEmpty) {
+      throw Exception('User tidak ditemukan.');
+    }
+
+    final user = User.fromMap(rows.first);
+    final check = Hash.checkPassword(
+      oldPassword,
+      hash: user.passwordHash ?? '',
+      salt: user.passwordSalt ?? '',
+    );
+    if (check == PasswordCheck.mismatch) {
       throw Exception('Password lama salah.');
     }
-    await db.update(
-      'users',
-      {'password_hash': Hash.sha256(newPassword)},
-      where: 'id = ?',
-      whereArgs: [userId],
-    );
+
+    await _storePassword(db, userId, newPassword);
   }
 }
